@@ -24,7 +24,7 @@ public sealed partial class FolderNode : ObservableObject
         {
             UsedPercent = capacity > 0 ? used * 100.0 / capacity : 0;
             Level = LoadLevels.Fill(UsedPercent);
-            FreeText = Tr.Format("Analyze_DriveFree", SizeText_(capacity - used), SizeText_(capacity));
+            FreeText = Tr.Format("Analyze_DriveFree", FormatSize(capacity - used), FormatSize(capacity));
         }
         if (entry.Size is { } size) SetSize(size);
     }
@@ -74,10 +74,10 @@ public sealed partial class FolderNode : ObservableObject
     public void SetSize(long size)
     {
         Size = size;
-        SizeText = SizeText_(size);
+        SizeText = FormatSize(size);
     }
 
     private static FolderNode Placeholder() => new();
 
-    private static string SizeText_(long bytes) => Localization.SizeText.Format(bytes);
+    private static string FormatSize(long bytes) => Localization.SizeText.Format(bytes);
 }

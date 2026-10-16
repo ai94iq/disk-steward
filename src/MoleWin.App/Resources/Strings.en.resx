@@ -18,7 +18,7 @@
   <data name="Analyze_DriveFree" xml:space="preserve"><value>{0} free of {1}</value></data>
   <data name="Analyze_Drives" xml:space="preserve"><value>This PC</value></data>
   <data name="Analyze_Elapsed" xml:space="preserve"><value>{0:%m}:{0:ss}</value></data>
-  <data name="Analyze_Hint" xml:space="preserve"><value>Expand a drive to see what uses the space. Tick what you want to remove; nothing is removed until you confirm, and it goes to the Recycle Bin.</value></data>
+  <data name="Analyze_Hint" xml:space="preserve"><value>Tick what you want to remove. Nothing is removed until you confirm, and it goes to the Recycle Bin.</value></data>
   <data name="Analyze_LogDone" xml:space="preserve"><value>Finished {0} in {1:%m}:{1:ss}, {2:N0} files</value></data>
   <data name="Analyze_LogFailed" xml:space="preserve"><value>Could not recycle {0}: {1}</value></data>
   <data name="Analyze_LogMeasured" xml:space="preserve"><value>{0}: {1}</value></data>
@@ -33,6 +33,7 @@
   <data name="Analyze_Recycle" xml:space="preserve"><value>Move to Recycle Bin</value></data>
   <data name="Analyze_Selected" xml:space="preserve"><value>{0} selected, {1}</value></data>
   <data name="Analyze_Stop" xml:space="preserve"><value>Stop</value></data>
+  <data name="Analyze_Summary" xml:space="preserve"><value>Expand a drive to see what uses the space.</value></data>
   <data name="Analyze_SystemItem" xml:space="preserve"><value>Windows needs this</value></data>
   <data name="Analyze_SystemTip" xml:space="preserve"><value>Windows uses this file or folder. MoleWin will not remove it.</value></data>
   <data name="Analyze_Up" xml:space="preserve"><value>Up</value></data>

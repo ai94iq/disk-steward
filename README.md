@@ -30,24 +30,23 @@ that informed it.
 Nothing is ever removed without ticking it and confirming, and removal only
 ever goes to the Recycle Bin.
 
-- **Clean** (start page): scans on open, about a second, with a live activity
-  log. 86 cache locations in system, browsers, apps, GPU drivers, developer
-  tools and AI tools (old Claude Code chats and Codex sessions, Cursor caches;
-  Claude Code memory is never touched). Rules and the default whitelist come
-  from `mo` 1.30.0 (MIT, see `third_party/`).
-- **Apps:** installed apps from the registry, largest first, with search.
-  Uninstall runs the app's own uninstaller visibly, waits until Windows no
-  longer lists the app, then shows exact-name leftovers unticked. Store apps
-  are not listed yet.
-- **Analyze:** opens on the fixed drives; a folder lists at once and its
-  subfolders are measured in parallel, with a live activity log, the folder
-  being read, elapsed time and file/folder/byte counters. Sizes are space on
-  disk (sparse VM and WSL images count what they occupy). Tick rows and confirm
-  to move them to the Recycle Bin.
-- **Monitor:** health score, CPU with a one-minute history, memory, drives,
-  network, battery and top processes, sampled every 2 s from plain Windows
-  APIs while the page is open. A Keep awake picker holds off sleep for a set
-  time or until turned off.
+- **Monitor** (start page): health, CPU and memory as ring gauges, one-minute CPU
+  and network charts, drive capacity bars and top processes, sampled every 2 s
+  from plain Windows APIs while the page is open. A Keep awake picker holds off
+  sleep for a set time or until turned off.
+- **Clean:** scans on open, about a second. 86 cache locations grouped into
+  collapsible system, browser, app, graphics driver, developer tool and AI tool
+  cards (old Claude Code chats and Codex sessions, Cursor caches; Claude Code
+  memory is never touched). Rules and the default whitelist come from `mo`
+  1.30.0 (MIT, see `third_party/`). The scan log is under Show details.
+- **Apps:** installed apps with their icons and install dates, sorted by name,
+  size or install date like Windows Settings, with search. Uninstall runs the
+  app's own uninstaller, waits until Windows no longer lists it, then shows
+  exact-name leftovers unticked. Store apps are not listed yet.
+- **Analyze:** a tree of drives and folders. Drives show used space against
+  capacity and only expand; folders list at once and measure in the background.
+  Sizes are space on disk. Protected folders and system files (pagefile,
+  hiberfil, swapfile and anything with the System attribute) cannot be ticked.
 - **Safety:** every removal goes through `SafeRemover`, which re-checks
   `ProtectedPaths` (Windows, Program Files, ProgramData, drive roots, the
   profile and its known folders) and only recycles. Drives without a Recycle

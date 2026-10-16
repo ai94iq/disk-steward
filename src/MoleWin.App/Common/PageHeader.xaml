@@ -1,0 +1,23 @@
+<UserControl x:Class="MoleWin.App.Common.PageHeader"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:common="clr-namespace:MoleWin.App.Common"
+             x:Name="Root">
+  <!-- Every page opens the same way: its icon on an accent tint, title, a live summary,
+       and the page's own actions on the right. -->
+  <DockPanel Margin="{StaticResource FieldSpacing}">
+    <ContentPresenter DockPanel.Dock="Right" VerticalAlignment="Center" Content="{Binding Actions, ElementName=Root}" />
+    <Border Width="48" Height="48" Margin="{StaticResource CardGap}" VerticalAlignment="Center" CornerRadius="12">
+      <Border.Background>
+        <SolidColorBrush Color="{DynamicResource SystemAccentColor}" Opacity="0.16" />
+      </Border.Background>
+      <common:AppIcon Width="26" Height="26" Kind="{Binding Kind, ElementName=Root}"
+                      Foreground="{DynamicResource AccentFillColorDefaultBrush}" />
+    </Border>
+    <StackPanel VerticalAlignment="Center">
+      <ui:TextBlock FontTypography="Title" Text="{Binding Title, ElementName=Root}" />
+      <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" Text="{Binding Summary, ElementName=Root}" />
+    </StackPanel>
+  </DockPanel>
+</UserControl>

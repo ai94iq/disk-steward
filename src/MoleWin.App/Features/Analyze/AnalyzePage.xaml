@@ -76,10 +76,7 @@
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
 
-    <StackPanel Grid.Row="0" Margin="{StaticResource FieldSpacing}">
-      <ui:TextBlock FontTypography="Title" Text="{l:Tr Nav_Analyze}" />
-      <TextBlock Style="{StaticResource SecondaryText}" TextWrapping="Wrap" Text="{l:Tr Analyze_Hint}" />
-    </StackPanel>
+    <common:PageHeader Grid.Row="0" Kind="DataPie" Title="{l:Tr Nav_Analyze}" Summary="{l:Tr Analyze_Summary}" />
 
     <!-- Live measuring: what it is reading now, how long, how much -->
     <Border Grid.Row="1" Style="{StaticResource Surface}" Visibility="{Binding IsScanning, Converter={StaticResource BoolVisible}}">
@@ -180,7 +177,10 @@
           <common:AppIconElement Kind="Delete" />
         </ui:Button.Icon>
       </ui:Button>
-      <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding SelectedText}" />
+      <StackPanel VerticalAlignment="Center">
+        <TextBlock FontWeight="SemiBold" Text="{Binding SelectedText}" />
+        <TextBlock Style="{StaticResource TertiaryText}" Text="{l:Tr Analyze_Hint}" />
+      </StackPanel>
     </DockPanel>
   </Grid>
 </Page>

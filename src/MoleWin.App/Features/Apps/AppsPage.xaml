@@ -28,24 +28,22 @@
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
 
-    <DockPanel Grid.Row="0" Margin="{StaticResource FieldSpacing}">
-      <!-- Search and sort, as in Windows Settings > Installed apps -->
-      <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center" Orientation="Horizontal">
-        <ui:TextBox MinWidth="260" Margin="{StaticResource CardGap}"
-                    PlaceholderText="{l:Tr Apps_Search}" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}">
-          <ui:TextBox.Icon>
-            <common:AppIconElement Kind="Search" />
-          </ui:TextBox.Icon>
-        </ui:TextBox>
-        <TextBlock Margin="{StaticResource InlineGap}" VerticalAlignment="Center" Style="{StaticResource SecondaryText}" Text="{l:Tr Apps_SortBy}" />
-        <ComboBox MinWidth="170" ItemsSource="{Binding SortOptions}" DisplayMemberPath="Label"
-                  SelectedValuePath="Value" SelectedValue="{Binding SortBy}" />
-      </StackPanel>
-      <StackPanel>
-        <ui:TextBlock FontTypography="Title" Text="{l:Tr Nav_Apps}" />
-        <TextBlock Style="{StaticResource SecondaryText}" Text="{Binding CountText}" />
-      </StackPanel>
-    </DockPanel>
+    <common:PageHeader Grid.Row="0" Kind="Apps" Title="{l:Tr Nav_Apps}" Summary="{Binding CountText}">
+      <common:PageHeader.Actions>
+        <!-- Search and sort, as in Windows Settings > Installed apps -->
+        <StackPanel Orientation="Horizontal">
+          <ui:TextBox MinWidth="260" Margin="{StaticResource CardGap}"
+                      PlaceholderText="{l:Tr Apps_Search}" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}">
+            <ui:TextBox.Icon>
+              <common:AppIconElement Kind="Search" />
+            </ui:TextBox.Icon>
+          </ui:TextBox>
+          <TextBlock Margin="{StaticResource InlineGap}" VerticalAlignment="Center" Style="{StaticResource SecondaryText}" Text="{l:Tr Apps_SortBy}" />
+          <ComboBox MinWidth="170" ItemsSource="{Binding SortOptions}" DisplayMemberPath="Label"
+                    SelectedValuePath="Value" SelectedValue="{Binding SortBy}" />
+        </StackPanel>
+      </common:PageHeader.Actions>
+    </common:PageHeader>
 
     <!-- What the uninstall is doing right now -->
     <Border Grid.Row="1" Style="{StaticResource Surface}" Visibility="{Binding IsBusy, Converter={StaticResource BoolVisible}}">

@@ -15,12 +15,10 @@
   <Thickness x:Key="InlineGap">0,0,8,0</Thickness>
   <Thickness x:Key="InlineStart">8,0,0,0</Thickness>
   <Thickness x:Key="SideGap">16,0,0,0</Thickness>
-  <Thickness x:Key="BadgeGap">12,4,0,0</Thickness>
   <Thickness x:Key="BadgePadding">10,4</Thickness>
   <Thickness x:Key="HeroGap">0,0,24,0</Thickness>
   <Thickness x:Key="ListPadding">8</Thickness>
   <Thickness x:Key="SurfacePadding">20</Thickness>
-  <Thickness x:Key="HeadlineLabelGap">12,0,0,8</Thickness>
   <GridLength x:Key="GutterWidth">16</GridLength>
   <GridLength x:Key="SizeColumnWidth">96</GridLength>
   <GridLength x:Key="NameColumnWidth">380</GridLength>

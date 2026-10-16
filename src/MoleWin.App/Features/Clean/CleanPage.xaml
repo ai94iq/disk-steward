@@ -22,17 +22,15 @@
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
 
-    <DockPanel Grid.Row="0" Margin="{StaticResource FieldSpacing}">
-      <ui:Button DockPanel.Dock="Right" VerticalAlignment="Center" Command="{Binding RescanCommand}" Content="{l:Tr Clean_Rescan}">
-        <ui:Button.Icon>
-          <common:AppIconElement Kind="ArrowSync" />
-        </ui:Button.Icon>
-      </ui:Button>
-      <StackPanel>
-        <ui:TextBlock FontTypography="Title" Text="{l:Tr Nav_Clean}" />
-        <TextBlock Style="{StaticResource SecondaryText}" Text="{Binding FoundText}" />
-      </StackPanel>
-    </DockPanel>
+    <common:PageHeader Grid.Row="0" Kind="Broom" Title="{l:Tr Nav_Clean}" Summary="{Binding FoundText}">
+      <common:PageHeader.Actions>
+        <ui:Button Command="{Binding RescanCommand}" Content="{l:Tr Clean_Rescan}">
+          <ui:Button.Icon>
+            <common:AppIconElement Kind="ArrowSync" />
+          </ui:Button.Icon>
+        </ui:Button>
+      </common:PageHeader.Actions>
+    </common:PageHeader>
 
     <!-- Live scan: which rule is being checked, the folder being read, how long, how much -->
     <Border Grid.Row="1" Style="{StaticResource Surface}" Visibility="{Binding IsScanning, Converter={StaticResource BoolVisible}}">

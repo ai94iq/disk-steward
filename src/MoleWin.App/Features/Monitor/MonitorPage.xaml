@@ -31,25 +31,24 @@
     </Grid.RowDefinitions>
 
     <!-- Title, the live badge beside it, and keep awake on the right -->
-    <DockPanel Grid.Row="0" Margin="{StaticResource FieldSpacing}">
-      <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center" Orientation="Horizontal">
-        <TextBlock Margin="{StaticResource InlineGap}" VerticalAlignment="Center" Style="{StaticResource SecondaryText}" Text="{l:Tr Monitor_KeepAwake}" />
-        <ComboBox MinWidth="180" VerticalAlignment="Center"
-                  ItemsSource="{Binding KeepAwakeOptions}" SelectedItem="{Binding KeepAwake}" DisplayMemberPath="Label" />
-      </StackPanel>
-      <StackPanel Orientation="Horizontal">
-        <ui:TextBlock VerticalAlignment="Center" FontTypography="Title" Text="{l:Tr Nav_Monitor}" />
-        <Border Margin="{StaticResource BadgeGap}" Padding="{StaticResource BadgePadding}" VerticalAlignment="Center"
-                CornerRadius="12" Background="{DynamicResource SubtleFillColorSecondaryBrush}"
-                Visibility="{Binding IsLive, Converter={StaticResource BoolVisible}}">
-          <StackPanel Orientation="Horizontal">
-            <Ellipse Width="8" Height="8" Margin="{StaticResource InlineGap}" VerticalAlignment="Center"
-                     Fill="{DynamicResource SystemFillColorSuccessBrush}" common:Motion.PulseOn="{Binding Pulse}" />
-            <TextBlock VerticalAlignment="Center" Style="{StaticResource SecondaryText}" Text="{l:Tr Monitor_Live}" />
-          </StackPanel>
-        </Border>
-      </StackPanel>
-    </DockPanel>
+    <common:PageHeader Grid.Row="0" Kind="HeartPulse" Title="{l:Tr Nav_Monitor}" Summary="{Binding UptimeText}">
+      <common:PageHeader.Actions>
+        <StackPanel Orientation="Horizontal">
+          <Border Margin="{StaticResource CardGap}" Padding="{StaticResource BadgePadding}" VerticalAlignment="Center"
+                  CornerRadius="12" Background="{DynamicResource SubtleFillColorSecondaryBrush}"
+                  Visibility="{Binding IsLive, Converter={StaticResource BoolVisible}}">
+            <StackPanel Orientation="Horizontal">
+              <Ellipse Width="8" Height="8" Margin="{StaticResource InlineGap}" VerticalAlignment="Center"
+                       Fill="{DynamicResource SystemFillColorSuccessBrush}" common:Motion.PulseOn="{Binding Pulse}" />
+              <TextBlock VerticalAlignment="Center" Style="{StaticResource SecondaryText}" Text="{l:Tr Monitor_Live}" />
+            </StackPanel>
+          </Border>
+          <TextBlock Margin="{StaticResource InlineGap}" VerticalAlignment="Center" Style="{StaticResource SecondaryText}" Text="{l:Tr Monitor_KeepAwake}" />
+          <ComboBox MinWidth="180" VerticalAlignment="Center"
+                    ItemsSource="{Binding KeepAwakeOptions}" SelectedItem="{Binding KeepAwake}" DisplayMemberPath="Label" />
+        </StackPanel>
+      </common:PageHeader.Actions>
+    </common:PageHeader>
 
     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
                   Visibility="{Binding State, Converter={StaticResource LoadStateVisible}, ConverterParameter='Idle,Loaded'}">
@@ -79,7 +78,6 @@
               <ui:TextBlock FontTypography="Subtitle" Text="{Binding HealthMessage}" />
               <TextBlock Margin="{StaticResource LabelSpacing}" FontWeight="SemiBold" Text="{Binding Device}" />
               <TextBlock Style="{StaticResource SecondaryText}" Text="{Binding DeviceDetail}" />
-              <TextBlock Style="{StaticResource TertiaryText}" Text="{Binding UptimeText}" />
             </StackPanel>
           </DockPanel>
         </Border>
