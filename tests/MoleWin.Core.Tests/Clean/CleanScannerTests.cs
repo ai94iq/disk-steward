@@ -116,15 +116,15 @@ public sealed class CleanScannerTests : IDisposable
     }
 
     [Fact]
-    public void Default_whitelist_covers_ollama_models_and_store_app_data()
+    public void Default_whitelist_keeps_claude_code_memory_but_not_its_chats()
     {
         var scanner = new CleanScanner(new FolderScanner(),
             new ProtectedPaths(new ProtectedRoots(@"Z:\W", [], @"Z:\P", @"Z:\U", @"Z:\O", [])), CleanRules.Whitelist);
         var home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        var local = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        var project = Path.Combine(home, ".claude", "projects", "C--work-app");
 
-        Assert.True(scanner.IsWhitelisted(Path.Combine(home, ".ollama", "models", "blobs")));
-        Assert.True(scanner.IsWhitelisted(Path.Combine(local, "Packages", "Microsoft.WindowsStore_8wekyb3d8bbwe", "LocalCache")));
-        Assert.False(scanner.IsWhitelisted(Path.Combine(local, "Temp")));
+        Assert.True(scanner.IsWhitelisted(Path.Combine(project, "memory")));
+        Assert.True(scanner.IsWhitelisted(Path.Combine(project, "memory", "notes.md")));
+        Assert.False(scanner.IsWhitelisted(Path.Combine(project, "chat.jsonl")));
     }
 }

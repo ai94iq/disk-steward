@@ -101,92 +101,82 @@
   <data name="Clean_Scanning" xml:space="preserve"><value>جارٍ فحص {0}</value></data>
   <data name="Clean_SelectAll" xml:space="preserve"><value>تحديد الكل</value></data>
   <data name="Clean_Selected" xml:space="preserve"><value>{0} محدد، {1}</value></data>
-  <data name="Clean_Target_adobe-media" xml:space="preserve"><value>ذاكرة مؤقتة: Adobe media cache</value></data>
-  <data name="Clean_Target_adobe-peak" xml:space="preserve"><value>ملفات Adobe peak</value></data>
-  <data name="Clean_Target_amd-dx" xml:space="preserve"><value>ذاكرة مؤقتة: AMD DirectX shader cache</value></data>
-  <data name="Clean_Target_amd-gl" xml:space="preserve"><value>ذاكرة مؤقتة: AMD OpenGL shader cache</value></data>
-  <data name="Clean_Target_amd-vk" xml:space="preserve"><value>ذاكرة مؤقتة: AMD Vulkan shader cache</value></data>
-  <data name="Clean_Target_aws-cli" xml:space="preserve"><value>ذاكرة مؤقتة: AWS CLI cache</value></data>
-  <data name="Clean_Target_azure-logs" xml:space="preserve"><value>سجلات Azure CLI</value></data>
-  <data name="Clean_Target_brave-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Brave cache</value></data>
-  <data name="Clean_Target_bun-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Bun cache</value></data>
-  <data name="Clean_Target_chrome-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Chrome cache</value></data>
-  <data name="Clean_Target_chrome-code" xml:space="preserve"><value>ذاكرة مؤقتة: Chrome code cache</value></data>
-  <data name="Clean_Target_chrome-gpu" xml:space="preserve"><value>ذاكرة مؤقتة: Chrome GPU cache</value></data>
-  <data name="Clean_Target_chrome-grshader" xml:space="preserve"><value>ذاكرة مؤقتة: Chrome graphics shader cache</value></data>
-  <data name="Clean_Target_chrome-shader" xml:space="preserve"><value>ذاكرة مؤقتة: Chrome shader cache</value></data>
-  <data name="Clean_Target_chrome-sw" xml:space="preserve"><value>ذاكرة مؤقتة: Chrome service worker cache</value></data>
+  <data name="Clean_Target_adobe-media-cache" xml:space="preserve"><value>ذاكرة الوسائط في Adobe</value></data>
+  <data name="Clean_Target_amd-dx" xml:space="preserve"><value>ذاكرة مظللات DirectX من AMD</value></data>
+  <data name="Clean_Target_amd-dxc" xml:space="preserve"><value>ذاكرة مظللات DXC من AMD</value></data>
+  <data name="Clean_Target_amd-gl" xml:space="preserve"><value>ذاكرة مظللات OpenGL من AMD</value></data>
+  <data name="Clean_Target_amd-vk" xml:space="preserve"><value>ذاكرة مظللات Vulkan من AMD</value></data>
+  <data name="Clean_Target_brave-cache" xml:space="preserve"><value>ذاكرة Brave المؤقتة</value></data>
+  <data name="Clean_Target_brave-code" xml:space="preserve"><value>ذاكرة الشيفرة في Brave</value></data>
+  <data name="Clean_Target_brave-gpu" xml:space="preserve"><value>ذاكرة الرسوميات في Brave</value></data>
+  <data name="Clean_Target_bun-cache" xml:space="preserve"><value>ذاكرة Bun</value></data>
+  <data name="Clean_Target_cargo-crates" xml:space="preserve"><value>حزم Cargo المنزّلة</value></data>
+  <data name="Clean_Target_chrome-cache" xml:space="preserve"><value>ذاكرة Chrome المؤقتة</value></data>
+  <data name="Clean_Target_chrome-code" xml:space="preserve"><value>ذاكرة الشيفرة في Chrome</value></data>
+  <data name="Clean_Target_chrome-gpu" xml:space="preserve"><value>ذاكرة الرسوميات في Chrome</value></data>
+  <data name="Clean_Target_chrome-grshader" xml:space="preserve"><value>ذاكرة مظللات الرسوميات في Chrome</value></data>
+  <data name="Clean_Target_chrome-shader" xml:space="preserve"><value>ذاكرة المظللات في Chrome</value></data>
+  <data name="Clean_Target_chrome-sw" xml:space="preserve"><value>ذاكرة تخزين المواقع في Chrome</value></data>
   <data name="Clean_Target_claude-chats" xml:space="preserve"><value>محادثات Claude Code الأقدم من 30 يومًا</value></data>
   <data name="Clean_Target_codex-sessions" xml:space="preserve"><value>جلسات Codex الأقدم من 30 يومًا</value></data>
-  <data name="Clean_Target_crash-dumps" xml:space="preserve"><value>ملفات تفريغ الأعطال</value></data>
-  <data name="Clean_Target_cursor-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Cursor cache</value></data>
-  <data name="Clean_Target_cursor-cached-data" xml:space="preserve"><value>بيانات Cursor المخزنة مؤقتًا</value></data>
-  <data name="Clean_Target_cursor-code" xml:space="preserve"><value>ذاكرة مؤقتة: Cursor code cache</value></data>
-  <data name="Clean_Target_cursor-gpu" xml:space="preserve"><value>ذاكرة مؤقتة: Cursor GPU cache</value></data>
-  <data name="Clean_Target_cursor-workspaces" xml:space="preserve"><value>مساحات عمل Cursor غير المستخدمة منذ 30 يومًا</value></data>
-  <data name="Clean_Target_d3d-cache" xml:space="preserve"><value>ذاكرة مؤقتة: DirectX shader cache</value></data>
-  <data name="Clean_Target_discord-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Discord cache</value></data>
-  <data name="Clean_Target_discord-code" xml:space="preserve"><value>ذاكرة مؤقتة: Discord code cache</value></data>
-  <data name="Clean_Target_discord-gpu" xml:space="preserve"><value>ذاكرة مؤقتة: Discord GPU cache</value></data>
-  <data name="Clean_Target_drivefs-logs" xml:space="preserve"><value>سجلات Google Drive</value></data>
-  <data name="Clean_Target_dx-pipeline" xml:space="preserve"><value>ذاكرة مؤقتة: DirectX pipeline cache</value></data>
-  <data name="Clean_Target_edge-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Edge cache</value></data>
-  <data name="Clean_Target_edge-code" xml:space="preserve"><value>ذاكرة مؤقتة: Edge code cache</value></data>
-  <data name="Clean_Target_edge-gpu" xml:space="preserve"><value>ذاكرة مؤقتة: Edge GPU cache</value></data>
-  <data name="Clean_Target_edge-shader" xml:space="preserve"><value>ذاكرة مؤقتة: Edge shader cache</value></data>
-  <data name="Clean_Target_edge-sw" xml:space="preserve"><value>ذاكرة مؤقتة: Edge service worker cache</value></data>
-  <data name="Clean_Target_electron-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Electron download cache</value></data>
-  <data name="Clean_Target_epic-webcache" xml:space="preserve"><value>ذاكرة مؤقتة: Epic Games launcher web cache</value></data>
-  <data name="Clean_Target_error-reports" xml:space="preserve"><value>تقارير أخطاء Windows</value></data>
-  <data name="Clean_Target_firefox-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Firefox cache</value></data>
-  <data name="Clean_Target_gcloud-logs" xml:space="preserve"><value>سجلات gcloud</value></data>
-  <data name="Clean_Target_go-mod-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Go module download cache</value></data>
-  <data name="Clean_Target_hex-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Hex cache</value></data>
-  <data name="Clean_Target_home-logs" xml:space="preserve"><value>سجلات قديمة في ملفك الشخصي</value></data>
-  <data name="Clean_Target_intel-shader" xml:space="preserve"><value>ذاكرة مؤقتة: Intel shader cache</value></data>
-  <data name="Clean_Target_kube-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Kubernetes cache</value></data>
-  <data name="Clean_Target_node-gyp" xml:space="preserve"><value>ذاكرة مؤقتة: node-gyp cache</value></data>
-  <data name="Clean_Target_npm-cache" xml:space="preserve"><value>ذاكرة مؤقتة: npm cache</value></data>
-  <data name="Clean_Target_npm-cache-roaming" xml:space="preserve"><value>ذاكرة مؤقتة: npm cache (roaming)</value></data>
-  <data name="Clean_Target_nuget-http" xml:space="preserve"><value>ذاكرة مؤقتة: NuGet HTTP cache</value></data>
-  <data name="Clean_Target_nuget-plugins" xml:space="preserve"><value>ذاكرة مؤقتة: NuGet plugins cache</value></data>
-  <data name="Clean_Target_nvidia-dx" xml:space="preserve"><value>ذاكرة مؤقتة: NVIDIA DirectX shader cache</value></data>
-  <data name="Clean_Target_nvidia-gl" xml:space="preserve"><value>ذاكرة مؤقتة: NVIDIA OpenGL shader cache</value></data>
-  <data name="Clean_Target_nvidia-nv" xml:space="preserve"><value>ذاكرة مؤقتة: NVIDIA compute cache</value></data>
-  <data name="Clean_Target_office-wef" xml:space="preserve"><value>ذاكرة مؤقتة: Office add-in cache</value></data>
-  <data name="Clean_Target_onedrive-logs" xml:space="preserve"><value>سجلات OneDrive</value></data>
-  <data name="Clean_Target_opam-download" xml:space="preserve"><value>ذاكرة مؤقتة: opam download cache</value></data>
-  <data name="Clean_Target_opera-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Opera cache</value></data>
-  <data name="Clean_Target_pip-cache" xml:space="preserve"><value>ذاكرة مؤقتة: pip cache</value></data>
-  <data name="Clean_Target_poetry-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Poetry cache</value></data>
-  <data name="Clean_Target_pyenv-cache" xml:space="preserve"><value>ذاكرة مؤقتة: pyenv cache</value></data>
-  <data name="Clean_Target_roaming-logs" xml:space="preserve"><value>سجلات قديمة في AppData</value></data>
-  <data name="Clean_Target_slack-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Slack cache</value></data>
-  <data name="Clean_Target_slack-code" xml:space="preserve"><value>ذاكرة مؤقتة: Slack code cache</value></data>
-  <data name="Clean_Target_slack-gpu" xml:space="preserve"><value>ذاكرة مؤقتة: Slack GPU cache</value></data>
-  <data name="Clean_Target_slack-sw" xml:space="preserve"><value>ذاكرة مؤقتة: Slack service worker cache</value></data>
-  <data name="Clean_Target_spotify-data" xml:space="preserve"><value>ذاكرة مؤقتة: Spotify cache</value></data>
-  <data name="Clean_Target_spotify-storage" xml:space="preserve"><value>تخزين Spotify</value></data>
-  <data name="Clean_Target_sublime-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Sublime Text cache</value></data>
-  <data name="Clean_Target_teams-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Teams (classic) cache</value></data>
-  <data name="Clean_Target_teams-gpu" xml:space="preserve"><value>ذاكرة مؤقتة: Teams (classic) GPU cache</value></data>
-  <data name="Clean_Target_teams-tmp" xml:space="preserve"><value>ملفات Teams (الكلاسيكي) المؤقتة</value></data>
-  <data name="Clean_Target_temp" xml:space="preserve"><value>ملفات مؤقتة أقدم من 7 أيام</value></data>
-  <data name="Clean_Target_terraform-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Terraform plugin cache</value></data>
-  <data name="Clean_Target_typescript-cache" xml:space="preserve"><value>ذاكرة مؤقتة: TypeScript cache</value></data>
-  <data name="Clean_Target_vs-component-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Visual Studio component cache</value></data>
-  <data name="Clean_Target_vs-image-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Visual Studio image cache</value></data>
-  <data name="Clean_Target_vscode-cache" xml:space="preserve"><value>ذاكرة مؤقتة: VS Code cache</value></data>
-  <data name="Clean_Target_vscode-cached-data" xml:space="preserve"><value>بيانات VS Code المخزنة مؤقتًا</value></data>
-  <data name="Clean_Target_vscode-cached-ext" xml:space="preserve"><value>إضافات VS Code المخزنة مؤقتًا</value></data>
-  <data name="Clean_Target_vscode-code" xml:space="preserve"><value>ذاكرة مؤقتة: VS Code code cache</value></data>
-  <data name="Clean_Target_vscode-gpu" xml:space="preserve"><value>ذاكرة مؤقتة: VS Code GPU cache</value></data>
-  <data name="Clean_Target_vscode-insiders-cache" xml:space="preserve"><value>ذاكرة مؤقتة: VS Code Insiders cache</value></data>
-  <data name="Clean_Target_vscode-insiders-data" xml:space="preserve"><value>بيانات VS Code Insiders المخزنة مؤقتًا</value></data>
-  <data name="Clean_Target_vulkan-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Vulkan pipeline cache</value></data>
-  <data name="Clean_Target_yarn-berry-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Yarn Berry cache</value></data>
-  <data name="Clean_Target_yarn-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Yarn cache</value></data>
-  <data name="Clean_Target_zed-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Zed cache</value></data>
+  <data name="Clean_Target_crash-dumps" xml:space="preserve"><value>ملفات أعطال البرامج</value></data>
+  <data name="Clean_Target_cursor-cache" xml:space="preserve"><value>ذاكرة Cursor المؤقتة</value></data>
+  <data name="Clean_Target_cursor-cached-data" xml:space="preserve"><value>ذاكرة الإضافات المترجمة في Cursor</value></data>
+  <data name="Clean_Target_cursor-code" xml:space="preserve"><value>ذاكرة الشيفرة في Cursor</value></data>
+  <data name="Clean_Target_cursor-gpu" xml:space="preserve"><value>ذاكرة الرسوميات في Cursor</value></data>
+  <data name="Clean_Target_cursor-workspaces" xml:space="preserve"><value>بيانات مساحات العمل في Cursor الأقدم من 30 يومًا</value></data>
+  <data name="Clean_Target_d3d-cache" xml:space="preserve"><value>ذاكرة مظللات DirectX</value></data>
+  <data name="Clean_Target_discord-cache" xml:space="preserve"><value>ذاكرة Discord المؤقتة</value></data>
+  <data name="Clean_Target_discord-code" xml:space="preserve"><value>ذاكرة الشيفرة في Discord</value></data>
+  <data name="Clean_Target_discord-gpu" xml:space="preserve"><value>ذاكرة الرسوميات في Discord</value></data>
+  <data name="Clean_Target_edge-cache" xml:space="preserve"><value>ذاكرة Edge المؤقتة</value></data>
+  <data name="Clean_Target_edge-code" xml:space="preserve"><value>ذاكرة الشيفرة في Edge</value></data>
+  <data name="Clean_Target_edge-gpu" xml:space="preserve"><value>ذاكرة الرسوميات في Edge</value></data>
+  <data name="Clean_Target_edge-grshader" xml:space="preserve"><value>ذاكرة مظللات الرسوميات في Edge</value></data>
+  <data name="Clean_Target_edge-shader" xml:space="preserve"><value>ذاكرة المظللات في Edge</value></data>
+  <data name="Clean_Target_edge-sw" xml:space="preserve"><value>ذاكرة تخزين المواقع في Edge</value></data>
+  <data name="Clean_Target_epic-webcache" xml:space="preserve"><value>ذاكرة الويب في Epic Games</value></data>
+  <data name="Clean_Target_firefox-cache" xml:space="preserve"><value>ذاكرة Firefox المؤقتة</value></data>
+  <data name="Clean_Target_firefox-startup" xml:space="preserve"><value>ذاكرة بدء التشغيل في Firefox</value></data>
+  <data name="Clean_Target_go-build" xml:space="preserve"><value>ذاكرة البناء في Go</value></data>
+  <data name="Clean_Target_intel-shader" xml:space="preserve"><value>ذاكرة المظللات من Intel</value></data>
+  <data name="Clean_Target_jetbrains-caches" xml:space="preserve"><value>ذاكرة بيئات JetBrains</value></data>
+  <data name="Clean_Target_notion-cache" xml:space="preserve"><value>ذاكرة Notion المؤقتة</value></data>
+  <data name="Clean_Target_notion-code" xml:space="preserve"><value>ذاكرة الشيفرة في Notion</value></data>
+  <data name="Clean_Target_npm-cache" xml:space="preserve"><value>ذاكرة npm</value></data>
+  <data name="Clean_Target_nuget-http" xml:space="preserve"><value>ذاكرة HTTP في NuGet</value></data>
+  <data name="Clean_Target_nuget-plugins" xml:space="preserve"><value>ذاكرة إضافات NuGet</value></data>
+  <data name="Clean_Target_nvidia-dx" xml:space="preserve"><value>ذاكرة مظللات DirectX من NVIDIA</value></data>
+  <data name="Clean_Target_nvidia-gl" xml:space="preserve"><value>ذاكرة مظللات OpenGL من NVIDIA</value></data>
+  <data name="Clean_Target_obsidian-cache" xml:space="preserve"><value>ذاكرة Obsidian المؤقتة</value></data>
+  <data name="Clean_Target_obsidian-code" xml:space="preserve"><value>ذاكرة الشيفرة في Obsidian</value></data>
+  <data name="Clean_Target_opera-cache" xml:space="preserve"><value>ذاكرة Opera المؤقتة</value></data>
+  <data name="Clean_Target_pip-cache" xml:space="preserve"><value>ذاكرة pip</value></data>
+  <data name="Clean_Target_postman-cache" xml:space="preserve"><value>ذاكرة Postman المؤقتة</value></data>
+  <data name="Clean_Target_postman-code" xml:space="preserve"><value>ذاكرة الشيفرة في Postman</value></data>
+  <data name="Clean_Target_slack-cache" xml:space="preserve"><value>ذاكرة Slack المؤقتة</value></data>
+  <data name="Clean_Target_slack-code" xml:space="preserve"><value>ذاكرة الشيفرة في Slack</value></data>
+  <data name="Clean_Target_slack-gpu" xml:space="preserve"><value>ذاكرة الرسوميات في Slack</value></data>
+  <data name="Clean_Target_slack-sw" xml:space="preserve"><value>ذاكرة تخزين المواقع في Slack</value></data>
+  <data name="Clean_Target_spotify-data" xml:space="preserve"><value>ذاكرة البث في Spotify</value></data>
+  <data name="Clean_Target_steam-htmlcache" xml:space="preserve"><value>ذاكرة الويب في Steam</value></data>
+  <data name="Clean_Target_teams-cache" xml:space="preserve"><value>ذاكرة Teams (classic) المؤقتة</value></data>
+  <data name="Clean_Target_teams-code" xml:space="preserve"><value>ذاكرة الشيفرة في Teams (classic)</value></data>
+  <data name="Clean_Target_teams-gpu" xml:space="preserve"><value>ذاكرة الرسوميات في Teams (classic)</value></data>
+  <data name="Clean_Target_temp" xml:space="preserve"><value>الملفات المؤقتة</value></data>
+  <data name="Clean_Target_typescript-cache" xml:space="preserve"><value>ذاكرة تعريفات TypeScript</value></data>
+  <data name="Clean_Target_vivaldi-cache" xml:space="preserve"><value>ذاكرة Vivaldi المؤقتة</value></data>
+  <data name="Clean_Target_vivaldi-code" xml:space="preserve"><value>ذاكرة الشيفرة في Vivaldi</value></data>
+  <data name="Clean_Target_vivaldi-gpu" xml:space="preserve"><value>ذاكرة الرسوميات في Vivaldi</value></data>
+  <data name="Clean_Target_vs-component-cache" xml:space="preserve"><value>ذاكرة المكونات في Visual Studio</value></data>
+  <data name="Clean_Target_vscode-cache" xml:space="preserve"><value>ذاكرة VS Code المؤقتة</value></data>
+  <data name="Clean_Target_vscode-cached-data" xml:space="preserve"><value>ذاكرة الإضافات المترجمة في VS Code</value></data>
+  <data name="Clean_Target_vscode-code" xml:space="preserve"><value>ذاكرة الشيفرة في VS Code</value></data>
+  <data name="Clean_Target_vscode-gpu" xml:space="preserve"><value>ذاكرة الرسوميات في VS Code</value></data>
+  <data name="Clean_Target_vscode-vsix" xml:space="preserve"><value>تنزيلات الإضافات في VS Code</value></data>
+  <data name="Clean_Target_wer-archive" xml:space="preserve"><value>تقارير الأخطاء المؤرشفة</value></data>
+  <data name="Clean_Target_wer-queue" xml:space="preserve"><value>تقارير الأخطاء المنتظرة</value></data>
+  <data name="Clean_Target_yarn-cache" xml:space="preserve"><value>ذاكرة Yarn</value></data>
   <data name="Common_Cancel" xml:space="preserve"><value>إلغاء</value></data>
   <data name="Common_LogRecycled" xml:space="preserve"><value>نُقل {0:N0} عنصرًا إلى سلة المحذوفات</value></data>
   <data name="Common_No" xml:space="preserve"><value>لا</value></data>

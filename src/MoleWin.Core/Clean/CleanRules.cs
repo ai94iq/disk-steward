@@ -1,10 +1,10 @@
 namespace MoleWin.Core.Clean;
 
-// Where caches live, ported from the MIT-licensed mo 1.30.0 Windows rules
-// (lib/clean/*.ps1, lib/core/base.ps1; notice in third_party/). Kept: what a normal user may
-// clean. Left out: targets that need admin (Windows Temp, Prefetch, Windows Update), permanent
-// deletes (emptying the Recycle Bin), user documents (old Downloads), and folders that hold
-// app state rather than cache (Teams databases, Office file cache, Zoom data, clipboard).
+// Where caches live: each vendor's documented or observed cache layout under the user
+// profile. Kept to folders the owning app rebuilds on its own. Left out: anything that needs
+// admin (Windows Temp, Prefetch, Windows Update), permanent deletes (emptying the Recycle
+// Bin), user files (Downloads), and folders that hold settings, sign-ins or app state
+// (browser profiles beyond their caches, chat databases, offline media).
 public static class CleanRules
 {
     private const string Local = "%LOCALAPPDATA%";
@@ -15,32 +15,34 @@ public static class CleanRules
     [
         // System
         new("temp", CleanCategory.System, "%TEMP%", OlderThanDays: 7),
-        new("error-reports", CleanCategory.System, $@"{Local}\Microsoft\Windows\WER", OlderThanDays: 7),
+        new("wer-archive", CleanCategory.System, $@"{Local}\Microsoft\Windows\WER\ReportArchive"),
+        new("wer-queue", CleanCategory.System, $@"{Local}\Microsoft\Windows\WER\ReportQueue"),
         new("crash-dumps", CleanCategory.System, $@"{Local}\CrashDumps", CleanMode.Files, "*.dmp"),
-        new("roaming-logs", CleanCategory.System, Roaming, CleanMode.Files, "*.log", 7),
-        new("home-logs", CleanCategory.System, Home, CleanMode.Files, "*.log", 7),
-        new("onedrive-logs", CleanCategory.System, $@"{Local}\Microsoft\OneDrive\logs", OlderThanDays: 7),
-        new("drivefs-logs", CleanCategory.System, $@"{Local}\Google\DriveFS\Logs", OlderThanDays: 7),
 
         // Browsers
-        new("chrome-cache", CleanCategory.Browsers, $@"{Local}\Google\Chrome\User Data\Default\Cache"),
-        new("chrome-code", CleanCategory.Browsers, $@"{Local}\Google\Chrome\User Data\Default\Code Cache"),
-        new("chrome-gpu", CleanCategory.Browsers, $@"{Local}\Google\Chrome\User Data\Default\GPUCache"),
-        new("chrome-sw", CleanCategory.Browsers, $@"{Local}\Google\Chrome\User Data\Default\Service Worker\CacheStorage"),
+        new("chrome-cache", CleanCategory.Browsers, $@"{Local}\Google\Chrome\User Data\*\Cache"),
+        new("chrome-code", CleanCategory.Browsers, $@"{Local}\Google\Chrome\User Data\*\Code Cache"),
+        new("chrome-gpu", CleanCategory.Browsers, $@"{Local}\Google\Chrome\User Data\*\GPUCache"),
+        new("chrome-sw", CleanCategory.Browsers, $@"{Local}\Google\Chrome\User Data\*\Service Worker\CacheStorage"),
         new("chrome-shader", CleanCategory.Browsers, $@"{Local}\Google\Chrome\User Data\ShaderCache"),
         new("chrome-grshader", CleanCategory.Browsers, $@"{Local}\Google\Chrome\User Data\GrShaderCache"),
-        new("edge-cache", CleanCategory.Browsers, $@"{Local}\Microsoft\Edge\User Data\Default\Cache"),
-        new("edge-code", CleanCategory.Browsers, $@"{Local}\Microsoft\Edge\User Data\Default\Code Cache"),
-        new("edge-gpu", CleanCategory.Browsers, $@"{Local}\Microsoft\Edge\User Data\Default\GPUCache"),
-        new("edge-sw", CleanCategory.Browsers, $@"{Local}\Microsoft\Edge\User Data\Default\Service Worker\CacheStorage"),
+        new("edge-cache", CleanCategory.Browsers, $@"{Local}\Microsoft\Edge\User Data\*\Cache"),
+        new("edge-code", CleanCategory.Browsers, $@"{Local}\Microsoft\Edge\User Data\*\Code Cache"),
+        new("edge-gpu", CleanCategory.Browsers, $@"{Local}\Microsoft\Edge\User Data\*\GPUCache"),
+        new("edge-sw", CleanCategory.Browsers, $@"{Local}\Microsoft\Edge\User Data\*\Service Worker\CacheStorage"),
         new("edge-shader", CleanCategory.Browsers, $@"{Local}\Microsoft\Edge\User Data\ShaderCache"),
+        new("edge-grshader", CleanCategory.Browsers, $@"{Local}\Microsoft\Edge\User Data\GrShaderCache"),
+        new("brave-cache", CleanCategory.Browsers, $@"{Local}\BraveSoftware\Brave-Browser\User Data\*\Cache"),
+        new("brave-code", CleanCategory.Browsers, $@"{Local}\BraveSoftware\Brave-Browser\User Data\*\Code Cache"),
+        new("brave-gpu", CleanCategory.Browsers, $@"{Local}\BraveSoftware\Brave-Browser\User Data\*\GPUCache"),
+        new("vivaldi-cache", CleanCategory.Browsers, $@"{Local}\Vivaldi\User Data\*\Cache"),
+        new("vivaldi-code", CleanCategory.Browsers, $@"{Local}\Vivaldi\User Data\*\Code Cache"),
+        new("vivaldi-gpu", CleanCategory.Browsers, $@"{Local}\Vivaldi\User Data\*\GPUCache"),
+        new("opera-cache", CleanCategory.Browsers, $@"{Local}\Opera Software\Opera Stable\Cache"),
         new("firefox-cache", CleanCategory.Browsers, $@"{Local}\Mozilla\Firefox\Profiles\*\cache2"),
-        new("brave-cache", CleanCategory.Browsers, $@"{Local}\BraveSoftware\Brave-Browser\User Data\Default\Cache"),
-        new("opera-cache", CleanCategory.Browsers, $@"{Roaming}\Opera Software\Opera Stable\Cache"),
+        new("firefox-startup", CleanCategory.Browsers, $@"{Local}\Mozilla\Firefox\Profiles\*\startupCache"),
 
         // Apps
-        new("spotify-data", CleanCategory.Apps, $@"{Local}\Spotify\Data"),
-        new("spotify-storage", CleanCategory.Apps, $@"{Local}\Spotify\Storage"),
         new("discord-cache", CleanCategory.Apps, $@"{Roaming}\discord\Cache"),
         new("discord-code", CleanCategory.Apps, $@"{Roaming}\discord\Code Cache"),
         new("discord-gpu", CleanCategory.Apps, $@"{Roaming}\discord\GPUCache"),
@@ -49,61 +51,48 @@ public static class CleanRules
         new("slack-gpu", CleanCategory.Apps, $@"{Roaming}\Slack\GPUCache"),
         new("slack-sw", CleanCategory.Apps, $@"{Roaming}\Slack\Service Worker\CacheStorage"),
         new("teams-cache", CleanCategory.Apps, $@"{Roaming}\Microsoft\Teams\Cache"),
+        new("teams-code", CleanCategory.Apps, $@"{Roaming}\Microsoft\Teams\Code Cache"),
         new("teams-gpu", CleanCategory.Apps, $@"{Roaming}\Microsoft\Teams\GPUCache"),
-        new("teams-tmp", CleanCategory.Apps, $@"{Roaming}\Microsoft\Teams\tmp"),
         new("vscode-cache", CleanCategory.Apps, $@"{Roaming}\Code\Cache"),
-        new("vscode-cached-data", CleanCategory.Apps, $@"{Roaming}\Code\CachedData"),
-        new("vscode-cached-ext", CleanCategory.Apps, $@"{Roaming}\Code\CachedExtensionVSIXs"),
         new("vscode-code", CleanCategory.Apps, $@"{Roaming}\Code\Code Cache"),
         new("vscode-gpu", CleanCategory.Apps, $@"{Roaming}\Code\GPUCache"),
-        new("vscode-insiders-cache", CleanCategory.Apps, $@"{Roaming}\Code - Insiders\Cache"),
-        new("vscode-insiders-data", CleanCategory.Apps, $@"{Roaming}\Code - Insiders\CachedData"),
-        new("adobe-media", CleanCategory.Apps, $@"{Roaming}\Adobe\Common\Media Cache Files"),
-        new("adobe-peak", CleanCategory.Apps, $@"{Roaming}\Adobe\Common\Peak Files"),
-        new("epic-webcache", CleanCategory.Apps, $@"{Local}\EpicGamesLauncher\Saved\webcache"),
-        new("office-wef", CleanCategory.Apps, $@"{Local}\Microsoft\Office\16.0\Wef"),
-        new("zed-cache", CleanCategory.Apps, $@"{Local}\Zed\cache"),
-        new("sublime-cache", CleanCategory.Apps, $@"{Roaming}\Sublime Text\Cache"),
+        new("notion-cache", CleanCategory.Apps, $@"{Roaming}\Notion\Cache"),
+        new("notion-code", CleanCategory.Apps, $@"{Roaming}\Notion\Code Cache"),
+        new("obsidian-cache", CleanCategory.Apps, $@"{Roaming}\obsidian\Cache"),
+        new("obsidian-code", CleanCategory.Apps, $@"{Roaming}\obsidian\Code Cache"),
+        new("postman-cache", CleanCategory.Apps, $@"{Roaming}\Postman\Cache"),
+        new("postman-code", CleanCategory.Apps, $@"{Roaming}\Postman\Code Cache"),
+        new("vscode-cached-data", CleanCategory.Apps, $@"{Roaming}\Code\CachedData"),
+        new("vscode-vsix", CleanCategory.Apps, $@"{Roaming}\Code\CachedExtensionVSIXs"),
+        new("spotify-data", CleanCategory.Apps, $@"{Local}\Spotify\Data"),
+        new("steam-htmlcache", CleanCategory.Apps, $@"{Local}\Steam\htmlcache"),
+        new("epic-webcache", CleanCategory.Apps, $@"{Local}\EpicGamesLauncher\Saved\webcache*"),
+        new("adobe-media-cache", CleanCategory.Apps, $@"{Roaming}\Adobe\Common\Media Cache Files"),
         new("vs-component-cache", CleanCategory.Apps, $@"{Local}\Microsoft\VisualStudio\*\ComponentModelCache"),
-        new("vs-image-cache", CleanCategory.Apps, $@"{Local}\Microsoft\VisualStudio\*\ImageCache"),
+        new("jetbrains-caches", CleanCategory.Apps, $@"{Local}\JetBrains\*\caches"),
 
-        // GPU shader caches (rebuilt by the driver on demand)
+        // Graphics drivers
         new("nvidia-dx", CleanCategory.Gpu, $@"{Local}\NVIDIA\DXCache"),
         new("nvidia-gl", CleanCategory.Gpu, $@"{Local}\NVIDIA\GLCache"),
-        new("nvidia-nv", CleanCategory.Gpu, $@"{Local}\NVIDIA Corporation\NV_Cache"),
-        new("amd-dx", CleanCategory.Gpu, $@"{Local}\AMD\DXCache"),
-        new("amd-gl", CleanCategory.Gpu, $@"{Local}\AMD\GLCache"),
+        new("amd-dx", CleanCategory.Gpu, $@"{Local}\AMD\DxCache"),
+        new("amd-dxc", CleanCategory.Gpu, $@"{Local}\AMD\DxcCache"),
         new("amd-vk", CleanCategory.Gpu, $@"{Local}\AMD\VkCache"),
+        new("amd-gl", CleanCategory.Gpu, $@"{Local}\AMD\GLCache"),
         new("intel-shader", CleanCategory.Gpu, $@"{Local}\Intel\ShaderCache"),
         new("d3d-cache", CleanCategory.Gpu, $@"{Local}\D3DSCache"),
-        new("dx-pipeline", CleanCategory.Gpu, $@"{Local}\Microsoft\DirectX Shader Cache"),
-        new("vulkan-cache", CleanCategory.Gpu, $@"{Local}\VulkanCache"),
 
-        // Developer tools (package managers download again when needed)
+        // Developer tools
         new("npm-cache", CleanCategory.Developer, $@"{Local}\npm-cache"),
-        new("npm-cache-roaming", CleanCategory.Developer, $@"{Roaming}\npm-cache"),
         new("yarn-cache", CleanCategory.Developer, $@"{Local}\Yarn\Cache"),
-        new("yarn-berry-cache", CleanCategory.Developer, $@"{Home}\.yarn\cache"),
-        new("bun-cache", CleanCategory.Developer, $@"{Home}\.bun\install\cache"),
-        new("node-gyp", CleanCategory.Developer, $@"{Local}\node-gyp\Cache"),
-        new("electron-cache", CleanCategory.Developer, $@"{Local}\electron\Cache"),
-        new("typescript-cache", CleanCategory.Developer, $@"{Local}\Microsoft\TypeScript"),
         new("pip-cache", CleanCategory.Developer, $@"{Local}\pip\Cache"),
-        new("pyenv-cache", CleanCategory.Developer, $@"{Home}\.pyenv\cache"),
-        new("poetry-cache", CleanCategory.Developer, $@"{Local}\pypoetry\Cache"),
         new("nuget-http", CleanCategory.Developer, $@"{Local}\NuGet\v3-cache"),
         new("nuget-plugins", CleanCategory.Developer, $@"{Local}\NuGet\plugins-cache"),
-        new("go-mod-cache", CleanCategory.Developer, $@"{Home}\go\pkg\mod\cache"),
-        new("aws-cli", CleanCategory.Developer, $@"{Home}\.aws\cli\cache"),
-        new("azure-logs", CleanCategory.Developer, $@"{Home}\.azure\logs"),
-        new("gcloud-logs", CleanCategory.Developer, $@"{Roaming}\gcloud\logs"),
-        new("kube-cache", CleanCategory.Developer, $@"{Home}\.kube\cache"),
-        new("terraform-cache", CleanCategory.Developer, $@"{Roaming}\terraform.d\plugin-cache"),
-        new("hex-cache", CleanCategory.Developer, $@"{Home}\.hex\cache"),
-        new("opam-download", CleanCategory.Developer, $@"{Home}\.opam\download-cache"),
+        new("go-build", CleanCategory.Developer, $@"{Local}\go-build"),
+        new("cargo-crates", CleanCategory.Developer, $@"{Home}\.cargo\registry\cache"),
+        new("bun-cache", CleanCategory.Developer, $@"{Home}\.bun\install\cache"),
+        new("typescript-cache", CleanCategory.Developer, $@"{Local}\Microsoft\TypeScript"),
 
-        // AI tools: MoleWin's own rules (mo has none). Old chats and sessions only; anything
-        // touched in the last 30 days stays, and Claude Code's memory folders are whitelisted.
+        // AI tools
         new("claude-chats", CleanCategory.AiTools, $@"{Home}\.claude\projects\*", CleanMode.Files, "*.jsonl", 30),
         new("codex-sessions", CleanCategory.AiTools, $@"{Home}\.codex\sessions\*\*\*", CleanMode.Files, "*.jsonl", 30),
         new("cursor-workspaces", CleanCategory.AiTools, $@"{Roaming}\Cursor\User\workspaceStorage", OlderThanDays: 30),
@@ -113,22 +102,10 @@ public static class CleanRules
         new("cursor-gpu", CleanCategory.AiTools, $@"{Roaming}\Cursor\GPUCache"),
     ];
 
-    // mo 1.30.0's default whitelist, plus Claude Code memory: never cleaned, even when a rule
-    // would reach it.
+    // Never cleaned, even when a rule would reach it: Claude Code keeps per-project memory
+    // next to its chat logs, and that is notes, not cache.
     public static IReadOnlyList<string> Whitelist { get; } =
     [
-        $@"{Local}\Microsoft\Windows\Explorer",
-        $@"{Local}\Microsoft\Windows\Fonts",
-        $@"{Roaming}\Microsoft\Windows\Recent",
-        $@"{Local}\Packages\*",
-        $@"{Home}\.vscode\extensions",
-        $@"{Home}\.nuget",
-        $@"{Home}\.cargo",
-        $@"{Home}\.rustup",
-        $@"{Home}\.m2\repository",
-        $@"{Home}\.gradle\caches\modules-2\files-*",
-        $@"{Home}\.ollama\models",
-        $@"{Local}\JetBrains",
         $@"{Home}\.claude\projects\*\memory",
     ];
 }

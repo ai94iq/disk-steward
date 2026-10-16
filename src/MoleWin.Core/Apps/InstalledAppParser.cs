@@ -3,24 +3,31 @@ using System.Text.RegularExpressions;
 namespace MoleWin.Core.Apps;
 
 // Registry values to an app worth listing. Hidden: system components, updates (entries with
-// a parent), entries without a name or uninstaller, and the protected apps from mo 1.30.0's
-// list (MIT; third_party/), which Windows or drivers need.
+// a parent), entries without a name or uninstaller, and the protected apps below.
 public static class InstalledAppParser
 {
+    // Never offered for uninstall: shared runtimes other programs load, the browser engine
+    // Windows and apps embed, Windows' own servicing tools, and hardware drivers. Removing
+    // any of these breaks other software or the hardware rather than freeing space.
     private static readonly string[] ProtectedApps =
     [
         "Microsoft Windows*",
-        "Windows Feature Experience Pack",
-        "Microsoft Edge",
-        "Microsoft Edge WebView2*",
-        "Windows Security",
         "Microsoft Visual C++ *",
         "Microsoft .NET *",
+        "Microsoft ASP.NET Core *",
+        "Microsoft Windows Desktop Runtime*",
         ".NET Desktop Runtime*",
+        "Microsoft Edge",
+        "Microsoft Edge Update",
+        "Microsoft Edge WebView2*",
         "Microsoft Update Health Tools",
-        "NVIDIA Graphics Driver*",
+        "Microsoft GameInput",
+        "NVIDIA *Driver*",
         "AMD Software*",
-        "Intel*Driver*",
+        "AMD Chipset Software",
+        "Intel(R) *Driver*",
+        "Intel(R) Management Engine*",
+        "Realtek *Driver*",
     ];
 
     private static readonly Regex[] Protected =

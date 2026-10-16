@@ -101,92 +101,82 @@
   <data name="Clean_Scanning" xml:space="preserve"><value>Checking {0}</value></data>
   <data name="Clean_SelectAll" xml:space="preserve"><value>Select all</value></data>
   <data name="Clean_Selected" xml:space="preserve"><value>{0} selected, {1}</value></data>
-  <data name="Clean_Target_adobe-media" xml:space="preserve"><value>Adobe media cache</value></data>
-  <data name="Clean_Target_adobe-peak" xml:space="preserve"><value>Adobe peak files</value></data>
+  <data name="Clean_Target_adobe-media-cache" xml:space="preserve"><value>Adobe media cache</value></data>
   <data name="Clean_Target_amd-dx" xml:space="preserve"><value>AMD DirectX shader cache</value></data>
+  <data name="Clean_Target_amd-dxc" xml:space="preserve"><value>AMD DXC shader cache</value></data>
   <data name="Clean_Target_amd-gl" xml:space="preserve"><value>AMD OpenGL shader cache</value></data>
   <data name="Clean_Target_amd-vk" xml:space="preserve"><value>AMD Vulkan shader cache</value></data>
-  <data name="Clean_Target_aws-cli" xml:space="preserve"><value>AWS CLI cache</value></data>
-  <data name="Clean_Target_azure-logs" xml:space="preserve"><value>Azure CLI logs</value></data>
   <data name="Clean_Target_brave-cache" xml:space="preserve"><value>Brave cache</value></data>
+  <data name="Clean_Target_brave-code" xml:space="preserve"><value>Brave code cache</value></data>
+  <data name="Clean_Target_brave-gpu" xml:space="preserve"><value>Brave GPU cache</value></data>
   <data name="Clean_Target_bun-cache" xml:space="preserve"><value>Bun cache</value></data>
+  <data name="Clean_Target_cargo-crates" xml:space="preserve"><value>Cargo downloaded crates</value></data>
   <data name="Clean_Target_chrome-cache" xml:space="preserve"><value>Chrome cache</value></data>
   <data name="Clean_Target_chrome-code" xml:space="preserve"><value>Chrome code cache</value></data>
   <data name="Clean_Target_chrome-gpu" xml:space="preserve"><value>Chrome GPU cache</value></data>
   <data name="Clean_Target_chrome-grshader" xml:space="preserve"><value>Chrome graphics shader cache</value></data>
   <data name="Clean_Target_chrome-shader" xml:space="preserve"><value>Chrome shader cache</value></data>
-  <data name="Clean_Target_chrome-sw" xml:space="preserve"><value>Chrome service worker cache</value></data>
+  <data name="Clean_Target_chrome-sw" xml:space="preserve"><value>Chrome site storage cache</value></data>
   <data name="Clean_Target_claude-chats" xml:space="preserve"><value>Claude Code chats older than 30 days</value></data>
   <data name="Clean_Target_codex-sessions" xml:space="preserve"><value>Codex sessions older than 30 days</value></data>
   <data name="Clean_Target_crash-dumps" xml:space="preserve"><value>Crash dumps</value></data>
   <data name="Clean_Target_cursor-cache" xml:space="preserve"><value>Cursor cache</value></data>
-  <data name="Clean_Target_cursor-cached-data" xml:space="preserve"><value>Cursor cached data</value></data>
+  <data name="Clean_Target_cursor-cached-data" xml:space="preserve"><value>Cursor compiled extension cache</value></data>
   <data name="Clean_Target_cursor-code" xml:space="preserve"><value>Cursor code cache</value></data>
   <data name="Clean_Target_cursor-gpu" xml:space="preserve"><value>Cursor GPU cache</value></data>
-  <data name="Clean_Target_cursor-workspaces" xml:space="preserve"><value>Cursor workspaces unused for 30 days</value></data>
+  <data name="Clean_Target_cursor-workspaces" xml:space="preserve"><value>Cursor workspace data older than 30 days</value></data>
   <data name="Clean_Target_d3d-cache" xml:space="preserve"><value>DirectX shader cache</value></data>
   <data name="Clean_Target_discord-cache" xml:space="preserve"><value>Discord cache</value></data>
   <data name="Clean_Target_discord-code" xml:space="preserve"><value>Discord code cache</value></data>
   <data name="Clean_Target_discord-gpu" xml:space="preserve"><value>Discord GPU cache</value></data>
-  <data name="Clean_Target_drivefs-logs" xml:space="preserve"><value>Google Drive logs</value></data>
-  <data name="Clean_Target_dx-pipeline" xml:space="preserve"><value>DirectX pipeline cache</value></data>
   <data name="Clean_Target_edge-cache" xml:space="preserve"><value>Edge cache</value></data>
   <data name="Clean_Target_edge-code" xml:space="preserve"><value>Edge code cache</value></data>
   <data name="Clean_Target_edge-gpu" xml:space="preserve"><value>Edge GPU cache</value></data>
+  <data name="Clean_Target_edge-grshader" xml:space="preserve"><value>Edge graphics shader cache</value></data>
   <data name="Clean_Target_edge-shader" xml:space="preserve"><value>Edge shader cache</value></data>
-  <data name="Clean_Target_edge-sw" xml:space="preserve"><value>Edge service worker cache</value></data>
-  <data name="Clean_Target_electron-cache" xml:space="preserve"><value>Electron download cache</value></data>
-  <data name="Clean_Target_epic-webcache" xml:space="preserve"><value>Epic Games launcher web cache</value></data>
-  <data name="Clean_Target_error-reports" xml:space="preserve"><value>Windows error reports</value></data>
+  <data name="Clean_Target_edge-sw" xml:space="preserve"><value>Edge site storage cache</value></data>
+  <data name="Clean_Target_epic-webcache" xml:space="preserve"><value>Epic Games web cache</value></data>
   <data name="Clean_Target_firefox-cache" xml:space="preserve"><value>Firefox cache</value></data>
-  <data name="Clean_Target_gcloud-logs" xml:space="preserve"><value>gcloud logs</value></data>
-  <data name="Clean_Target_go-mod-cache" xml:space="preserve"><value>Go module download cache</value></data>
-  <data name="Clean_Target_hex-cache" xml:space="preserve"><value>Hex cache</value></data>
-  <data name="Clean_Target_home-logs" xml:space="preserve"><value>Old log files in your profile</value></data>
+  <data name="Clean_Target_firefox-startup" xml:space="preserve"><value>Firefox startup cache</value></data>
+  <data name="Clean_Target_go-build" xml:space="preserve"><value>Go build cache</value></data>
   <data name="Clean_Target_intel-shader" xml:space="preserve"><value>Intel shader cache</value></data>
-  <data name="Clean_Target_kube-cache" xml:space="preserve"><value>Kubernetes cache</value></data>
-  <data name="Clean_Target_node-gyp" xml:space="preserve"><value>node-gyp cache</value></data>
+  <data name="Clean_Target_jetbrains-caches" xml:space="preserve"><value>JetBrains IDE caches</value></data>
+  <data name="Clean_Target_notion-cache" xml:space="preserve"><value>Notion cache</value></data>
+  <data name="Clean_Target_notion-code" xml:space="preserve"><value>Notion code cache</value></data>
   <data name="Clean_Target_npm-cache" xml:space="preserve"><value>npm cache</value></data>
-  <data name="Clean_Target_npm-cache-roaming" xml:space="preserve"><value>npm cache (roaming)</value></data>
   <data name="Clean_Target_nuget-http" xml:space="preserve"><value>NuGet HTTP cache</value></data>
   <data name="Clean_Target_nuget-plugins" xml:space="preserve"><value>NuGet plugins cache</value></data>
   <data name="Clean_Target_nvidia-dx" xml:space="preserve"><value>NVIDIA DirectX shader cache</value></data>
   <data name="Clean_Target_nvidia-gl" xml:space="preserve"><value>NVIDIA OpenGL shader cache</value></data>
-  <data name="Clean_Target_nvidia-nv" xml:space="preserve"><value>NVIDIA compute cache</value></data>
-  <data name="Clean_Target_office-wef" xml:space="preserve"><value>Office add-in cache</value></data>
-  <data name="Clean_Target_onedrive-logs" xml:space="preserve"><value>OneDrive logs</value></data>
-  <data name="Clean_Target_opam-download" xml:space="preserve"><value>opam download cache</value></data>
+  <data name="Clean_Target_obsidian-cache" xml:space="preserve"><value>Obsidian cache</value></data>
+  <data name="Clean_Target_obsidian-code" xml:space="preserve"><value>Obsidian code cache</value></data>
   <data name="Clean_Target_opera-cache" xml:space="preserve"><value>Opera cache</value></data>
   <data name="Clean_Target_pip-cache" xml:space="preserve"><value>pip cache</value></data>
-  <data name="Clean_Target_poetry-cache" xml:space="preserve"><value>Poetry cache</value></data>
-  <data name="Clean_Target_pyenv-cache" xml:space="preserve"><value>pyenv cache</value></data>
-  <data name="Clean_Target_roaming-logs" xml:space="preserve"><value>Old log files in AppData</value></data>
+  <data name="Clean_Target_postman-cache" xml:space="preserve"><value>Postman cache</value></data>
+  <data name="Clean_Target_postman-code" xml:space="preserve"><value>Postman code cache</value></data>
   <data name="Clean_Target_slack-cache" xml:space="preserve"><value>Slack cache</value></data>
   <data name="Clean_Target_slack-code" xml:space="preserve"><value>Slack code cache</value></data>
   <data name="Clean_Target_slack-gpu" xml:space="preserve"><value>Slack GPU cache</value></data>
-  <data name="Clean_Target_slack-sw" xml:space="preserve"><value>Slack service worker cache</value></data>
-  <data name="Clean_Target_spotify-data" xml:space="preserve"><value>Spotify cache</value></data>
-  <data name="Clean_Target_spotify-storage" xml:space="preserve"><value>Spotify storage</value></data>
-  <data name="Clean_Target_sublime-cache" xml:space="preserve"><value>Sublime Text cache</value></data>
+  <data name="Clean_Target_slack-sw" xml:space="preserve"><value>Slack site storage cache</value></data>
+  <data name="Clean_Target_spotify-data" xml:space="preserve"><value>Spotify streaming cache</value></data>
+  <data name="Clean_Target_steam-htmlcache" xml:space="preserve"><value>Steam web cache</value></data>
   <data name="Clean_Target_teams-cache" xml:space="preserve"><value>Teams (classic) cache</value></data>
+  <data name="Clean_Target_teams-code" xml:space="preserve"><value>Teams (classic) code cache</value></data>
   <data name="Clean_Target_teams-gpu" xml:space="preserve"><value>Teams (classic) GPU cache</value></data>
-  <data name="Clean_Target_teams-tmp" xml:space="preserve"><value>Teams (classic) temporary files</value></data>
-  <data name="Clean_Target_temp" xml:space="preserve"><value>Temporary files older than 7 days</value></data>
-  <data name="Clean_Target_terraform-cache" xml:space="preserve"><value>Terraform plugin cache</value></data>
-  <data name="Clean_Target_typescript-cache" xml:space="preserve"><value>TypeScript cache</value></data>
+  <data name="Clean_Target_temp" xml:space="preserve"><value>Temporary files</value></data>
+  <data name="Clean_Target_typescript-cache" xml:space="preserve"><value>TypeScript typings cache</value></data>
+  <data name="Clean_Target_vivaldi-cache" xml:space="preserve"><value>Vivaldi cache</value></data>
+  <data name="Clean_Target_vivaldi-code" xml:space="preserve"><value>Vivaldi code cache</value></data>
+  <data name="Clean_Target_vivaldi-gpu" xml:space="preserve"><value>Vivaldi GPU cache</value></data>
   <data name="Clean_Target_vs-component-cache" xml:space="preserve"><value>Visual Studio component cache</value></data>
-  <data name="Clean_Target_vs-image-cache" xml:space="preserve"><value>Visual Studio image cache</value></data>
   <data name="Clean_Target_vscode-cache" xml:space="preserve"><value>VS Code cache</value></data>
-  <data name="Clean_Target_vscode-cached-data" xml:space="preserve"><value>VS Code cached data</value></data>
-  <data name="Clean_Target_vscode-cached-ext" xml:space="preserve"><value>VS Code cached extensions</value></data>
+  <data name="Clean_Target_vscode-cached-data" xml:space="preserve"><value>VS Code compiled extension cache</value></data>
   <data name="Clean_Target_vscode-code" xml:space="preserve"><value>VS Code code cache</value></data>
   <data name="Clean_Target_vscode-gpu" xml:space="preserve"><value>VS Code GPU cache</value></data>
-  <data name="Clean_Target_vscode-insiders-cache" xml:space="preserve"><value>VS Code Insiders cache</value></data>
-  <data name="Clean_Target_vscode-insiders-data" xml:space="preserve"><value>VS Code Insiders cached data</value></data>
-  <data name="Clean_Target_vulkan-cache" xml:space="preserve"><value>Vulkan pipeline cache</value></data>
-  <data name="Clean_Target_yarn-berry-cache" xml:space="preserve"><value>Yarn Berry cache</value></data>
+  <data name="Clean_Target_vscode-vsix" xml:space="preserve"><value>VS Code extension downloads</value></data>
+  <data name="Clean_Target_wer-archive" xml:space="preserve"><value>Archived error reports</value></data>
+  <data name="Clean_Target_wer-queue" xml:space="preserve"><value>Queued error reports</value></data>
   <data name="Clean_Target_yarn-cache" xml:space="preserve"><value>Yarn cache</value></data>
-  <data name="Clean_Target_zed-cache" xml:space="preserve"><value>Zed cache</value></data>
   <data name="Common_Cancel" xml:space="preserve"><value>Cancel</value></data>
   <data name="Common_LogRecycled" xml:space="preserve"><value>Moved {0:N0} items to the Recycle Bin</value></data>
   <data name="Common_No" xml:space="preserve"><value>No</value></data>

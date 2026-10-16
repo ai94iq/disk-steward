@@ -26,20 +26,19 @@ function Tree([string]$Folder, [int]$Depth, [int]$Fan, [int]$Files, [long]$Bytes
     for ($i = 0; $i -lt $Fan; $i++) { Tree ([IO.Path]::Combine($Folder, "d$i")) ($Depth - 1) $Fan $Files $Bytes }
 }
 
-# Clean: one folder per real rule id (37 of the 86, the ones a typical machine has), with the
-# file counts those caches really hold. The app maps each folder to its rule.
+# Clean: one folder per rule id (the ones a typical machine has), with the file counts
+# those caches really hold. The app maps each folder to its rule.
 $clean = @{
-    "temp" = 6000, 64KB; "error-reports" = 200, 256KB; "crash-dumps" = 12, 64MB; "roaming-logs" = 300, 32KB
-    "onedrive-logs" = 400, 128KB
+    "temp" = 6000, 64KB; "wer-archive" = 200, 256KB; "wer-queue" = 60, 256KB; "crash-dumps" = 12, 64MB
     "chrome-cache" = 25000, 32KB; "chrome-code" = 3000, 64KB; "chrome-gpu" = 40, 1MB; "chrome-sw" = 8000, 16KB
     "chrome-shader" = 60, 2MB; "edge-cache" = 15000, 32KB; "edge-code" = 2000, 64KB; "edge-gpu" = 40, 1MB
     "edge-sw" = 6000, 16KB; "edge-shader" = 50, 2MB; "firefox-cache" = 10000, 32KB
     "discord-cache" = 4000, 32KB; "discord-code" = 800, 64KB; "slack-cache" = 3000, 32KB; "teams-cache" = 2500, 32KB
     "vscode-cache" = 1500, 32KB; "vscode-cached-data" = 600, 256KB; "spotify-data" = 4000, 128KB
-    "epic-webcache" = 1200, 32KB; "office-wef" = 300, 16KB
-    "nvidia-dx" = 300, 8MB; "nvidia-gl" = 150, 4MB; "d3d-cache" = 200, 2MB; "dx-pipeline" = 100, 4MB
+    "epic-webcache" = 1200, 32KB; "steam-htmlcache" = 900, 64KB
+    "nvidia-dx" = 300, 8MB; "nvidia-gl" = 150, 4MB; "d3d-cache" = 200, 2MB; "amd-vk" = 100, 4MB
     "npm-cache" = 40000, 8KB; "yarn-cache" = 15000, 16KB; "pip-cache" = 3000, 64KB; "nuget-http" = 2000, 256KB
-    "go-mod-cache" = 6000, 16KB; "bun-cache" = 8000, 16KB
+    "go-build" = 6000, 16KB; "bun-cache" = 8000, 16KB
     "cursor-cache" = 2000, 32KB; "claude-chats" = 150, 512KB
 }
 foreach ($id in $clean.Keys) { Fill ([IO.Path]::Combine($Root, "clean", $id)) $clean[$id][0] $clean[$id][1] }
