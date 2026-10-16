@@ -1,4 +1,6 @@
 using MoleWin.App.Features.Analyze;
+using MoleWin.App.Features.Clean;
+using MoleWin.Core.Clean;
 using MoleWin.App.Features.Monitor;
 using MoleWin.App.Shell;
 using MoleWin.Core.Analyze;
@@ -33,6 +35,9 @@ public static class ServiceRegistration
             sp.GetRequiredService<ProtectedPaths>(), sp.GetRequiredService<IRecycleBin>(), IsOnFixedDrive));
         services.AddSingleton<IFolderScanner, FolderScanner>();
         services.AddTransient<IMonitorService, WindowsMonitor>();
+        services.AddSingleton(sp => new CleanScanner(
+            sp.GetRequiredService<IFolderScanner>(), sp.GetRequiredService<ProtectedPaths>(), CleanRules.Whitelist));
+        services.AddSingleton(CleanRules.Defaults);
 
         // Shell: Singleton. Pages: Transient. The NavigationView resolves pages from this provider.
         services.AddSingleton<MainWindow>();
@@ -40,6 +45,9 @@ public static class ServiceRegistration
         services.AddTransient<AnalyzePage>();
         // Singleton so a long scan and its activity survive switching pages.
         services.AddSingleton<AnalyzeViewModel>();
+        services.AddTransient<CleanPage>();
+        // Singleton so the scan result survives switching pages.
+        services.AddSingleton<CleanViewModel>();
         services.AddTransient<MonitorPage>();
         services.AddTransient<MonitorViewModel>();
         return services;

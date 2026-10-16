@@ -3,6 +3,7 @@ arrow_left
 arrow_right
 arrow_sync
 arrow_up
+broom
 calendar
 checkmark
 chevron_down

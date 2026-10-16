@@ -1,0 +1,130 @@
+<Page x:Class="MoleWin.App.Features.Clean.CleanPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:l="clr-namespace:MoleWin.App.Localization"
+      xmlns:common="clr-namespace:MoleWin.App.Common"
+      Style="{StaticResource {x:Type Page}}"
+      ScrollViewer.CanContentScroll="False">
+  <!-- CanContentScroll="False": WPF-UI's NavigationView then skips its own scroll viewer and
+       the lists below get a real height (it wraps the page when this is true, the Page default). -->
+  <Page.Resources>
+    <BooleanToVisibilityConverter x:Key="BoolVisible" />
+  </Page.Resources>
+
+  <Grid Margin="{StaticResource PagePadding}">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+
+    <DockPanel Grid.Row="0" Margin="{StaticResource FieldSpacing}">
+      <ui:Button DockPanel.Dock="Right" VerticalAlignment="Center" Command="{Binding RescanCommand}" Content="{l:Tr Clean_Rescan}">
+        <ui:Button.Icon>
+          <common:AppIconElement Kind="ArrowSync" />
+        </ui:Button.Icon>
+      </ui:Button>
+      <StackPanel>
+        <ui:TextBlock FontTypography="Title" Text="{l:Tr Nav_Clean}" />
+        <TextBlock Style="{StaticResource SecondaryText}" Text="{Binding FoundText}" />
+      </StackPanel>
+    </DockPanel>
+
+    <!-- Live scan: which rule is being checked, the folder being read, how long, how much -->
+    <Border Grid.Row="1" Style="{StaticResource Surface}" Visibility="{Binding IsScanning, Converter={StaticResource BoolVisible}}">
+      <StackPanel>
+        <ProgressBar Margin="{StaticResource LabelSpacing}" IsIndeterminate="True" />
+        <DockPanel>
+          <TextBlock DockPanel.Dock="Right" Style="{StaticResource SecondaryText}" Text="{Binding ElapsedText}" />
+          <TextBlock FontWeight="SemiBold" Text="{Binding ScanningText}" />
+        </DockPanel>
+        <TextBlock Style="{StaticResource SecondaryText}" Text="{Binding CountersText}" />
+        <TextBlock Style="{StaticResource TertiaryText}" TextTrimming="CharacterEllipsis" Text="{Binding CurrentFolder}" />
+      </StackPanel>
+    </Border>
+
+    <Grid Grid.Row="2" Margin="{StaticResource FieldSpacing}">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="2*" />
+        <ColumnDefinition Width="{StaticResource GutterWidth}" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+
+      <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      Visibility="{Binding State, Converter={StaticResource LoadStateVisible}, ConverterParameter='Idle,Loading,Loaded'}">
+          <ItemsControl Margin="{StaticResource ScrollGutter}" ItemsSource="{Binding Categories}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Border Style="{StaticResource Surface}" common:Motion.FadeIn="True">
+                  <StackPanel>
+                    <DockPanel Margin="{StaticResource LabelSpacing}">
+                      <TextBlock DockPanel.Dock="Right" VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding SizeText}" />
+                      <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsSelected}">
+                        <ui:TextBlock FontTypography="BodyStrong" Text="{Binding Name}" />
+                      </CheckBox>
+                    </DockPanel>
+                    <ItemsControl ItemsSource="{Binding Targets}">
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                          <Grid Margin="{StaticResource RowSpacing}" Background="Transparent" ToolTip="{Binding PathsPreview}">
+                            <Grid.ColumnDefinitions>
+                              <ColumnDefinition Width="Auto" />
+                              <ColumnDefinition Width="2*" />
+                              <ColumnDefinition Width="*" />
+                              <ColumnDefinition Width="{StaticResource SizeColumnWidth}" />
+                            </Grid.ColumnDefinitions>
+                            <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsSelected}" />
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                              <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Label}" />
+                              <TextBlock Style="{StaticResource TertiaryText}" Text="{Binding ItemsText}" />
+                            </StackPanel>
+                            <ProgressBar Grid.Column="2" Height="6" Margin="{StaticResource CardGap}" VerticalAlignment="Center"
+                                         Maximum="100" common:Motion.Value="{Binding Share}" />
+                            <TextBlock Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                       Style="{StaticResource SecondaryText}" Text="{Binding SizeText}" />
+                          </Grid>
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                  </StackPanel>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </ScrollViewer>
+        <common:LoadStateOverlay State="{Binding State}" ErrorMessage="{Binding ErrorMessage}"
+                                 EmptyText="{Binding EmptyText}" RetryCommand="{Binding RescanCommand}" />
+      </Grid>
+
+      <!-- Every rule checked and everything removed, newest first -->
+      <Border Grid.Column="2" Style="{StaticResource Surface}" Margin="0">
+        <DockPanel>
+          <TextBlock DockPanel.Dock="Top" Margin="{StaticResource FieldSpacing}" Style="{StaticResource SecondaryText}" Text="{l:Tr Analyze_Activity}" />
+          <ListBox ItemsSource="{Binding Activity}" VirtualizingPanel.IsVirtualizing="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Style="{StaticResource TertiaryText}" TextWrapping="Wrap" Text="{Binding}" />
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </DockPanel>
+      </Border>
+    </Grid>
+
+    <!-- The only way anything is removed: ticked rows, this button, then a confirmation -->
+    <DockPanel Grid.Row="3">
+      <ui:Button DockPanel.Dock="Right" Appearance="Danger" Command="{Binding RecycleSelectedCommand}" Content="{l:Tr Clean_Recycle}">
+        <ui:Button.Icon>
+          <common:AppIconElement Kind="Delete" />
+        </ui:Button.Icon>
+      </ui:Button>
+      <StackPanel VerticalAlignment="Center">
+        <TextBlock FontWeight="SemiBold" Text="{Binding SelectedText}" />
+        <TextBlock Style="{StaticResource TertiaryText}" Text="{l:Tr Clean_Hint}" />
+      </StackPanel>
+    </DockPanel>
+  </Grid>
+</Page>
