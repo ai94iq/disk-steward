@@ -28,6 +28,13 @@
   <GridLength x:Key="IconColumnWidth">48</GridLength>
   <CornerRadius x:Key="CardRadius">8</CornerRadius>
 
+  <!-- Safe to remove (green) and review first (amber): the theme's own status colors, faint for
+       a fill and stronger for an edge, so the two read apart in light and dark themes. -->
+  <SolidColorBrush x:Key="SafeTint" Color="{DynamicResource SystemFillColorSuccess}" Opacity="0.12" />
+  <SolidColorBrush x:Key="SafeEdge" Color="{DynamicResource SystemFillColorSuccess}" Opacity="0.45" />
+  <SolidColorBrush x:Key="ReviewTint" Color="{DynamicResource SystemFillColorCaution}" Opacity="0.12" />
+  <SolidColorBrush x:Key="ReviewEdge" Color="{DynamicResource SystemFillColorCaution}" Opacity="0.45" />
+
   <!-- List rows, for every list. WPF-UI's own item paints the whole selected row in the accent
        and switches its text to a dark brush (black on the dark theme); its background is set on
        a named part a style cannot reach, so this replaces the template: a subtle fill when
@@ -69,11 +76,13 @@
        page puts there; clicking anywhere but its own controls toggles the card. -->
   <Style x:Key="CardSection" TargetType="Expander">
     <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+    <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SurfaceStrokeColorDefaultBrush}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="Expander">
-          <Border CornerRadius="{StaticResource CardRadius}" Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
-                  BorderBrush="{DynamicResource SurfaceStrokeColorDefaultBrush}" BorderThickness="1">
+          <Border CornerRadius="{StaticResource CardRadius}" Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1">
             <DockPanel>
               <ToggleButton DockPanel.Dock="Top" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
                             Content="{TemplateBinding Header}" Foreground="{TemplateBinding Foreground}"
@@ -197,14 +206,6 @@
   <Style x:Key="ColumnHeader" TargetType="TextBlock" BasedOn="{StaticResource TertiaryText}">
     <Setter Property="FontSize" Value="12" />
     <Setter Property="FontWeight" Value="SemiBold" />
-  </Style>
-
-  <!-- A small outlined label beside a name (Safe to remove, Review); the page sets its color. -->
-  <Style x:Key="Pill" TargetType="Border">
-    <Setter Property="CornerRadius" Value="10" />
-    <Setter Property="Padding" Value="8,1" />
-    <Setter Property="BorderThickness" Value="1" />
-    <Setter Property="VerticalAlignment" Value="Center" />
   </Style>
 
   <!-- One outlined surface per section; never nested -->

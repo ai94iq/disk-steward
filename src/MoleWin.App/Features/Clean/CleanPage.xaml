@@ -28,23 +28,29 @@
       </Style.Triggers>
     </Style>
 
-    <!-- Mole's signature: the success color means "safe to remove" and is used for nothing
-         else on this page. Groups that may hold something worth keeping say Review instead. -->
-    <Style x:Key="SafePill" TargetType="Border" BasedOn="{StaticResource Pill}">
-      <Setter Property="BorderBrush" Value="{DynamicResource SystemFillColorSuccessBrush}" />
+    <!-- Mole's signature: green means "safe to remove" and is used for nothing else on this
+         page. Each group card is tinted green or amber (fill and edge), the legend under the
+         headline names both, and screen readers get the same words as help text, so the color
+         never carries the meaning alone. -->
+    <Style x:Key="GroupSection" TargetType="Expander" BasedOn="{StaticResource CardSection}">
+      <Setter Property="Background" Value="{DynamicResource SafeTint}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SafeEdge}" />
+      <Setter Property="AutomationProperties.HelpText" Value="{l:Tr Clean_Safe}" />
       <Style.Triggers>
         <DataTrigger Binding="{Binding IsSafe}" Value="False">
-          <Setter Property="Visibility" Value="Collapsed" />
+          <Setter Property="Background" Value="{DynamicResource ReviewTint}" />
+          <Setter Property="BorderBrush" Value="{DynamicResource ReviewEdge}" />
+          <Setter Property="AutomationProperties.HelpText" Value="{l:Tr Clean_Review}" />
         </DataTrigger>
       </Style.Triggers>
     </Style>
-    <Style x:Key="ReviewPill" TargetType="Border" BasedOn="{StaticResource Pill}">
-      <Setter Property="BorderBrush" Value="{DynamicResource SystemFillColorCautionBrush}" />
-      <Style.Triggers>
-        <DataTrigger Binding="{Binding IsSafe}" Value="True">
-          <Setter Property="Visibility" Value="Collapsed" />
-        </DataTrigger>
-      </Style.Triggers>
+    <Style x:Key="LegendSwatch" TargetType="Border">
+      <Setter Property="Width" Value="14" />
+      <Setter Property="Height" Value="14" />
+      <Setter Property="Margin" Value="0,0,6,0" />
+      <Setter Property="CornerRadius" Value="4" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
   </Page.Resources>
 
@@ -86,6 +92,18 @@
         <Run Foreground="{DynamicResource SystemFillColorSuccessBrush}" Text="{Binding SafeText, Mode=OneWay}" /><Run Text="{l:Tr Clean_HeadlineRest}" />
       </TextBlock>
       <TextBlock Margin="0,4,0,0" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" Text="{Binding HeadlineDetail}" />
+      <WrapPanel Margin="0,8,0,0">
+        <StackPanel Margin="0,0,24,0" Orientation="Horizontal">
+          <Border Style="{StaticResource LegendSwatch}" Background="{DynamicResource SafeTint}"
+                  BorderBrush="{DynamicResource SafeEdge}" />
+          <TextBlock Style="{StaticResource SecondaryText}" Text="{l:Tr Clean_Safe}" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+          <Border Style="{StaticResource LegendSwatch}" Background="{DynamicResource ReviewTint}"
+                  BorderBrush="{DynamicResource ReviewEdge}" />
+          <TextBlock Style="{StaticResource SecondaryText}" Text="{l:Tr Clean_Review}" />
+        </StackPanel>
+      </WrapPanel>
     </StackPanel>
 
     <!-- Details on the right when there is room, below the groups when there is not -->
@@ -97,7 +115,7 @@
             <ItemsControl.ItemTemplate>
               <DataTemplate>
                 <!-- One card per category: collapsed shows the total and what it is, opened shows each place -->
-                <Expander Margin="{StaticResource LabelSpacing}" Style="{StaticResource CardSection}" IsExpanded="{Binding IsExpanded}"
+                <Expander Margin="{StaticResource LabelSpacing}" Style="{StaticResource GroupSection}" IsExpanded="{Binding IsExpanded}"
                           AutomationProperties.Name="{Binding Name}" common:Motion.FadeIn="True">
                   <Expander.Header>
                     <Grid>
@@ -115,22 +133,8 @@
                                         Foreground="{Binding Category, Converter={StaticResource CategoryBrush}}" />
                       </Grid>
                       <StackPanel Grid.Column="2" Margin="{StaticResource InlineGap}" VerticalAlignment="Center">
-                        <WrapPanel>
-                          <ui:TextBlock Margin="{StaticResource InlineGap}" VerticalAlignment="Center" FontTypography="BodyStrong" Text="{Binding Name}" />
-                          <Border Style="{StaticResource SafePill}">
-                            <StackPanel Orientation="Horizontal">
-                              <common:AppIcon Width="12" Height="12" Margin="0,0,4,0" Kind="Checkmark" Foreground="{DynamicResource SystemFillColorSuccessBrush}" />
-                              <TextBlock FontSize="12" Foreground="{DynamicResource SystemFillColorSuccessBrush}" Text="{l:Tr Clean_Safe}" />
-                            </StackPanel>
-                          </Border>
-                          <Border Style="{StaticResource ReviewPill}">
-                            <StackPanel Orientation="Horizontal">
-                              <common:AppIcon Width="12" Height="12" Margin="0,0,4,0" Kind="Eye" Foreground="{DynamicResource SystemFillColorCautionBrush}" />
-                              <TextBlock FontSize="12" Foreground="{DynamicResource SystemFillColorCautionBrush}" Text="{l:Tr Clean_Review}" />
-                            </StackPanel>
-                          </Border>
-                        </WrapPanel>
-                        <TextBlock Style="{StaticResource TertiaryText}" TextTrimming="CharacterEllipsis" Text="{Binding Note}" ToolTip="{Binding Note}" />
+                        <ui:TextBlock FontTypography="BodyStrong" Text="{Binding Name}" />
+                        <TextBlock Margin="0,2,0,0" Style="{StaticResource SecondaryText}" TextTrimming="CharacterEllipsis" Text="{Binding Note}" ToolTip="{Binding Note}" />
                       </StackPanel>
                       <StackPanel Grid.Column="3" Margin="{StaticResource CardGap}" VerticalAlignment="Center">
                         <TextBlock HorizontalAlignment="Right" FontSize="16" FontWeight="SemiBold" Text="{Binding SizeText}" />

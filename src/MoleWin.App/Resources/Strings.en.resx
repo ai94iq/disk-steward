@@ -67,7 +67,7 @@
   <data name="Clean_Category_Gpu" xml:space="preserve"><value>Graphics drivers</value></data>
   <data name="Clean_Category_System" xml:space="preserve"><value>System</value></data>
   <data name="Clean_Confirm" xml:space="preserve"><value>Move {0} items ({1}) to the Recycle Bin? Nothing is deleted permanently; the space comes back when you empty the Recycle Bin.</value></data>
-  <data name="Clean_HeadlineDetail" xml:space="preserve"><value>{0} found in {1} places in all. Groups marked Review can hold things you may want to keep.</value></data>
+  <data name="Clean_HeadlineDetail" xml:space="preserve"><value>{0} found in {1} places in all.</value></data>
   <data name="Clean_HeadlineRest" xml:space="preserve"><value> is cache and temporary data that rebuilds on its own.</value></data>
   <data name="Clean_Hint" xml:space="preserve"><value>Ticked items go to the Recycle Bin after you confirm. Del moves them, F5 scans again.</value></data>
   <data name="Clean_ItemsIn" xml:space="preserve"><value>{0} in {1}</value></data>
@@ -95,8 +95,8 @@
   <data name="Clean_Recycle" xml:space="preserve"><value>Move to Recycle Bin</value></data>
   <data name="Clean_RecycleAmount" xml:space="preserve"><value>Move {0} to the Recycle Bin</value></data>
   <data name="Clean_Rescan" xml:space="preserve"><value>Scan again</value></data>
-  <data name="Clean_Review" xml:space="preserve"><value>Review</value></data>
-  <data name="Clean_Safe" xml:space="preserve"><value>Safe to remove</value></data>
+  <data name="Clean_Review" xml:space="preserve"><value>Review first: may hold things you want to keep</value></data>
+  <data name="Clean_Safe" xml:space="preserve"><value>Safe to remove: rebuilds on its own</value></data>
   <data name="Clean_Scanned" xml:space="preserve"><value>Checked {0} places in {1:%m}:{1:ss}</value></data>
   <data name="Clean_Scanning" xml:space="preserve"><value>Checking {0}</value></data>
   <data name="Clean_SelectAll" xml:space="preserve"><value>Select all</value></data>

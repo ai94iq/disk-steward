@@ -67,7 +67,7 @@
   <data name="Clean_Category_Gpu" xml:space="preserve"><value>برامج تشغيل الرسوميات</value></data>
   <data name="Clean_Category_System" xml:space="preserve"><value>النظام</value></data>
   <data name="Clean_Confirm" xml:space="preserve"><value>نقل {0} عنصر ({1}) إلى سلة المحذوفات؟ لا يُحذف شيء نهائيًا، وتعود المساحة عند إفراغ سلة المحذوفات.</value></data>
-  <data name="Clean_HeadlineDetail" xml:space="preserve"><value>المجموع {0} في {1} موضع. المجموعات الموسومة بـ«راجِع» قد تحتوي ما تريد الاحتفاظ به.</value></data>
+  <data name="Clean_HeadlineDetail" xml:space="preserve"><value>المجموع {0} في {1} موضع.</value></data>
   <data name="Clean_HeadlineRest" xml:space="preserve"><value> بيانات مؤقتة وذاكرة تخزين يُعاد إنشاؤها تلقائيًا.</value></data>
   <data name="Clean_Hint" xml:space="preserve"><value>تذهب العناصر المحددة إلى سلة المحذوفات بعد تأكيدك. Del ينقلها، وF5 يعيد الفحص.</value></data>
   <data name="Clean_ItemsIn" xml:space="preserve"><value>{0} في {1}</value></data>
@@ -95,8 +95,8 @@
   <data name="Clean_Recycle" xml:space="preserve"><value>نقل إلى سلة المحذوفات</value></data>
   <data name="Clean_RecycleAmount" xml:space="preserve"><value>انقل {0} إلى سلة المحذوفات</value></data>
   <data name="Clean_Rescan" xml:space="preserve"><value>فحص من جديد</value></data>
-  <data name="Clean_Review" xml:space="preserve"><value>راجِع</value></data>
-  <data name="Clean_Safe" xml:space="preserve"><value>آمن للحذف</value></data>
+  <data name="Clean_Review" xml:space="preserve"><value>راجِع أولًا: قد يحتوي ما تريد الاحتفاظ به</value></data>
+  <data name="Clean_Safe" xml:space="preserve"><value>آمن للحذف: يُعاد إنشاؤه تلقائيًا</value></data>
   <data name="Clean_Scanned" xml:space="preserve"><value>فُحص {0} موضعًا في {1:%m}:{1:ss}</value></data>
   <data name="Clean_Scanning" xml:space="preserve"><value>جارٍ فحص {0}</value></data>
   <data name="Clean_SelectAll" xml:space="preserve"><value>تحديد الكل</value></data>
