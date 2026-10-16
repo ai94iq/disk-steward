@@ -18,12 +18,13 @@ public sealed partial class AppsViewModel : PageViewModel
     private readonly IFolderScanner _folders;
     private readonly SafeRemover _remover;
     private readonly IDialogService _dialogs;
+    private readonly IDateFormatter _dates;
     private readonly ILogger _log;
     private List<AppRow> _all = [];
     private CancellationTokenSource? _wait;
 
     public AppsViewModel(IInstalledApps installed, IUninstallerRunner runner, LeftoverFinder finder, LeftoverRoots roots,
-        IFolderScanner folders, SafeRemover remover, IDialogService dialogs, ILogger<AppsViewModel> log) : base(log)
+        IFolderScanner folders, SafeRemover remover, IDialogService dialogs, IDateFormatter dates, ILogger<AppsViewModel> log) : base(log)
     {
         _installed = installed;
         _runner = runner;
@@ -32,6 +33,7 @@ public sealed partial class AppsViewModel : PageViewModel
         _folders = folders;
         _remover = remover;
         _dialogs = dialogs;
+        _dates = dates;
         _log = log;
         SearchText = "";
     }
@@ -42,6 +44,18 @@ public sealed partial class AppsViewModel : PageViewModel
     public TimeSpan PollLimit { get; init; } = TimeSpan.FromMinutes(10);
 
     [ObservableProperty] public partial string SearchText { get; set; }
+
+    // Name A to Z by default, like Windows Settings.
+    [ObservableProperty] public partial AppSort SortBy { get; set; }
+
+    public IReadOnlyList<SortOption> SortOptions { get; } =
+    [
+        new(AppSort.Name, Tr.Get("Apps_SortName")),
+        new(AppSort.Size, Tr.Get("Apps_SortSize")),
+        new(AppSort.InstallDate, Tr.Get("Apps_SortDate")),
+    ];
+
+    partial void OnSortByChanged(AppSort value) => Filter();
     [ObservableProperty] public partial string? CountText { get; set; }
     [ObservableProperty] public partial string? StatusText { get; set; }
 
@@ -68,7 +82,7 @@ public sealed partial class AppsViewModel : PageViewModel
     protected override async Task<bool> LoadCoreAsync(CancellationToken ct)
     {
         var apps = await Task.Run(_installed.List, ct);
-        _all = [.. apps.OrderByDescending(a => a.SizeBytes).Select(a => new AppRow(a))];
+        _all = [.. apps.Select(a => new AppRow(a, _dates))];
         Filter();
         return _all.Count > 0;
     }
@@ -173,10 +187,17 @@ public sealed partial class AppsViewModel : PageViewModel
     private void Filter()
     {
         var term = SearchText.Trim();
-        var shown = term.Length == 0
+        var matching = term.Length == 0
             ? _all
             : _all.Where(a => a.Name.Contains(term, StringComparison.CurrentCultureIgnoreCase)
-                || (a.App.Publisher?.Contains(term, StringComparison.CurrentCultureIgnoreCase) ?? false)).ToList();
+                || (a.App.Publisher?.Contains(term, StringComparison.CurrentCultureIgnoreCase) ?? false));
+        var shown = (SortBy switch
+        {
+            AppSort.Size => matching.OrderByDescending(a => a.App.SizeBytes),
+            // Unknown install dates go last, like Windows.
+            AppSort.InstallDate => matching.OrderByDescending(a => a.App.InstallDate ?? DateTime.MinValue),
+            _ => matching.OrderBy(a => a.Name, StringComparer.CurrentCultureIgnoreCase),
+        }).ToList();
         Apps.Clear();
         foreach (var app in shown) Apps.Add(app);
         CountText = Tr.Format("Apps_Count", shown.Count, _all.Count);

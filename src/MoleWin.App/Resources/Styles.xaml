@@ -22,6 +22,17 @@
   <GridLength x:Key="SizeColumnWidth">96</GridLength>
   <CornerRadius x:Key="CardRadius">8</CornerRadius>
 
+  <!-- WPF-UI's selected list item switches text to ListBoxItemSelectedForegroundThemeBrush,
+       which reads black on the dark theme. Keep the normal text color on the accent selection,
+       for every list. -->
+  <Style TargetType="ListBoxItem" BasedOn="{StaticResource DefaultListBoxItemStyle}">
+    <Style.Triggers>
+      <Trigger Property="IsSelected" Value="True">
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
   <!-- Labels and supporting lines under a value -->
   <Style x:Key="SecondaryText" TargetType="TextBlock">
     <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />

@@ -10,6 +10,7 @@
        the lists below get a real height (it wraps the page when this is true, the Page default). -->
   <Page.Resources>
     <BooleanToVisibilityConverter x:Key="BoolVisible" />
+    <common:AppIconConverter x:Key="AppIcon" />
     <Style x:Key="CollapsedWithoutLeftovers" TargetType="Border" BasedOn="{StaticResource Surface}">
       <Style.Triggers>
         <DataTrigger Binding="{Binding Leftovers.Count}" Value="0">
@@ -28,12 +29,18 @@
     </Grid.RowDefinitions>
 
     <DockPanel Grid.Row="0" Margin="{StaticResource FieldSpacing}">
-      <ui:TextBox DockPanel.Dock="Right" MinWidth="260" VerticalAlignment="Center"
-                  PlaceholderText="{l:Tr Apps_Search}" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}">
-        <ui:TextBox.Icon>
-          <common:AppIconElement Kind="Search" />
-        </ui:TextBox.Icon>
-      </ui:TextBox>
+      <!-- Search and sort, as in Windows Settings > Installed apps -->
+      <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center" Orientation="Horizontal">
+        <ui:TextBox MinWidth="260" Margin="{StaticResource CardGap}"
+                    PlaceholderText="{l:Tr Apps_Search}" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}">
+          <ui:TextBox.Icon>
+            <common:AppIconElement Kind="Search" />
+          </ui:TextBox.Icon>
+        </ui:TextBox>
+        <TextBlock Margin="{StaticResource InlineGap}" VerticalAlignment="Center" Style="{StaticResource SecondaryText}" Text="{l:Tr Apps_SortBy}" />
+        <ComboBox MinWidth="170" ItemsSource="{Binding SortOptions}" DisplayMemberPath="Label"
+                  SelectedValuePath="Value" SelectedValue="{Binding SortBy}" />
+      </StackPanel>
       <StackPanel>
         <ui:TextBlock FontTypography="Title" Text="{l:Tr Nav_Apps}" />
         <TextBlock Style="{StaticResource SecondaryText}" Text="{Binding CountText}" />
@@ -69,13 +76,26 @@
                    Visibility="{Binding State, Converter={StaticResource LoadStateVisible}, ConverterParameter='Idle,Loaded'}">
             <ListBox.ItemTemplate>
               <DataTemplate>
-                <DockPanel Margin="{StaticResource LabelSpacing}">
-                  <TextBlock DockPanel.Dock="Right" VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding SizeText}" />
-                  <StackPanel>
+                <Grid Margin="{StaticResource LabelSpacing}">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="{StaticResource SizeColumnWidth}" />
+                  </Grid.ColumnDefinitions>
+                  <!-- The app's own icon, or the generic outline when it has none -->
+                  <Grid Width="32" Height="32" Margin="{StaticResource CardGap}" VerticalAlignment="Center">
+                    <common:AppIcon Width="24" Height="24" Kind="Apps" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                    <Image Source="{Binding App, Converter={StaticResource AppIcon}}" RenderOptions.BitmapScalingMode="HighQuality" />
+                  </Grid>
+                  <StackPanel Grid.Column="1" VerticalAlignment="Center">
                     <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Name}" />
                     <TextBlock Style="{StaticResource TertiaryText}" TextTrimming="CharacterEllipsis" Text="{Binding Detail}" />
                   </StackPanel>
-                </DockPanel>
+                  <TextBlock Grid.Column="2" Margin="{StaticResource CardGap}" VerticalAlignment="Center"
+                             Style="{StaticResource SecondaryText}" Text="{Binding DateText}" />
+                  <TextBlock Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding SizeText}" />
+                </Grid>
               </DataTemplate>
             </ListBox.ItemTemplate>
           </ListBox>

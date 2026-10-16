@@ -46,6 +46,10 @@
   <data name="Apps_RunFailed" xml:space="preserve"><value>لم تبدأ أداة إلغاء تثبيت {0}.</value></data>
   <data name="Apps_Running" xml:space="preserve"><value>جارٍ تشغيل أداة إلغاء تثبيت {0}</value></data>
   <data name="Apps_Search" xml:space="preserve"><value>ابحث في التطبيقات</value></data>
+  <data name="Apps_SortBy" xml:space="preserve"><value>الترتيب حسب</value></data>
+  <data name="Apps_SortDate" xml:space="preserve"><value>تاريخ التثبيت</value></data>
+  <data name="Apps_SortName" xml:space="preserve"><value>الاسم (أ إلى ي)</value></data>
+  <data name="Apps_SortSize" xml:space="preserve"><value>الحجم</value></data>
   <data name="Apps_StillInstalled" xml:space="preserve"><value>ما زال {0} مثبتًا. أُلغيت أداة الإزالة أو لم تنتهِ.</value></data>
   <data name="Apps_Uninstall" xml:space="preserve"><value>إلغاء التثبيت</value></data>
   <data name="Apps_Waiting" xml:space="preserve"><value>بانتظار انتهاء إلغاء تثبيت {0}</value></data>

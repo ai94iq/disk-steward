@@ -30,18 +30,46 @@ public sealed class AppsViewModelTests : IDisposable
     {
         var rules = new ProtectedPaths(new ProtectedRoots(@"Z:\Windows", [], @"Z:\ProgramData", @"Z:\Users\me", @"Z:\own", [_root]));
         return new AppsViewModel(_installed, _runner, new LeftoverFinder(rules), new LeftoverRoots([_root], []), new FolderScanner(),
-            new SafeRemover(rules, _bin, _ => true), _dialogs, NullLogger<AppsViewModel>.Instance)
+            new SafeRemover(rules, _bin, _ => true), _dialogs, Substitute.For<IDateFormatter>(), NullLogger<AppsViewModel>.Instance)
         { PollInterval = TimeSpan.FromMilliseconds(1), PollLimit = TimeSpan.FromMilliseconds(200) };
     }
 
     [Fact]
-    public async Task Apps_list_largest_first()
+    public async Task Sort_by_name_is_a_to_z_and_the_default()
     {
+        _installed.List().Returns([_tool, _big, new InstalledApp("k3", "alpha", null, null, 1, null, "u", null)]);
         var vm = Create();
 
         await vm.EnsureLoadedAsync();
 
+        Assert.Equal(AppSort.Name, vm.SortBy);
+        Assert.Equal(["alpha", "Big Game", "Tool"], vm.Apps.Select(a => a.Name));
+    }
+
+    [Fact]
+    public async Task Sort_by_size_is_largest_first()
+    {
+        var vm = Create();
+        await vm.EnsureLoadedAsync();
+
+        vm.SortBy = AppSort.Size;
+
         Assert.Equal(["Big Game", "Tool"], vm.Apps.Select(a => a.Name));
+    }
+
+    [Fact]
+    public async Task Sort_by_install_date_is_newest_first_with_unknown_dates_last()
+    {
+        _installed.List().Returns([
+            _tool with { InstallDate = new DateTime(2024, 1, 1) },
+            _big with { InstallDate = null },
+            new InstalledApp("k3", "New", null, null, 1, new DateTime(2026, 5, 1), "u", null)]);
+        var vm = Create();
+        await vm.EnsureLoadedAsync();
+
+        vm.SortBy = AppSort.InstallDate;
+
+        Assert.Equal(["New", "Tool", "Big Game"], vm.Apps.Select(a => a.Name));
     }
 
     [Fact]

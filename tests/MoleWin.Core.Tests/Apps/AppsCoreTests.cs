@@ -31,6 +31,15 @@ public sealed class AppsCoreTests : IDisposable
         Assert.Equal(new DateTime(2026, 1, 1), app.InstallDate);
     }
 
+    [Fact]
+    public void Display_icon_is_read_from_the_registry()
+    {
+        var values = Values();
+        values["DisplayIcon"] = @"""C:\Tools\tool.exe"",0";
+
+        Assert.Equal(@"""C:\Tools\tool.exe"",0", InstalledAppParser.FromValues("k", values)?.IconPath);
+    }
+
     [Theory]
     [InlineData("SystemComponent", 1)]
     [InlineData("ParentKeyName", "OfficeUpdate")]

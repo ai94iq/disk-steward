@@ -40,7 +40,7 @@ public static class InstalledAppParser
             ? date
             : null;
         return new InstalledApp(key, name, Text(values, "Publisher"), Text(values, "DisplayVersion"), size, installed, uninstall,
-            Text(values, "InstallLocation")?.Trim('"').TrimEnd('\\'));
+            Text(values, "InstallLocation")?.Trim('"').TrimEnd('\\'), Text(values, "DisplayIcon"));
     }
 
     private static string? Text(IReadOnlyDictionary<string, object?> values, string name) =>

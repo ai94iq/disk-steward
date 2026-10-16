@@ -46,6 +46,10 @@
   <data name="Apps_RunFailed" xml:space="preserve"><value>The uninstaller for {0} did not start.</value></data>
   <data name="Apps_Running" xml:space="preserve"><value>Running the uninstaller for {0}</value></data>
   <data name="Apps_Search" xml:space="preserve"><value>Search apps</value></data>
+  <data name="Apps_SortBy" xml:space="preserve"><value>Sort by</value></data>
+  <data name="Apps_SortDate" xml:space="preserve"><value>Install date</value></data>
+  <data name="Apps_SortName" xml:space="preserve"><value>Name (A to Z)</value></data>
+  <data name="Apps_SortSize" xml:space="preserve"><value>Size</value></data>
   <data name="Apps_StillInstalled" xml:space="preserve"><value>{0} is still installed. The uninstaller was cancelled or did not finish.</value></data>
   <data name="Apps_Uninstall" xml:space="preserve"><value>Uninstall</value></data>
   <data name="Apps_Waiting" xml:space="preserve"><value>Waiting for {0} to finish uninstalling</value></data>
