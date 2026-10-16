@@ -12,10 +12,11 @@
         <ResourceDictionary Source="Resources/Scrolling.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
-      <!-- WPF-UI 4.3 paints a pressed button's text and icon black on the dark theme. -->
-      <Style TargetType="ui:Button" BasedOn="{StaticResource DefaultUiButtonStyle}">
-        <Setter Property="PressedForeground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
-      </Style>
+      <!-- WPF-UI 4.3 paints a pressed button's text and icon black on the dark theme. Its button
+           style sets PressedForeground from this key in its own triggers, which outrank a
+           derived style's setter, so the key itself is redefined: the theme's secondary text
+           color, which follows light, dark and theme changes. -->
+      <SolidColorBrush x:Key="ButtonForegroundPressed" Color="{DynamicResource TextFillColorSecondary}" />
     </ResourceDictionary>
   </Application.Resources>
 </Application>
