@@ -156,7 +156,7 @@
                             <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Label}" />
                             <TextBlock Style="{StaticResource TertiaryText}" TextTrimming="CharacterEllipsis" Text="{Binding DetailText}" />
                           </StackPanel>
-                          <ProgressBar Grid.Column="2" Height="4" Margin="{StaticResource CardGap}" VerticalAlignment="Center"
+                          <ProgressBar Grid.Column="2" Height="4" Foreground="{DynamicResource AccentFillColorDefaultBrush}" Margin="{StaticResource CardGap}" VerticalAlignment="Center"
                                        Maximum="100" common:Motion.Value="{Binding Share}" />
                           <TextBlock Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center"
                                      Style="{StaticResource SecondaryText}" Text="{Binding SizeText}" />
