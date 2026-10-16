@@ -1,18 +1,27 @@
-# .NET build output
+# Build output
 bin/
 obj/
-*.user
-*.suo
-.vs/
-
-# Rider / VS Code
-.idea/
-.vscode/
-
-# Local artifacts
-*.log
+artifacts/
 TestResults/
 
-# OS
+# IDE
+.vs/
+.idea/
+*.user
+*.suo
+
+# Local data (never commit)
+*.db
+*.db-wal
+*.db-shm
+logs/
+
+# Secrets
+*.pfx
+*.p12
+
+# Editors and OS
+.vscode/
+*.log
 Thumbs.db
 .DS_Store

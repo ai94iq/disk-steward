@@ -1,0 +1,24 @@
+<Project>
+  <PropertyGroup>
+    <Version>0.1.0</Version>
+    <Product>MoleWin</Product>
+    <Company>ai94iq</Company>
+    <Copyright>Copyright (c) 2026 ai94iq</Copyright>
+  </PropertyGroup>
+
+  <!-- C# projects only; the WiX project must not get these -->
+  <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <!-- Test projects run xUnit v3 directly on Microsoft.Testing.Platform (no VSTest). -->
+  <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.csproj' and $(MSBuildProjectName.EndsWith('.Tests'))">
+    <OutputType>Exe</OutputType>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+  </PropertyGroup>
+</Project>

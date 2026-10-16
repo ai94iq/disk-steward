@@ -1,0 +1,5 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!-- Root-relative path; a pack:// URI's commas would break the fallback list -->
+  <FontFamily x:Key="AppFont">/Assets/Fonts/#Noto Sans Arabic, Segoe UI</FontFamily>
+</ResourceDictionary>

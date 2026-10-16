@@ -1,0 +1,15 @@
+global using System.Globalization;
+global using System.IO;
+global using System.Windows;
+global using CommunityToolkit.Mvvm.ComponentModel;
+global using CommunityToolkit.Mvvm.Input;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Logging;
+global using MoleWin.App.Common;
+global using MoleWin.App.Hosting;
+global using MoleWin.App.Localization;
+global using MoleWin.App.Services;
+global using MoleWin.Core.Abstractions;
+global using MoleWin.Core.Models;
+global using MoleWin.Core.Text;
+global using MoleWin.Data;
