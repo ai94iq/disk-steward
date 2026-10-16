@@ -12,8 +12,14 @@
        height and the mouse wheel. -->
   <Page.Resources>
     <BooleanToVisibilityConverter x:Key="BoolVisible" />
-    <Style x:Key="VitalValue" TargetType="TextBlock">
-      <Setter Property="FontSize" Value="28" />
+    <!-- The number inside a ring: text color, never the arc color (dataviz rule). -->
+    <Style x:Key="RingValue" TargetType="TextBlock">
+      <Setter Property="HorizontalAlignment" Value="Center" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style x:Key="CardTitle" TargetType="TextBlock" BasedOn="{StaticResource SecondaryText}">
+      <Setter Property="Margin" Value="{StaticResource FieldSpacing}" />
       <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
   </Page.Resources>
@@ -24,24 +30,28 @@
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
-    <!-- Title and the live heartbeat -->
+    <!-- Title, the live badge beside it, and keep awake on the right -->
     <DockPanel Grid.Row="0" Margin="{StaticResource FieldSpacing}">
       <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center" Orientation="Horizontal">
         <TextBlock Margin="{StaticResource InlineGap}" VerticalAlignment="Center" Style="{StaticResource SecondaryText}" Text="{l:Tr Monitor_KeepAwake}" />
-        <ComboBox MinWidth="180" Margin="{StaticResource CardGap}" VerticalAlignment="Center"
+        <ComboBox MinWidth="180" VerticalAlignment="Center"
                   ItemsSource="{Binding KeepAwakeOptions}" SelectedItem="{Binding KeepAwake}" DisplayMemberPath="Label" />
-        <StackPanel Orientation="Horizontal" Visibility="{Binding IsLive, Converter={StaticResource BoolVisible}}">
-          <Ellipse Width="8" Height="8" Margin="{StaticResource InlineGap}" VerticalAlignment="Center"
-                   Fill="{DynamicResource SystemFillColorSuccessBrush}"
-                   common:Motion.PulseOn="{Binding Pulse}" />
-          <TextBlock Style="{StaticResource SecondaryText}" Text="{l:Tr Monitor_Live}" />
-        </StackPanel>
       </StackPanel>
-      <ui:TextBlock FontTypography="Title" Text="{l:Tr Nav_Monitor}" />
+      <StackPanel Orientation="Horizontal">
+        <ui:TextBlock VerticalAlignment="Center" FontTypography="Title" Text="{l:Tr Nav_Monitor}" />
+        <Border Margin="{StaticResource BadgeGap}" Padding="{StaticResource BadgePadding}" VerticalAlignment="Center"
+                CornerRadius="12" Background="{DynamicResource SubtleFillColorSecondaryBrush}"
+                Visibility="{Binding IsLive, Converter={StaticResource BoolVisible}}">
+          <StackPanel Orientation="Horizontal">
+            <Ellipse Width="8" Height="8" Margin="{StaticResource InlineGap}" VerticalAlignment="Center"
+                     Fill="{DynamicResource SystemFillColorSuccessBrush}" common:Motion.PulseOn="{Binding Pulse}" />
+            <TextBlock VerticalAlignment="Center" Style="{StaticResource SecondaryText}" Text="{l:Tr Monitor_Live}" />
+          </StackPanel>
+        </Border>
+      </StackPanel>
     </DockPanel>
 
-    <ScrollViewer Grid.Row="1"
-                  VerticalScrollBarVisibility="Auto"
+    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
                   Visibility="{Binding State, Converter={StaticResource LoadStateVisible}, ConverterParameter='Idle,Loaded'}">
       <Grid>
         <Grid.ColumnDefinitions>
@@ -56,35 +66,40 @@
           <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- The machine, and how it is doing -->
+        <!-- Health: one score for the whole machine, next to what the machine is -->
         <Border Grid.ColumnSpan="3" Style="{StaticResource Surface}">
           <DockPanel>
-            <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center">
-              <TextBlock HorizontalAlignment="Right" Style="{StaticResource VitalValue}"
-                         Foreground="{Binding HealthLevel, Converter={StaticResource LoadLevelBrush}, ConverterParameter=Text}"
-                         Text="{Binding HealthScore}" />
-              <TextBlock HorizontalAlignment="Right" Style="{StaticResource SecondaryText}" Text="{Binding HealthMessage}" />
-            </StackPanel>
+            <Grid DockPanel.Dock="Left" Width="120" Height="120" Margin="{StaticResource HeroGap}">
+              <common:RingGauge Thickness="12" Value="{Binding HealthScore}"
+                                Stroke="{Binding HealthLevel, Converter={StaticResource LoadLevelBrush}}"
+                                TrackBrush="{DynamicResource SubtleFillColorSecondaryBrush}" />
+              <TextBlock Style="{StaticResource RingValue}" FontSize="36" Text="{Binding HealthScore}" />
+            </Grid>
             <StackPanel VerticalAlignment="Center">
-              <ui:TextBlock FontTypography="Subtitle" Text="{Binding Device}" />
+              <ui:TextBlock FontTypography="Subtitle" Text="{Binding HealthMessage}" />
+              <TextBlock Margin="{StaticResource LabelSpacing}" FontWeight="SemiBold" Text="{Binding Device}" />
               <TextBlock Style="{StaticResource SecondaryText}" Text="{Binding DeviceDetail}" />
               <TextBlock Style="{StaticResource TertiaryText}" Text="{Binding UptimeText}" />
             </StackPanel>
           </DockPanel>
         </Border>
 
-        <!-- CPU -->
+        <!-- CPU: now, as a ring, and the last minute, as a line -->
         <Border Grid.Row="1" Style="{StaticResource Surface}">
           <StackPanel>
-            <TextBlock Style="{StaticResource SecondaryText}" Text="{l:Tr Monitor_Cpu}" />
-            <TextBlock Style="{StaticResource VitalValue}"
-                       Foreground="{Binding CpuLevel, Converter={StaticResource LoadLevelBrush}, ConverterParameter=Text}"
-                       Text="{Binding CpuPercentText}" />
-            <TextBlock Margin="{StaticResource FieldSpacing}" Style="{StaticResource TertiaryText}"
-                       TextTrimming="CharacterEllipsis" Text="{Binding CpuDetail}" />
-            <common:HistoryChart Height="56"
-                                 Capacity="{x:Static monitor:MonitorViewModel.HistoryLength}"
+            <TextBlock Style="{StaticResource CardTitle}" Text="{l:Tr Monitor_Cpu}" />
+            <DockPanel Margin="{StaticResource FieldSpacing}">
+              <Grid DockPanel.Dock="Left" Width="88" Height="88" Margin="{StaticResource CardGap}">
+                <common:RingGauge Thickness="9" Value="{Binding CpuPercent}"
+                                  Stroke="{Binding CpuLevel, Converter={StaticResource LoadLevelBrush}}"
+                                  TrackBrush="{DynamicResource SubtleFillColorSecondaryBrush}" />
+                <TextBlock Style="{StaticResource RingValue}" FontSize="20" Text="{Binding CpuPercentText}" />
+              </Grid>
+              <TextBlock VerticalAlignment="Center" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" Text="{Binding CpuDetail}" />
+            </DockPanel>
+            <common:HistoryChart Height="72" Capacity="{x:Static monitor:MonitorViewModel.HistoryLength}"
                                  Stroke="{Binding CpuLevel, Converter={StaticResource LoadLevelBrush}}"
+                                 GridBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
                                  Values="{Binding CpuHistory}" />
           </StackPanel>
         </Border>
@@ -92,35 +107,36 @@
         <!-- Memory -->
         <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource Surface}">
           <StackPanel>
-            <TextBlock Style="{StaticResource SecondaryText}" Text="{l:Tr Monitor_Memory}" />
-            <TextBlock Style="{StaticResource VitalValue}"
-                       Foreground="{Binding MemoryLevel, Converter={StaticResource LoadLevelBrush}, ConverterParameter=Text}"
-                       Text="{Binding MemoryPercentText}" />
-            <TextBlock Margin="{StaticResource FieldSpacing}" Style="{StaticResource TertiaryText}" Text="{Binding MemoryText}" />
-            <ProgressBar Height="6"
-                         Maximum="100"
-                         Foreground="{Binding MemoryLevel, Converter={StaticResource LoadLevelBrush}}"
-                         common:Motion.Value="{Binding MemoryPercent}" />
+            <TextBlock Style="{StaticResource CardTitle}" Text="{l:Tr Monitor_Memory}" />
+            <DockPanel>
+              <Grid DockPanel.Dock="Left" Width="88" Height="88" Margin="{StaticResource CardGap}">
+                <common:RingGauge Thickness="9" Value="{Binding MemoryPercent}"
+                                  Stroke="{Binding MemoryLevel, Converter={StaticResource LoadLevelBrush}}"
+                                  TrackBrush="{DynamicResource SubtleFillColorSecondaryBrush}" />
+                <TextBlock Style="{StaticResource RingValue}" FontSize="20" Text="{Binding MemoryPercentText}" />
+              </Grid>
+              <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding MemoryText}" />
+            </DockPanel>
           </StackPanel>
         </Border>
 
-        <!-- Disks -->
+        <!-- Drives: used against capacity, colored as they fill -->
         <Border Grid.Row="2" Style="{StaticResource Surface}">
           <StackPanel>
-            <TextBlock Margin="{StaticResource FieldSpacing}" Style="{StaticResource SecondaryText}" Text="{l:Tr Monitor_Drives}" />
+            <TextBlock Style="{StaticResource CardTitle}" Text="{l:Tr Monitor_Drives}" />
             <ItemsControl ItemsSource="{Binding Drives}">
               <ItemsControl.ItemTemplate>
                 <DataTemplate>
                   <StackPanel Margin="{StaticResource FieldSpacing}">
                     <DockPanel Margin="{StaticResource LabelSpacing}">
                       <TextBlock DockPanel.Dock="Right" Style="{StaticResource SecondaryText}" Text="{Binding FreeText}" />
+                      <common:AppIcon Width="16" Height="16" Margin="{StaticResource InlineGap}" Kind="HardDrive" />
                       <TextBlock>
                         <Run FontWeight="SemiBold" Text="{Binding Root, Mode=OneWay}" />
                         <Run Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="{Binding Detail, Mode=OneWay}" />
                       </TextBlock>
                     </DockPanel>
-                    <ProgressBar Height="6"
-                                 Maximum="100"
+                    <ProgressBar Height="8" Maximum="100"
                                  Foreground="{Binding Level, Converter={StaticResource LoadLevelBrush}}"
                                  common:Motion.Value="{Binding UsedPercent}" />
                   </StackPanel>
@@ -130,16 +146,15 @@
           </StackPanel>
         </Border>
 
-        <!-- Network -->
+        <!-- Network: download over the last minute -->
         <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource Surface}">
           <StackPanel>
-            <TextBlock Style="{StaticResource SecondaryText}" Text="{l:Tr Monitor_Network}" />
-            <TextBlock Margin="{StaticResource FieldSpacing}" FontWeight="SemiBold" Text="{Binding NetworkText}" />
-            <common:HistoryChart Height="56"
-                                 Capacity="{x:Static monitor:MonitorViewModel.HistoryLength}"
-                                 Maximum="NaN"
-                                 Floor="1"
+            <TextBlock Style="{StaticResource CardTitle}" Text="{l:Tr Monitor_Network}" />
+            <TextBlock Margin="{StaticResource FieldSpacing}" FontSize="16" FontWeight="SemiBold" Text="{Binding NetworkText}" />
+            <common:HistoryChart Height="72" Capacity="{x:Static monitor:MonitorViewModel.HistoryLength}"
+                                 Maximum="NaN" Floor="1"
                                  Stroke="{DynamicResource AccentFillColorDefaultBrush}"
+                                 GridBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
                                  Values="{Binding DownHistory}" />
           </StackPanel>
         </Border>
@@ -147,7 +162,7 @@
         <!-- What is using the machine right now -->
         <Border Grid.Row="3" Grid.ColumnSpan="3" Style="{StaticResource Surface}">
           <StackPanel>
-            <TextBlock Margin="{StaticResource LabelSpacing}" Style="{StaticResource SecondaryText}" Text="{l:Tr Monitor_Processes}" />
+            <TextBlock Style="{StaticResource CardTitle}" Text="{l:Tr Monitor_Processes}" />
             <ItemsControl ItemsSource="{Binding Processes}">
               <ItemsControl.ItemTemplate>
                 <DataTemplate>
@@ -163,9 +178,6 @@
       </Grid>
     </ScrollViewer>
 
-    <common:LoadStateOverlay Grid.Row="1"
-                             State="{Binding State}"
-                             ErrorMessage="{Binding ErrorMessage}"
-                             RetryCommand="{Binding ReloadCommand}" />
+    <common:LoadStateOverlay Grid.Row="1" State="{Binding State}" ErrorMessage="{Binding ErrorMessage}" RetryCommand="{Binding ReloadCommand}" />
   </Grid>
 </Page>

@@ -207,7 +207,8 @@
   <data name="Monitor_Percent" xml:space="preserve"><value>{0:N0}%</value></data>
   <data name="Monitor_ProcessValue" xml:space="preserve"><value>CPU {0:N0}%, {1:N0} MB</value></data>
   <data name="Monitor_Processes" xml:space="preserve"><value>Top processes</value></data>
-  <data name="Monitor_Uptime" xml:space="preserve"><value>Up {0:%d}d {0:%h}h {0:%m}m, {1:N0} processes</value></data>
+  <data name="Monitor_Uptime" xml:space="preserve"><value>Up {0:%h}h {0:%m}m, {1:N0} processes</value></data>
+  <data name="Monitor_UptimeDays" xml:space="preserve"><value>Up {0:%d}d {0:%h}h, {1:N0} processes</value></data>
   <data name="Monitor_WithBattery" xml:space="preserve"><value>{0}, battery {1}%</value></data>
   <data name="Nav_Analyze" xml:space="preserve"><value>Analyze</value></data>
   <data name="Nav_Apps" xml:space="preserve"><value>Apps</value></data>

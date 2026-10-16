@@ -33,6 +33,11 @@
                        Transition="FadeInWithSlide"
                        TransitionDuration="200">
       <ui:NavigationView.MenuItems>
+        <ui:NavigationViewItem Content="{l:Tr Nav_Monitor}" TargetPageType="{x:Type monitor:MonitorPage}">
+          <ui:NavigationViewItem.Icon>
+            <common:AppIconElement Kind="HeartPulse" />
+          </ui:NavigationViewItem.Icon>
+        </ui:NavigationViewItem>
         <ui:NavigationViewItem Content="{l:Tr Nav_Clean}" TargetPageType="{x:Type clean:CleanPage}">
           <ui:NavigationViewItem.Icon>
             <common:AppIconElement Kind="Broom" />
@@ -46,11 +51,6 @@
         <ui:NavigationViewItem Content="{l:Tr Nav_Analyze}" TargetPageType="{x:Type analyze:AnalyzePage}">
           <ui:NavigationViewItem.Icon>
             <common:AppIconElement Kind="DataPie" />
-          </ui:NavigationViewItem.Icon>
-        </ui:NavigationViewItem>
-        <ui:NavigationViewItem Content="{l:Tr Nav_Monitor}" TargetPageType="{x:Type monitor:MonitorPage}">
-          <ui:NavigationViewItem.Icon>
-            <common:AppIconElement Kind="HeartPulse" />
           </ui:NavigationViewItem.Icon>
         </ui:NavigationViewItem>
       </ui:NavigationView.MenuItems>

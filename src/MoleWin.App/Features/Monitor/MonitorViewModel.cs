@@ -36,6 +36,7 @@ public sealed partial class MonitorViewModel : PageViewModel
     [ObservableProperty] public partial string? Device { get; set; }
     [ObservableProperty] public partial string? DeviceDetail { get; set; }
     [ObservableProperty] public partial string? UptimeText { get; set; }
+    [ObservableProperty] public partial double CpuPercent { get; set; }
     [ObservableProperty] public partial string? CpuPercentText { get; set; }
     [ObservableProperty] public partial LoadLevel CpuLevel { get; set; }
     [ObservableProperty] public partial string? CpuDetail { get; set; }
@@ -122,8 +123,9 @@ public sealed partial class MonitorViewModel : PageViewModel
         Device = s.Device.Model;
         DeviceDetail = Tr.Format("Monitor_DeviceDetail", s.Device.OsName, s.MemoryTotal / Gb);
         if (s.Battery is { } b) DeviceDetail = Tr.Format("Monitor_WithBattery", DeviceDetail, b.Percent);
-        UptimeText = Tr.Format("Monitor_Uptime", s.Uptime, s.ProcessCount);
+        UptimeText = Tr.Format(s.Uptime.Days > 0 ? "Monitor_UptimeDays" : "Monitor_Uptime", s.Uptime, s.ProcessCount);
 
+        CpuPercent = s.CpuPercent;
         CpuPercentText = Tr.Format("Monitor_Percent", s.CpuPercent);
         CpuLevel = LoadLevels.Cpu(s.CpuPercent);
         CpuDetail = Tr.Format("Monitor_CpuDetail", s.Device.CpuModel, s.Device.LogicalProcessors);
