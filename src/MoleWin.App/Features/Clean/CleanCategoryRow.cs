@@ -13,12 +13,12 @@ public sealed partial class CleanCategoryRow(CleanCategory category) : Observabl
 
     public IconKind Icon { get; } = category switch
     {
-        CleanCategory.System => IconKind.Desktop,
-        CleanCategory.Browsers => IconKind.Globe,
-        CleanCategory.Apps => IconKind.Apps,
-        CleanCategory.Gpu => IconKind.DeveloperBoard,
-        CleanCategory.Developer => IconKind.Code,
-        _ => IconKind.Bot,
+        CleanCategory.System => IconKind.WindowWrench,
+        CleanCategory.Browsers => IconKind.GlobeDesktop,
+        CleanCategory.Apps => IconKind.AppFolder,
+        CleanCategory.Gpu => IconKind.Cube,
+        CleanCategory.Developer => IconKind.CodeBlock,
+        _ => IconKind.BotSparkle,
     };
 
     [ObservableProperty] public partial long Bytes { get; set; }

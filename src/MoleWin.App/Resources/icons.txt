@@ -1,10 +1,11 @@
 add
+app_folder
 apps
 arrow_left
 arrow_right
 arrow_sync
 arrow_up
-bot
+bot_sparkle
 broom
 calendar
 checkmark
@@ -12,12 +13,11 @@ chevron_down
 chevron_left
 chevron_right
 chevron_up
-code
+code_block
 color
+cube
 data_pie
 delete
-desktop
-developer_board
 dismiss
 document
 edit
@@ -26,7 +26,7 @@ eye
 eye_off
 filter
 folder
-globe
+globe_desktop
 hard_drive
 heart_pulse
 home
@@ -50,3 +50,4 @@ stop
 warning
 weather_moon
 weather_sunny
+window_wrench

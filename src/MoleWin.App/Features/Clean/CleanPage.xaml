@@ -65,11 +65,12 @@
                       <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsSelected}" />
-                    <Border Grid.Column="1" Width="36" Height="36" Margin="{StaticResource InlineGap}" CornerRadius="8"
-                            Background="{DynamicResource SubtleFillColorSecondaryBrush}">
-                      <common:AppIcon Width="20" Height="20" Kind="{Binding Icon}"
+                    <!-- The category's color twice: a faint tile behind, the full color on the icon -->
+                    <Grid Grid.Column="1" Width="40" Height="40" Margin="{StaticResource InlineGap}">
+                      <Border CornerRadius="10" Opacity="0.16" Background="{Binding Category, Converter={StaticResource CategoryBrush}}" />
+                      <common:AppIcon Width="22" Height="22" Kind="{Binding Icon}"
                                       Foreground="{Binding Category, Converter={StaticResource CategoryBrush}}" />
-                    </Border>
+                    </Grid>
                     <StackPanel Grid.Column="2" VerticalAlignment="Center">
                       <ui:TextBlock FontTypography="BodyStrong" Text="{Binding Name}" />
                       <TextBlock Style="{StaticResource TertiaryText}" Text="{Binding ItemsText}" />
