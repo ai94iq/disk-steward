@@ -7,3 +7,5 @@
 5. Test on a Windows 10 22H2 VM and on Windows 11, as a standard user: fresh install, upgrade from the previous MSI, launch, uninstall (user data must remain), downgrade blocked.
 6. Commit: `repo: build: release vX.Y.Z` with the changelog summary in the body.
 7. Tag: `git tag -a vX.Y.Z -m "vX.Y.Z"`.
+8. Push the tag: CI (`.github/workflows/ci.yml`) runs the tests, builds the MSI and attaches
+   it to a GitHub release. That MSI is unsigned; replace it with the signed one from step 4.
