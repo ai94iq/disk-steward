@@ -12,7 +12,6 @@ namespace MoleWin.App.Features.Analyze;
 // drives, protected folders and system files can never be ticked.
 public sealed partial class AnalyzeViewModel : PageViewModel
 {
-    private const int MaxActivity = 400;
     private const int Parallelism = 4;
     private readonly IFolderScanner _scanner;
     private readonly ProtectedPaths _rules;
@@ -51,14 +50,13 @@ public sealed partial class AnalyzeViewModel : PageViewModel
 
     public ObservableCollection<FolderNode> Roots { get; } = [];
 
-    // Newest first.
-    public ObservableCollection<string> Activity { get; } = [];
+    public ActivityLog Activity { get; } = [];
 
     protected override async Task<bool> LoadCoreAsync(CancellationToken ct)
     {
         var drives = await Task.Run(_scanner.ListRoots, ct);
         Roots.Clear();
-        foreach (var drive in drives) Roots.Add(new FolderNode(drive, FolderKind.Drive, null, _rules.IsProtected(drive.Path), ExpandAsync));
+        foreach (var drive in drives) Roots.Add(new FolderNode(drive, FolderKind.Drive, null, _rules.ReasonFor(drive.Path), ExpandAsync));
         return Roots.Count > 0;
     }
 
@@ -72,7 +70,7 @@ public sealed partial class AnalyzeViewModel : PageViewModel
         foreach (var entry in entries)
         {
             var child = new FolderNode(entry, entry.IsDirectory ? FolderKind.Folder : FolderKind.File, node,
-                _rules.IsProtected(entry.Path), ExpandAsync);
+                _rules.ReasonFor(entry.Path), ExpandAsync);
             child.PropertyChanged += OnNodeChanged;
             if (entry.IsDirectory) child.IsMeasuring = true;
             node.Children.Add(child);
@@ -97,17 +95,8 @@ public sealed partial class AnalyzeViewModel : PageViewModel
 
         var results = await Task.Run(() => _remover.Recycle(picked.Select(n => n.Path)));
         foreach (var result in results)
-        {
             _log.LogInformation("Recycle {Path}: {Outcome} {Error}", result.Path, result.Outcome, result.Error);
-            Log(result.Outcome switch
-            {
-                RemovalOutcome.Recycled => Tr.Format("Analyze_LogRecycled", result.Path),
-                RemovalOutcome.Protected => Tr.Format("Analyze_LogProtected", result.Path),
-                RemovalOutcome.NotRecyclable => Tr.Format("Analyze_LogNotRecyclable", result.Path),
-                RemovalOutcome.Missing => Tr.Format("Analyze_LogMissing", result.Path),
-                _ => Tr.Format("Analyze_LogFailed", result.Path, result.Error),
-            });
-        }
+        Activity.AddRemovals(results);
 
         foreach (var node in picked) Forget(node);
         foreach (var parent in picked.Select(n => n.Parent).OfType<FolderNode>().Distinct())
@@ -172,7 +161,6 @@ public sealed partial class AnalyzeViewModel : PageViewModel
         {
             item.Node.IsMeasuring = false;
             item.Node.SetSize(item.Size);
-            Log(Tr.Format("Analyze_LogMeasured", item.Node.Name, item.Node.SizeText));
             any = true;
         }
         if (any) Resort(node);
@@ -225,9 +213,5 @@ public sealed partial class AnalyzeViewModel : PageViewModel
         SelectedText = Tr.Format("Analyze_Selected", SelectedCount, SizeText.Format(SelectedBytes));
     }
 
-    private void Log(string line)
-    {
-        Activity.Insert(0, line);
-        while (Activity.Count > MaxActivity) Activity.RemoveAt(Activity.Count - 1);
-    }
+    private void Log(string line) => Activity.Add(line);
 }

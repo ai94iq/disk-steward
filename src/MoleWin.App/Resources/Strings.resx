@@ -17,11 +17,15 @@
   <data name="Analyze_DriveFree" xml:space="preserve"><value>{0} متاحة من {1}</value></data>
   <data name="Analyze_Drives" xml:space="preserve"><value>هذا الحاسوب</value></data>
   <data name="Analyze_Elapsed" xml:space="preserve"><value>{0:%m}:{0:ss}</value></data>
-  <data name="Analyze_Hint" xml:space="preserve"><value>حدد ما تريد إزالته. لا يُزال شيء قبل تأكيدك، ويذهب إلى سلة المحذوفات.</value></data>
+  <data name="Analyze_Hint" xml:space="preserve"><value>تذهب العناصر المحددة إلى سلة المحذوفات بعد تأكيدك. المسافة تحدد الصف المختار، وDel ينقل المحدد.</value></data>
+  <data name="Analyze_Lock_AppOwnData" xml:space="preserve"><value>بيانات MoleWin نفسه</value></data>
+  <data name="Analyze_Lock_PersonalFolder" xml:space="preserve"><value>مجلدك؛ افتحه لتنظيف ما بداخله</value></data>
+  <data name="Analyze_Lock_ProgramData" xml:space="preserve"><value>بيانات مشتركة للبرامج المثبتة</value></data>
+  <data name="Analyze_Lock_Programs" xml:space="preserve"><value>برامج؛ أزلها من التطبيقات</value></data>
+  <data name="Analyze_Lock_VolumeSystem" xml:space="preserve"><value>يحتاجه Windows</value></data>
+  <data name="Analyze_Lock_Windows" xml:space="preserve"><value>جزء من Windows</value></data>
   <data name="Analyze_LogDone" xml:space="preserve"><value>انتهى فحص {0} في {1:%m}:{1:ss}، {2:N0} ملف</value></data>
   <data name="Analyze_LogFailed" xml:space="preserve"><value>تعذر نقل {0}: {1}</value></data>
-  <data name="Analyze_LogMeasured" xml:space="preserve"><value>{0}: {1}</value></data>
-  <data name="Analyze_LogMissing" xml:space="preserve"><value>غير موجود أصلًا: {0}</value></data>
   <data name="Analyze_LogNotRecyclable" xml:space="preserve"><value>رُفض، لا توجد سلة محذوفات على هذا القرص: {0}</value></data>
   <data name="Analyze_LogProtected" xml:space="preserve"><value>رُفض، مسار محمي: {0}</value></data>
   <data name="Analyze_LogRecycled" xml:space="preserve"><value>نُقل إلى سلة المحذوفات: {0}</value></data>
@@ -33,8 +37,6 @@
   <data name="Analyze_Selected" xml:space="preserve"><value>{0} محدد، {1}</value></data>
   <data name="Analyze_Stop" xml:space="preserve"><value>إيقاف</value></data>
   <data name="Analyze_Summary" xml:space="preserve"><value>وسّع قرصًا لترى ما يشغل المساحة.</value></data>
-  <data name="Analyze_SystemItem" xml:space="preserve"><value>يحتاجه Windows</value></data>
-  <data name="Analyze_SystemTip" xml:space="preserve"><value>يستخدم Windows هذا الملف أو المجلد. لن يزيله MoleWin.</value></data>
   <data name="Analyze_Up" xml:space="preserve"><value>للأعلى</value></data>
   <data name="App_AlreadyRunning" xml:space="preserve"><value>التطبيق يعمل بالفعل.</value></data>
   <data name="App_Name" xml:space="preserve"><value>MoleWin</value></data>
@@ -46,6 +48,7 @@
   <data name="Apps_LogLeftover" xml:space="preserve"><value>بقايا: {0} ({1})</value></data>
   <data name="Apps_LogRemoved" xml:space="preserve"><value>لم يعد {0} مثبتًا</value></data>
   <data name="Apps_LogRunning" xml:space="preserve"><value>جارٍ إلغاء تثبيت {0}</value></data>
+  <data name="Apps_NotReported" xml:space="preserve"><value>غير متوفر</value></data>
   <data name="Apps_RunFailed" xml:space="preserve"><value>لم تبدأ أداة إلغاء تثبيت {0}.</value></data>
   <data name="Apps_Running" xml:space="preserve"><value>جارٍ تشغيل أداة إلغاء تثبيت {0}</value></data>
   <data name="Apps_ColName" xml:space="preserve"><value>الاسم</value></data>
@@ -64,16 +67,24 @@
   <data name="Clean_Category_Gpu" xml:space="preserve"><value>برامج تشغيل الرسوميات</value></data>
   <data name="Clean_Category_System" xml:space="preserve"><value>النظام</value></data>
   <data name="Clean_Confirm" xml:space="preserve"><value>نقل {0} عنصر ({1}) إلى سلة المحذوفات؟ لا يُحذف شيء نهائيًا، وتعود المساحة عند إفراغ سلة المحذوفات.</value></data>
-  <data name="Clean_Found" xml:space="preserve"><value>وُجد {0} في {1} موضع</value></data>
-  <data name="Clean_Hint" xml:space="preserve"><value>حدد ما تريد إزالته. لا يُزال شيء قبل تأكيدك، ويذهب إلى سلة المحذوفات.</value></data>
+  <data name="Clean_HeadlineDetail" xml:space="preserve"><value>المجموع {0} في {1} موضع. المجموعات الموسومة بـ«راجِع» قد تحتوي ما تريد الاحتفاظ به.</value></data>
+  <data name="Clean_HeadlineRest" xml:space="preserve"><value> بيانات مؤقتة وذاكرة تخزين يُعاد إنشاؤها تلقائيًا.</value></data>
+  <data name="Clean_Hint" xml:space="preserve"><value>تذهب العناصر المحددة إلى سلة المحذوفات بعد تأكيدك. Del ينقلها، وF5 يعيد الفحص.</value></data>
+  <data name="Clean_ItemsIn" xml:space="preserve"><value>{0} في {1}</value></data>
   <data name="Clean_Items_few" xml:space="preserve"><value>{0} عناصر</value></data>
   <data name="Clean_Items_many" xml:space="preserve"><value>{0} عنصرًا</value></data>
   <data name="Clean_Items_one" xml:space="preserve"><value>عنصر واحد</value></data>
   <data name="Clean_Items_other" xml:space="preserve"><value>{0} عنصر</value></data>
   <data name="Clean_Items_two" xml:space="preserve"><value>عنصران</value></data>
   <data name="Clean_Items_zero" xml:space="preserve"><value>لا عناصر</value></data>
-  <data name="Clean_LogChecked" xml:space="preserve"><value>{0}: {1}</value></data>
-  <data name="Clean_LogDone" xml:space="preserve"><value>انتهى الفحص في {0:%m}:{0:ss}</value></data>
+  <data name="Clean_LogDone" xml:space="preserve"><value>انتهى الفحص في {0:%m}:{0:ss}: {1} في {2} موضع</value></data>
+  <data name="Clean_LogStarted" xml:space="preserve"><value>بدأ الفحص</value></data>
+  <data name="Clean_Note_AiTools" xml:space="preserve"><value>محادثات وجلسات أقدم من 30 يومًا وذاكرة المحررات. لا يمكن متابعة المحادثات المحذوفة.</value></data>
+  <data name="Clean_Note_Apps" xml:space="preserve"><value>ذاكرة التطبيقات المؤقتة. معظمها يُعاد إنشاؤه عند التشغيل التالي؛ افتح المجموعة لمراجعة كل موضع.</value></data>
+  <data name="Clean_Note_Browsers" xml:space="preserve"><value>ذاكرة المتصفحات المؤقتة فقط. تبقى تسجيلات الدخول والسجل والمفضلة.</value></data>
+  <data name="Clean_Note_Developer" xml:space="preserve"><value>ذاكرة الحزم والبناء. تعيد الأدوات تنزيلها عند الحاجة.</value></data>
+  <data name="Clean_Note_Gpu" xml:space="preserve"><value>ذاكرة المظللات التي يعيد برنامج تشغيل الرسوميات بناءها. قد تبطؤ الألعاب في أول تشغيل.</value></data>
+  <data name="Clean_Note_System" xml:space="preserve"><value>ملفات مؤقتة وتقارير أخطاء وسجلات أقدم من أسبوع.</value></data>
   <data name="Clean_Nothing" xml:space="preserve"><value>لا يوجد ما يُنظَّف الآن.</value></data>
   <data name="Clean_Places_few" xml:space="preserve"><value>{0} مواضع</value></data>
   <data name="Clean_Places_many" xml:space="preserve"><value>{0} موضعًا</value></data>
@@ -82,7 +93,11 @@
   <data name="Clean_Places_two" xml:space="preserve"><value>موضعان</value></data>
   <data name="Clean_Places_zero" xml:space="preserve"><value>لا مواضع</value></data>
   <data name="Clean_Recycle" xml:space="preserve"><value>نقل إلى سلة المحذوفات</value></data>
+  <data name="Clean_RecycleAmount" xml:space="preserve"><value>انقل {0} إلى سلة المحذوفات</value></data>
   <data name="Clean_Rescan" xml:space="preserve"><value>فحص من جديد</value></data>
+  <data name="Clean_Review" xml:space="preserve"><value>راجِع</value></data>
+  <data name="Clean_Safe" xml:space="preserve"><value>آمن للحذف</value></data>
+  <data name="Clean_Scanned" xml:space="preserve"><value>فُحص {0} موضعًا في {1:%m}:{1:ss}</value></data>
   <data name="Clean_Scanning" xml:space="preserve"><value>جارٍ فحص {0}</value></data>
   <data name="Clean_SelectAll" xml:space="preserve"><value>تحديد الكل</value></data>
   <data name="Clean_Selected" xml:space="preserve"><value>{0} محدد، {1}</value></data>
@@ -173,6 +188,7 @@
   <data name="Clean_Target_yarn-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Yarn cache</value></data>
   <data name="Clean_Target_zed-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Zed cache</value></data>
   <data name="Common_Cancel" xml:space="preserve"><value>إلغاء</value></data>
+  <data name="Common_LogRecycled" xml:space="preserve"><value>نُقل {0:N0} عنصرًا إلى سلة المحذوفات</value></data>
   <data name="Common_No" xml:space="preserve"><value>لا</value></data>
   <data name="Common_Ok" xml:space="preserve"><value>حسنًا</value></data>
   <data name="Common_Retry" xml:space="preserve"><value>إعادة المحاولة</value></data>

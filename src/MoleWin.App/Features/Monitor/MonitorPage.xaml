@@ -27,9 +27,33 @@
       <Setter Property="FontSize" Value="28" />
       <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
+    <!-- Up to two lines (a long CPU name wraps instead of being cut), then trimmed. -->
     <Style x:Key="TileDetail" TargetType="TextBlock" BasedOn="{StaticResource TertiaryText}">
       <Setter Property="Margin" Value="{StaticResource FieldSpacing}" />
+      <Setter Property="TextWrapping" Value="Wrap" />
       <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+      <Setter Property="MaxHeight" Value="40" />
+    </Style>
+
+    <!-- Health takes room only when it has something to say: a healthy machine gets a small
+         ring, a strained one the full size. -->
+    <Style x:Key="HealthRing" TargetType="Grid">
+      <Setter Property="Width" Value="120" />
+      <Setter Property="Height" Value="120" />
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding HealthLevel}" Value="Normal">
+          <Setter Property="Width" Value="64" />
+          <Setter Property="Height" Value="64" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+    <Style x:Key="HealthScore" TargetType="TextBlock" BasedOn="{StaticResource RingValue}">
+      <Setter Property="FontSize" Value="36" />
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding HealthLevel}" Value="Normal">
+          <Setter Property="FontSize" Value="20" />
+        </DataTrigger>
+      </Style.Triggers>
     </Style>
   </Page.Resources>
 
@@ -78,11 +102,11 @@
         <!-- Health: one score for the whole machine, next to what the machine is -->
         <Border Grid.ColumnSpan="5" Style="{StaticResource Surface}">
           <DockPanel>
-            <Grid DockPanel.Dock="Left" Width="120" Height="120" Margin="{StaticResource HeroGap}">
-              <common:RingGauge Thickness="12" Value="{Binding HealthScore}"
+            <Grid DockPanel.Dock="Left" Margin="{StaticResource HeroGap}" Style="{StaticResource HealthRing}">
+              <common:RingGauge Thickness="8" Value="{Binding HealthScore}"
                                 Stroke="{Binding HealthLevel, Converter={StaticResource LoadLevelBrush}}"
                                 TrackBrush="{DynamicResource SubtleFillColorSecondaryBrush}" />
-              <TextBlock Style="{StaticResource RingValue}" FontSize="36" Text="{Binding HealthScore}" />
+              <TextBlock Style="{StaticResource HealthScore}" Text="{Binding HealthScore}" />
             </Grid>
             <StackPanel VerticalAlignment="Center">
               <ui:TextBlock FontTypography="Subtitle" Text="{Binding HealthMessage}" />

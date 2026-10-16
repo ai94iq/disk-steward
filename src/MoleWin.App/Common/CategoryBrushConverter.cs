@@ -5,14 +5,15 @@ using Wpf.Ui.Appearance;
 
 namespace MoleWin.App.Common;
 
-// A Clean category's identity color: slots 1 to 6 of the dataviz reference categorical
-// palette in fixed order, with the step for the current theme. Validated with the dataviz
-// validator: dark set passes all checks on #1a1a19; light set passes with the contrast WARN
-// relieved by the category name always shown next to the icon.
+// A Clean category's identity color, from the dataviz reference categorical palette with the
+// step for the current theme. No category is green: green is the "safe to remove" signal.
+// In category order (System, Browsers, Apps, Gpu, Developer, AiTools): blue, orange, violet,
+// aqua, yellow, magenta. Validated with the dataviz validator: all checks pass in both modes,
+// the light set's contrast WARN relieved by the category name always shown beside the icon.
 public sealed class CategoryBrushConverter : IValueConverter
 {
-    private static readonly Brush[] Light = Freeze("#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300");
-    private static readonly Brush[] Dark = Freeze("#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300");
+    private static readonly Brush[] Light = Freeze("#2a78d6", "#eb6834", "#6250d6", "#1baf7a", "#eda100", "#e87ba4");
+    private static readonly Brush[] Dark = Freeze("#3987e5", "#d95926", "#9085e9", "#199e70", "#c98500", "#d55181");
 
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {

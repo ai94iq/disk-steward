@@ -8,22 +8,58 @@
       ScrollViewer.CanContentScroll="False">
   <!-- CanContentScroll="False": WPF-UI's NavigationView then skips its own scroll viewer and
        the lists below get a real height (it wraps the page when this is true, the Page default). -->
+  <Page.InputBindings>
+    <KeyBinding Key="F5" Command="{Binding RescanCommand}" />
+    <KeyBinding Key="Delete" Command="{Binding RecycleSelectedCommand}" />
+  </Page.InputBindings>
   <Page.Resources>
     <BooleanToVisibilityConverter x:Key="BoolVisible" />
     <common:CategoryBrushConverter x:Key="CategoryBrush" />
+
+    <!-- The headline shows once a scan has found something. -->
+    <Style x:Key="ShownWithResults" TargetType="StackPanel">
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding SafeText}" Value="{x:Null}">
+          <Setter Property="Visibility" Value="Collapsed" />
+        </DataTrigger>
+        <DataTrigger Binding="{Binding IsScanning}" Value="True">
+          <Setter Property="Visibility" Value="Collapsed" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+
+    <!-- Mole's signature: the success color means "safe to remove" and is used for nothing
+         else on this page. Groups that may hold something worth keeping say Review instead. -->
+    <Style x:Key="SafePill" TargetType="Border" BasedOn="{StaticResource Pill}">
+      <Setter Property="BorderBrush" Value="{DynamicResource SystemFillColorSuccessBrush}" />
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding IsSafe}" Value="False">
+          <Setter Property="Visibility" Value="Collapsed" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+    <Style x:Key="ReviewPill" TargetType="Border" BasedOn="{StaticResource Pill}">
+      <Setter Property="BorderBrush" Value="{DynamicResource SystemFillColorCautionBrush}" />
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding IsSafe}" Value="True">
+          <Setter Property="Visibility" Value="Collapsed" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
   </Page.Resources>
 
   <Grid Margin="{StaticResource PagePadding}">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
 
-    <common:PageHeader Grid.Row="0" Kind="Broom" Title="{l:Tr Nav_Clean}" Summary="{Binding FoundText}">
+    <common:PageHeader Grid.Row="0" Kind="Broom" Title="{l:Tr Nav_Clean}" Summary="{Binding ScanSummary}">
       <common:PageHeader.Actions>
-        <ui:Button Command="{Binding RescanCommand}" Content="{l:Tr Clean_Rescan}">
+        <ui:Button Command="{Binding RescanCommand}" Content="{l:Tr Clean_Rescan}" ToolTip="F5">
           <ui:Button.Icon>
             <common:AppIconElement Kind="ArrowSync" />
           </ui:Button.Icon>
@@ -32,101 +68,116 @@
     </common:PageHeader>
 
     <!-- Live scan: which rule is being checked, the folder being read, how long, how much -->
-    <Border Grid.Row="1" Style="{StaticResource Surface}" Visibility="{Binding IsScanning, Converter={StaticResource BoolVisible}}">
+    <Border Grid.Row="1" Style="{StaticResource StatusSurface}" Visibility="{Binding IsScanning, Converter={StaticResource BoolVisible}}">
       <StackPanel>
         <ProgressBar Margin="{StaticResource LabelSpacing}" IsIndeterminate="True" />
         <DockPanel>
           <TextBlock DockPanel.Dock="Right" Style="{StaticResource SecondaryText}" Text="{Binding ElapsedText}" />
-          <TextBlock FontWeight="SemiBold" Text="{Binding ScanningText}" />
+          <TextBlock FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Text="{Binding ScanningText}" />
         </DockPanel>
-        <TextBlock Style="{StaticResource SecondaryText}" Text="{Binding CountersText}" />
+        <TextBlock Style="{StaticResource SecondaryText}" TextTrimming="CharacterEllipsis" Text="{Binding CountersText}" />
         <TextBlock Style="{StaticResource TertiaryText}" TextTrimming="CharacterEllipsis" Text="{Binding CurrentFolder}" />
       </StackPanel>
     </Border>
 
+    <!-- The answer first: how much goes without a second thought, then the whole picture -->
+    <StackPanel Grid.Row="2" Margin="{StaticResource FieldSpacing}" Style="{StaticResource ShownWithResults}">
+      <TextBlock FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap">
+        <Run Foreground="{DynamicResource SystemFillColorSuccessBrush}" Text="{Binding SafeText, Mode=OneWay}" /><Run Text="{l:Tr Clean_HeadlineRest}" />
+      </TextBlock>
+      <TextBlock Style="{StaticResource SecondaryText}" TextWrapping="Wrap" Text="{Binding HeadlineDetail}" />
+    </StackPanel>
+
     <!-- Details on the right when there is room, below the groups when there is not -->
-    <common:SplitPanel Grid.Row="2" Margin="{StaticResource FieldSpacing}">
+    <common:SplitPanel Grid.Row="3" Margin="{StaticResource FieldSpacing}" SideWidth="240">
       <Grid>
-      <ScrollViewer Padding="{StaticResource PageScrollGap}" VerticalScrollBarVisibility="Auto"
-                    Visibility="{Binding State, Converter={StaticResource LoadStateVisible}, ConverterParameter='Idle,Loading,Loaded'}">
-        <ItemsControl ItemsSource="{Binding Categories}">
-          <ItemsControl.ItemTemplate>
-            <DataTemplate>
-              <!-- One card per category: collapsed shows the total, opened shows each place -->
-              <Expander Margin="{StaticResource LabelSpacing}" Style="{StaticResource CardSection}" IsExpanded="{Binding IsExpanded}" common:Motion.FadeIn="True">
-                <Expander.Header>
-                  <Grid>
-                    <Grid.ColumnDefinitions>
-                      <ColumnDefinition Width="Auto" />
-                      <ColumnDefinition Width="Auto" />
-                      <ColumnDefinition Width="*" />
-                      <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsSelected}" />
-                    <!-- The category's color twice: a faint tile behind, the full color on the icon -->
-                    <Grid Grid.Column="1" Width="40" Height="40" Margin="{StaticResource InlineGap}">
-                      <Border CornerRadius="10" Opacity="0.16" Background="{Binding Category, Converter={StaticResource CategoryBrush}}" />
-                      <common:AppIcon Width="22" Height="22" Kind="{Binding Icon}"
-                                      Foreground="{Binding Category, Converter={StaticResource CategoryBrush}}" />
-                    </Grid>
-                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                      <ui:TextBlock FontTypography="BodyStrong" Text="{Binding Name}" />
-                      <TextBlock Style="{StaticResource TertiaryText}" Text="{Binding ItemsText}" />
-                    </StackPanel>
-                    <TextBlock Grid.Column="3" Margin="{StaticResource CardGap}" VerticalAlignment="Center"
-                               FontSize="16" FontWeight="SemiBold" Text="{Binding SizeText}" />
-                  </Grid>
-                </Expander.Header>
-                <ItemsControl ItemsSource="{Binding Targets}">
-                  <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                      <Grid Margin="{StaticResource RowSpacing}" Background="Transparent" ToolTip="{Binding PathsPreview}">
-                        <Grid.ColumnDefinitions>
-                          <ColumnDefinition Width="Auto" />
-                          <ColumnDefinition Width="2*" />
-                          <ColumnDefinition Width="*" />
-                          <ColumnDefinition Width="{StaticResource SizeColumnWidth}" />
-                        </Grid.ColumnDefinitions>
-                        <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsSelected}" />
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                          <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Label}" />
-                          <TextBlock Style="{StaticResource TertiaryText}" Text="{Binding ItemsText}" />
-                        </StackPanel>
-                        <ProgressBar Grid.Column="2" Height="6" Margin="{StaticResource CardGap}" VerticalAlignment="Center"
-                                     Maximum="100" common:Motion.Value="{Binding Share}" />
-                        <TextBlock Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center"
-                                   Style="{StaticResource SecondaryText}" Text="{Binding SizeText}" />
+        <ScrollViewer Padding="{StaticResource PageScrollGap}" VerticalScrollBarVisibility="Auto"
+                      Visibility="{Binding State, Converter={StaticResource LoadStateVisible}, ConverterParameter='Idle,Loading,Loaded'}">
+          <ItemsControl ItemsSource="{Binding Categories}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <!-- One card per category: collapsed shows the total and what it is, opened shows each place -->
+                <Expander Margin="{StaticResource LabelSpacing}" Style="{StaticResource CardSection}" IsExpanded="{Binding IsExpanded}"
+                          AutomationProperties.Name="{Binding Name}" common:Motion.FadeIn="True">
+                  <Expander.Header>
+                    <Grid>
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                      </Grid.ColumnDefinitions>
+                      <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsSelected}" AutomationProperties.Name="{Binding Name}" />
+                      <!-- The category's color twice: a faint tile behind, the full color on the icon -->
+                      <Grid Grid.Column="1" Width="40" Height="40" Margin="{StaticResource InlineGap}">
+                        <Border CornerRadius="10" Opacity="0.16" Background="{Binding Category, Converter={StaticResource CategoryBrush}}" />
+                        <common:AppIcon Width="22" Height="22" Kind="{Binding Icon}"
+                                        Foreground="{Binding Category, Converter={StaticResource CategoryBrush}}" />
                       </Grid>
-                    </DataTemplate>
-                  </ItemsControl.ItemTemplate>
-                </ItemsControl>
-              </Expander>
-            </DataTemplate>
-          </ItemsControl.ItemTemplate>
-        </ItemsControl>
-      </ScrollViewer>
-      <common:LoadStateOverlay State="{Binding State}" ErrorMessage="{Binding ErrorMessage}"
-                               EmptyText="{Binding EmptyText}" RetryCommand="{Binding RescanCommand}" />
+                      <StackPanel Grid.Column="2" Margin="{StaticResource InlineGap}" VerticalAlignment="Center">
+                        <WrapPanel>
+                          <ui:TextBlock Margin="{StaticResource InlineGap}" VerticalAlignment="Center" FontTypography="BodyStrong" Text="{Binding Name}" />
+                          <Border Style="{StaticResource SafePill}">
+                            <StackPanel Orientation="Horizontal">
+                              <common:AppIcon Width="12" Height="12" Margin="0,0,4,0" Kind="Checkmark" Foreground="{DynamicResource SystemFillColorSuccessBrush}" />
+                              <TextBlock FontSize="12" Foreground="{DynamicResource SystemFillColorSuccessBrush}" Text="{l:Tr Clean_Safe}" />
+                            </StackPanel>
+                          </Border>
+                          <Border Style="{StaticResource ReviewPill}">
+                            <StackPanel Orientation="Horizontal">
+                              <common:AppIcon Width="12" Height="12" Margin="0,0,4,0" Kind="Eye" Foreground="{DynamicResource SystemFillColorCautionBrush}" />
+                              <TextBlock FontSize="12" Foreground="{DynamicResource SystemFillColorCautionBrush}" Text="{l:Tr Clean_Review}" />
+                            </StackPanel>
+                          </Border>
+                        </WrapPanel>
+                        <TextBlock Style="{StaticResource TertiaryText}" TextTrimming="CharacterEllipsis" Text="{Binding Note}" ToolTip="{Binding Note}" />
+                      </StackPanel>
+                      <StackPanel Grid.Column="3" Margin="{StaticResource CardGap}" VerticalAlignment="Center">
+                        <TextBlock HorizontalAlignment="Right" FontSize="16" FontWeight="SemiBold" Text="{Binding SizeText}" />
+                        <TextBlock HorizontalAlignment="Right" Style="{StaticResource TertiaryText}" Text="{Binding ItemsText}" />
+                      </StackPanel>
+                    </Grid>
+                  </Expander.Header>
+                  <ItemsControl ItemsSource="{Binding Targets}">
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                        <Grid Margin="{StaticResource RowSpacing}" Background="Transparent" ToolTip="{Binding PathsPreview}">
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="*" MaxWidth="200" />
+                            <ColumnDefinition Width="{StaticResource SizeColumnWidth}" />
+                          </Grid.ColumnDefinitions>
+                          <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsSelected}" AutomationProperties.Name="{Binding Label}" />
+                          <StackPanel Grid.Column="1" Margin="{StaticResource InlineGap}" VerticalAlignment="Center">
+                            <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Label}" />
+                            <TextBlock Style="{StaticResource TertiaryText}" TextTrimming="CharacterEllipsis" Text="{Binding DetailText}" />
+                          </StackPanel>
+                          <ProgressBar Grid.Column="2" Height="6" Margin="{StaticResource CardGap}" VerticalAlignment="Center"
+                                       Maximum="100" common:Motion.Value="{Binding Share}" />
+                          <TextBlock Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                     Style="{StaticResource SecondaryText}" Text="{Binding SizeText}" />
+                        </Grid>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </Expander>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </ScrollViewer>
+        <common:LoadStateOverlay State="{Binding State}" ErrorMessage="{Binding ErrorMessage}"
+                                 EmptyText="{Binding EmptyText}" RetryCommand="{Binding RescanCommand}" />
       </Grid>
 
-      <!-- Every rule checked and everything removed, always in view -->
-      <Border Margin="0" Padding="{StaticResource ListPadding}" Style="{StaticResource Surface}">
-        <DockPanel>
-          <TextBlock DockPanel.Dock="Top" Margin="8,4,8,8" FontWeight="SemiBold" Style="{StaticResource SecondaryText}" Text="{l:Tr Common_Details}" />
-          <ListBox ItemsSource="{Binding Activity}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-            <ListBox.ItemTemplate>
-              <DataTemplate>
-                <TextBlock Style="{StaticResource TertiaryText}" TextWrapping="Wrap" Text="{Binding}" />
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>
-        </DockPanel>
-      </Border>
+      <common:ActivityPanel ItemsSource="{Binding Activity}" />
     </common:SplitPanel>
 
-    <!-- The only way anything is removed: ticked rows, this button, then a confirmation -->
-    <DockPanel Grid.Row="3">
-      <ui:Button DockPanel.Dock="Right" Appearance="Danger" Command="{Binding RecycleSelectedCommand}" Content="{l:Tr Clean_Recycle}">
+    <!-- The only way anything is removed: ticked rows, this button, then a confirmation.
+         Recycle Bin removal can be undone, so it wears the safe color, not the danger red. -->
+    <DockPanel Grid.Row="4">
+      <ui:Button DockPanel.Dock="Right" Appearance="Success" Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"
+                 Command="{Binding RecycleSelectedCommand}" Content="{Binding RecycleText}" ToolTip="Del">
         <ui:Button.Icon>
           <common:AppIconElement Kind="Delete" />
         </ui:Button.Icon>

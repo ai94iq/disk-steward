@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using MoleWin.Core.Analyze;
 using MoleWin.Core.Monitor;
+using MoleWin.Core.Safety;
 
 namespace MoleWin.App.Features.Analyze;
 
@@ -10,13 +11,13 @@ public sealed partial class FolderNode : ObservableObject
 {
     private readonly Func<FolderNode, Task>? _expand;
 
-    public FolderNode(FolderEntry entry, FolderKind kind, FolderNode? parent, bool isProtected, Func<FolderNode, Task>? expand)
+    public FolderNode(FolderEntry entry, FolderKind kind, FolderNode? parent, ProtectionReason protection, Func<FolderNode, Task>? expand)
     {
         Name = entry.Name;
         Path = entry.Path;
         Kind = kind;
         Parent = parent;
-        IsProtected = isProtected;
+        Protection = protection;
         IsSystem = entry.IsSystem;
         _expand = expand;
         if (kind is FolderKind.Drive or FolderKind.Folder) Children.Add(Placeholder());
@@ -40,8 +41,20 @@ public sealed partial class FolderNode : ObservableObject
     public string Path { get; }
     public FolderKind Kind { get; }
     public FolderNode? Parent { get; }
-    public bool IsProtected { get; }
+    public ProtectionReason Protection { get; }
+    public bool IsProtected => Protection != ProtectionReason.None;
     public bool IsSystem { get; }
+
+    // Why a locked row cannot be ticked, in the user's terms; null when it can.
+    public string? LockText => IsSystem && !IsProtected ? Tr.Get("Analyze_Lock_VolumeSystem")
+        : Protection switch
+        {
+            ProtectionReason.None => null,
+            ProtectionReason.Windows or ProtectionReason.Programs or ProtectionReason.ProgramData
+                or ProtectionReason.AppOwnData or ProtectionReason.PersonalFolder or ProtectionReason.VolumeSystem
+                => Tr.Get($"Analyze_Lock_{Protection}"),
+            _ => Tr.Get("Analyze_Protected"),
+        };
     public bool IsDrive => Kind == FolderKind.Drive;
 
     // Drives only expand; protected and system items show but are never ticked.

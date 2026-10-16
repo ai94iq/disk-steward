@@ -142,7 +142,7 @@
                 </Grid.ColumnDefinitions>
                 <Border x:Name="Bar" Width="3" Height="16" HorizontalAlignment="Left" CornerRadius="2"
                         Background="{DynamicResource AccentFillColorDefaultBrush}" Visibility="Collapsed" />
-                <ToggleButton x:Name="Arrow" Focusable="False" ClickMode="Press"
+                <ToggleButton x:Name="Arrow" Margin="6,0,0,0" Focusable="False" ClickMode="Press"
                               IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
                   <ToggleButton.Template>
                     <ControlTemplate TargetType="ToggleButton">
@@ -199,6 +199,14 @@
     <Setter Property="FontWeight" Value="SemiBold" />
   </Style>
 
+  <!-- A small outlined label beside a name (Safe to remove, Review); the page sets its color. -->
+  <Style x:Key="Pill" TargetType="Border">
+    <Setter Property="CornerRadius" Value="10" />
+    <Setter Property="Padding" Value="8,1" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+  </Style>
+
   <!-- One outlined surface per section; never nested -->
   <Style x:Key="Surface" TargetType="Border">
     <Setter Property="Padding" Value="{StaticResource SurfacePadding}" />
@@ -207,5 +215,12 @@
     <Setter Property="Margin" Value="{StaticResource FieldSpacing}" />
     <Setter Property="BorderBrush" Value="{DynamicResource SurfaceStrokeColorDefaultBrush}" />
     <Setter Property="BorderThickness" Value="1" />
+  </Style>
+
+  <!-- A scan's progress: tighter than a content surface, so on a short window it leaves the
+       results most of the height. -->
+  <Style x:Key="StatusSurface" TargetType="Border" BasedOn="{StaticResource Surface}">
+    <Setter Property="Padding" Value="16,10" />
+    <Setter Property="Margin" Value="0,0,0,12" />
   </Style>
 </ResourceDictionary>

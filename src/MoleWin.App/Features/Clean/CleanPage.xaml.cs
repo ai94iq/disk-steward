@@ -12,5 +12,9 @@ public sealed partial class CleanPage : Page
         DataContext = viewModel;
         InitializeComponent();
         Loaded += async (_, _) => await viewModel.EnsureLoadedAsync();
+        // The page takes keyboard focus when opened so its shortcuts (F5, Del) work at once.
+        Focusable = true;
+        FocusVisualStyle = null;
+        Loaded += (_, _) => Focus();
     }
 }

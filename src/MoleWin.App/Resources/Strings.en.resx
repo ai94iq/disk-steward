@@ -17,11 +17,15 @@
   <data name="Analyze_DriveFree" xml:space="preserve"><value>{0} free of {1}</value></data>
   <data name="Analyze_Drives" xml:space="preserve"><value>This PC</value></data>
   <data name="Analyze_Elapsed" xml:space="preserve"><value>{0:%m}:{0:ss}</value></data>
-  <data name="Analyze_Hint" xml:space="preserve"><value>Tick what you want to remove. Nothing is removed until you confirm, and it goes to the Recycle Bin.</value></data>
+  <data name="Analyze_Hint" xml:space="preserve"><value>Ticked items go to the Recycle Bin after you confirm. Space ticks the selected row, Del moves ticked items.</value></data>
+  <data name="Analyze_Lock_AppOwnData" xml:space="preserve"><value>MoleWin's own data</value></data>
+  <data name="Analyze_Lock_PersonalFolder" xml:space="preserve"><value>Your folder; open it to clean inside</value></data>
+  <data name="Analyze_Lock_ProgramData" xml:space="preserve"><value>Shared data of installed programs</value></data>
+  <data name="Analyze_Lock_Programs" xml:space="preserve"><value>Programs; uninstall them in Apps</value></data>
+  <data name="Analyze_Lock_VolumeSystem" xml:space="preserve"><value>Windows needs this</value></data>
+  <data name="Analyze_Lock_Windows" xml:space="preserve"><value>Part of Windows</value></data>
   <data name="Analyze_LogDone" xml:space="preserve"><value>Finished {0} in {1:%m}:{1:ss}, {2:N0} files</value></data>
   <data name="Analyze_LogFailed" xml:space="preserve"><value>Could not recycle {0}: {1}</value></data>
-  <data name="Analyze_LogMeasured" xml:space="preserve"><value>{0}: {1}</value></data>
-  <data name="Analyze_LogMissing" xml:space="preserve"><value>Already gone: {0}</value></data>
   <data name="Analyze_LogNotRecyclable" xml:space="preserve"><value>Refused, this drive has no Recycle Bin: {0}</value></data>
   <data name="Analyze_LogProtected" xml:space="preserve"><value>Refused, protected: {0}</value></data>
   <data name="Analyze_LogRecycled" xml:space="preserve"><value>Moved to the Recycle Bin: {0}</value></data>
@@ -33,8 +37,6 @@
   <data name="Analyze_Selected" xml:space="preserve"><value>{0} selected, {1}</value></data>
   <data name="Analyze_Stop" xml:space="preserve"><value>Stop</value></data>
   <data name="Analyze_Summary" xml:space="preserve"><value>Expand a drive to see what uses the space.</value></data>
-  <data name="Analyze_SystemItem" xml:space="preserve"><value>Windows needs this</value></data>
-  <data name="Analyze_SystemTip" xml:space="preserve"><value>Windows uses this file or folder. MoleWin will not remove it.</value></data>
   <data name="Analyze_Up" xml:space="preserve"><value>Up</value></data>
   <data name="App_AlreadyRunning" xml:space="preserve"><value>The app is already running.</value></data>
   <data name="App_Name" xml:space="preserve"><value>MoleWin</value></data>
@@ -46,6 +48,7 @@
   <data name="Apps_LogLeftover" xml:space="preserve"><value>Leftover: {0} ({1})</value></data>
   <data name="Apps_LogRemoved" xml:space="preserve"><value>{0} is no longer installed</value></data>
   <data name="Apps_LogRunning" xml:space="preserve"><value>Uninstalling {0}</value></data>
+  <data name="Apps_NotReported" xml:space="preserve"><value>Not reported</value></data>
   <data name="Apps_RunFailed" xml:space="preserve"><value>The uninstaller for {0} did not start.</value></data>
   <data name="Apps_Running" xml:space="preserve"><value>Running the uninstaller for {0}</value></data>
   <data name="Apps_ColName" xml:space="preserve"><value>Name</value></data>
@@ -64,16 +67,24 @@
   <data name="Clean_Category_Gpu" xml:space="preserve"><value>Graphics drivers</value></data>
   <data name="Clean_Category_System" xml:space="preserve"><value>System</value></data>
   <data name="Clean_Confirm" xml:space="preserve"><value>Move {0} items ({1}) to the Recycle Bin? Nothing is deleted permanently; the space comes back when you empty the Recycle Bin.</value></data>
-  <data name="Clean_Found" xml:space="preserve"><value>{0} found in {1} places</value></data>
-  <data name="Clean_Hint" xml:space="preserve"><value>Tick what you want to remove. Nothing is removed until you confirm, and it goes to the Recycle Bin.</value></data>
+  <data name="Clean_HeadlineDetail" xml:space="preserve"><value>{0} found in {1} places in all. Groups marked Review can hold things you may want to keep.</value></data>
+  <data name="Clean_HeadlineRest" xml:space="preserve"><value> is cache and temporary data that rebuilds on its own.</value></data>
+  <data name="Clean_Hint" xml:space="preserve"><value>Ticked items go to the Recycle Bin after you confirm. Del moves them, F5 scans again.</value></data>
+  <data name="Clean_ItemsIn" xml:space="preserve"><value>{0} in {1}</value></data>
   <data name="Clean_Items_few" xml:space="preserve"><value>{0} items</value></data>
   <data name="Clean_Items_many" xml:space="preserve"><value>{0} items</value></data>
   <data name="Clean_Items_one" xml:space="preserve"><value>1 item</value></data>
   <data name="Clean_Items_other" xml:space="preserve"><value>{0} items</value></data>
   <data name="Clean_Items_two" xml:space="preserve"><value>{0} items</value></data>
   <data name="Clean_Items_zero" xml:space="preserve"><value>No items</value></data>
-  <data name="Clean_LogChecked" xml:space="preserve"><value>{0}: {1}</value></data>
-  <data name="Clean_LogDone" xml:space="preserve"><value>Scan finished in {0:%m}:{0:ss}</value></data>
+  <data name="Clean_LogDone" xml:space="preserve"><value>Scan finished in {0:%m}:{0:ss}: {1} in {2} places</value></data>
+  <data name="Clean_LogStarted" xml:space="preserve"><value>Scan started</value></data>
+  <data name="Clean_Note_AiTools" xml:space="preserve"><value>Chats and sessions older than 30 days, and editor caches. Removed chats cannot be resumed.</value></data>
+  <data name="Clean_Note_Apps" xml:space="preserve"><value>App caches. Most rebuild on next launch; open the group to check each one.</value></data>
+  <data name="Clean_Note_Browsers" xml:space="preserve"><value>Browser caches only. Sign-ins, history and bookmarks stay.</value></data>
+  <data name="Clean_Note_Developer" xml:space="preserve"><value>Package and build caches. Tools download them again when needed.</value></data>
+  <data name="Clean_Note_Gpu" xml:space="preserve"><value>Shader caches the graphics driver rebuilds. Games may load slower once.</value></data>
+  <data name="Clean_Note_System" xml:space="preserve"><value>Temporary files, error reports and logs older than a week.</value></data>
   <data name="Clean_Nothing" xml:space="preserve"><value>Nothing to clean right now.</value></data>
   <data name="Clean_Places_few" xml:space="preserve"><value>{0} places</value></data>
   <data name="Clean_Places_many" xml:space="preserve"><value>{0} places</value></data>
@@ -82,7 +93,11 @@
   <data name="Clean_Places_two" xml:space="preserve"><value>{0} places</value></data>
   <data name="Clean_Places_zero" xml:space="preserve"><value>No places</value></data>
   <data name="Clean_Recycle" xml:space="preserve"><value>Move to Recycle Bin</value></data>
+  <data name="Clean_RecycleAmount" xml:space="preserve"><value>Move {0} to the Recycle Bin</value></data>
   <data name="Clean_Rescan" xml:space="preserve"><value>Scan again</value></data>
+  <data name="Clean_Review" xml:space="preserve"><value>Review</value></data>
+  <data name="Clean_Safe" xml:space="preserve"><value>Safe to remove</value></data>
+  <data name="Clean_Scanned" xml:space="preserve"><value>Checked {0} places in {1:%m}:{1:ss}</value></data>
   <data name="Clean_Scanning" xml:space="preserve"><value>Checking {0}</value></data>
   <data name="Clean_SelectAll" xml:space="preserve"><value>Select all</value></data>
   <data name="Clean_Selected" xml:space="preserve"><value>{0} selected, {1}</value></data>
@@ -173,6 +188,7 @@
   <data name="Clean_Target_yarn-cache" xml:space="preserve"><value>Yarn cache</value></data>
   <data name="Clean_Target_zed-cache" xml:space="preserve"><value>Zed cache</value></data>
   <data name="Common_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Common_LogRecycled" xml:space="preserve"><value>Moved {0:N0} items to the Recycle Bin</value></data>
   <data name="Common_No" xml:space="preserve"><value>No</value></data>
   <data name="Common_Ok" xml:space="preserve"><value>OK</value></data>
   <data name="Common_Retry" xml:space="preserve"><value>Retry</value></data>

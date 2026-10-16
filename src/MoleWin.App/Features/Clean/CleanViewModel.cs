@@ -12,7 +12,6 @@ namespace MoleWin.App.Features.Clean;
 // Nothing is ticked for the user; ticked targets go to the Recycle Bin after a confirmation.
 public sealed partial class CleanViewModel : PageViewModel
 {
-    private const int MaxActivity = 400;
     private const int Parallelism = 4;
     private readonly CleanScanner _scanner;
     private readonly IReadOnlyList<CleanTarget> _targets;
@@ -29,6 +28,7 @@ public sealed partial class CleanViewModel : PageViewModel
         _dialogs = dialogs;
         _log = log;
         EmptyText = Tr.Get("Clean_Nothing");
+        RecycleText = Tr.Get("Clean_Recycle");
     }
 
     public TimeSpan RefreshInterval { get; init; } = TimeSpan.FromMilliseconds(200);
@@ -40,7 +40,11 @@ public sealed partial class CleanViewModel : PageViewModel
     [ObservableProperty] public partial string? CountersText { get; set; }
     [ObservableProperty] public partial long TotalBytes { get; set; }
     [ObservableProperty] public partial string? TotalText { get; set; }
-    [ObservableProperty] public partial string? FoundText { get; set; }
+
+    // After a scan: how much of the total rebuilds on its own, the header's scan summary.
+    [ObservableProperty] public partial string? SafeText { get; set; }
+    [ObservableProperty] public partial string? HeadlineDetail { get; set; }
+    [ObservableProperty] public partial string? ScanSummary { get; set; }
     [ObservableProperty] public partial string EmptyText { get; set; }
 
     [ObservableProperty]
@@ -50,10 +54,12 @@ public sealed partial class CleanViewModel : PageViewModel
     [ObservableProperty] public partial long SelectedBytes { get; set; }
     [ObservableProperty] public partial string? SelectedText { get; set; }
 
+    // The button says how much it will move.
+    [ObservableProperty] public partial string? RecycleText { get; set; }
+
     public ObservableCollection<CleanCategoryRow> Categories { get; } = [];
 
-    // Newest first.
-    public ObservableCollection<string> Activity { get; } = [];
+    public ActivityLog Activity { get; } = [];
 
     protected override async Task<bool> LoadCoreAsync(CancellationToken ct)
     {
@@ -63,6 +69,8 @@ public sealed partial class CleanViewModel : PageViewModel
         var clock = Stopwatch.StartNew();
         var current = new ConcurrentDictionary<string, byte>();
         IsScanning = true;
+        ScanSummary = null;
+        Activity.Add(Tr.Get("Clean_LogStarted"));
         try
         {
             var work = Task.Run(() => Parallel.ForEach(_targets, new ParallelOptions { MaxDegreeOfParallelism = Parallelism, CancellationToken = ct },
@@ -84,7 +92,8 @@ public sealed partial class CleanViewModel : PageViewModel
                 await Task.Delay(RefreshInterval, ct);
             }
             await work;
-            Log(Tr.Format("Clean_LogDone", clock.Elapsed));
+            Activity.Add(Tr.Format("Clean_LogDone", clock.Elapsed, TotalText ?? SizeText.Format(0), Categories.Sum(c => c.Targets.Count)));
+            ScanSummary = Tr.Format("Clean_Scanned", _targets.Count, clock.Elapsed);
         }
         finally
         {
@@ -108,17 +117,8 @@ public sealed partial class CleanViewModel : PageViewModel
 
         var results = await Task.Run(() => _remover.Recycle(items.Select(i => i.Path)));
         foreach (var result in results)
-        {
             _log.LogInformation("Clean recycle {Path}: {Outcome} {Error}", result.Path, result.Outcome, result.Error);
-            Log(result.Outcome switch
-            {
-                RemovalOutcome.Recycled => Tr.Format("Analyze_LogRecycled", result.Path),
-                RemovalOutcome.Protected => Tr.Format("Analyze_LogProtected", result.Path),
-                RemovalOutcome.NotRecyclable => Tr.Format("Analyze_LogNotRecyclable", result.Path),
-                RemovalOutcome.Missing => Tr.Format("Analyze_LogMissing", result.Path),
-                _ => Tr.Format("Analyze_LogFailed", result.Path, result.Error),
-            });
-        }
+        Activity.AddRemovals(results);
         await ReloadCommand.ExecuteAsync(null);
     }
 
@@ -129,11 +129,9 @@ public sealed partial class CleanViewModel : PageViewModel
         var any = false;
         while (arrived.TryDequeue(out var finding))
         {
-            var label = Label(finding.Target.Id);
-            Log(Tr.Format("Clean_LogChecked", label, SizeText.Format(finding.Size)));
             if (finding.Items.Count == 0) continue;
 
-            var row = new CleanTargetRow(finding, label);
+            var row = new CleanTargetRow(finding, Label(finding.Target.Id));
             row.PropertyChanged += OnRowChanged;
             CategoryFor(finding.Target.Category).Add(row);
             TotalBytes += finding.Size;
@@ -142,7 +140,8 @@ public sealed partial class CleanViewModel : PageViewModel
         if (!any) return;
 
         TotalText = SizeText.Format(TotalBytes);
-        FoundText = Tr.Format("Clean_Found", TotalText, Categories.Sum(c => c.Targets.Count));
+        SafeText = SizeText.Format(Categories.Where(c => c.IsSafe).Sum(c => c.Bytes));
+        HeadlineDetail = Tr.Format("Clean_HeadlineDetail", TotalText, Categories.Sum(c => c.Targets.Count));
         // Bars compare places within their own group; one huge cache elsewhere would flatten them.
         foreach (var category in Categories)
         {
@@ -168,7 +167,8 @@ public sealed partial class CleanViewModel : PageViewModel
         Categories.Clear();
         TotalBytes = 0;
         TotalText = null;
-        FoundText = null;
+        SafeText = null;
+        HeadlineDetail = null;
         UpdateSelection();
     }
 
@@ -183,12 +183,7 @@ public sealed partial class CleanViewModel : PageViewModel
         SelectedCount = picked.Count;
         SelectedBytes = picked.Sum(t => t.Bytes);
         SelectedText = Tr.Format("Clean_Selected", SelectedCount, SizeText.Format(SelectedBytes));
-    }
-
-    private void Log(string line)
-    {
-        Activity.Insert(0, line);
-        while (Activity.Count > MaxActivity) Activity.RemoveAt(Activity.Count - 1);
+        RecycleText = SelectedCount > 0 ? Tr.Format("Clean_RecycleAmount", SizeText.Format(SelectedBytes)) : Tr.Get("Clean_Recycle");
     }
 
     private static string Label(string id) => Tr.Get($"Clean_Target_{id}");

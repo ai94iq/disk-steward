@@ -69,6 +69,15 @@ public sealed class HistoryChart : FrameworkElement
         set => SetValue(GridBrushProperty, value);
     }
 
+    private static readonly Brush AreaFade = CreateAreaFade();
+
+    private static Brush CreateAreaFade()
+    {
+        var fade = new LinearGradientBrush(Color.FromArgb(77, 0, 0, 0), Color.FromArgb(0, 0, 0, 0), 90);
+        fade.Freeze();
+        return fade;
+    }
+
     protected override void OnRender(DrawingContext dc)
     {
         if (ActualWidth <= 0 || ActualHeight <= 0) return;
@@ -106,8 +115,9 @@ public sealed class HistoryChart : FrameworkElement
         line.Freeze();
         area.Freeze();
 
-        // The area is the stroke at low opacity: one color, no gradient.
-        dc.PushOpacity(0.18);
+        // The area is the stroke fading out toward the baseline, so a flat stretch still reads
+        // as a line with a wash under it, not as a solid bar.
+        dc.PushOpacityMask(AreaFade);
         dc.DrawGeometry(Stroke, null, area);
         dc.Pop();
         dc.DrawGeometry(null, new Pen(Stroke, 2) { LineJoin = PenLineJoin.Round }, line);

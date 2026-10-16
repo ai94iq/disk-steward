@@ -9,6 +9,10 @@
       ScrollViewer.CanContentScroll="False">
   <!-- CanContentScroll="False": WPF-UI's NavigationView then skips its own scroll viewer and
        the tree below gets a real height (it wraps the page when this is true, the Page default). -->
+  <Page.InputBindings>
+    <KeyBinding Key="F5" Command="{Binding ReloadCommand}" />
+    <KeyBinding Key="Delete" Command="{Binding RecycleSelectedCommand}" />
+  </Page.InputBindings>
   <Page.Resources>
     <BooleanToVisibilityConverter x:Key="BoolVisible" />
 
@@ -45,23 +49,19 @@
         </DataTrigger>
       </Style.Triggers>
     </Style>
-    <Style x:Key="LockedTag" TargetType="StackPanel">
-      <Setter Property="Visibility" Value="Collapsed" />
+    <!-- Locked rows say why (the reason comes from the safety rules), and have no tick box
+         at all rather than a dead one. -->
+    <Style x:Key="LockedTag" TargetType="DockPanel">
       <Style.Triggers>
-        <DataTrigger Binding="{Binding IsSystem}" Value="True">
-          <Setter Property="Visibility" Value="Visible" />
-        </DataTrigger>
-        <DataTrigger Binding="{Binding IsProtected}" Value="True">
-          <Setter Property="Visibility" Value="Visible" />
+        <DataTrigger Binding="{Binding LockText}" Value="{x:Null}">
+          <Setter Property="Visibility" Value="Collapsed" />
         </DataTrigger>
       </Style.Triggers>
     </Style>
-    <!-- System items: Windows uses them. Protected items: MoleWin's own safety rules. -->
-    <Style x:Key="LockedText" TargetType="TextBlock" BasedOn="{StaticResource TertiaryText}">
-      <Setter Property="Text" Value="{l:Tr Analyze_Protected}" />
+    <Style x:Key="TickBox" TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
       <Style.Triggers>
-        <DataTrigger Binding="{Binding IsSystem}" Value="True">
-          <Setter Property="Text" Value="{l:Tr Analyze_SystemItem}" />
+        <DataTrigger Binding="{Binding CanSelect}" Value="False">
+          <Setter Property="Visibility" Value="Hidden" />
         </DataTrigger>
       </Style.Triggers>
     </Style>
@@ -78,7 +78,7 @@
     <common:PageHeader Grid.Row="0" Kind="DataPie" Title="{l:Tr Nav_Analyze}" Summary="{l:Tr Analyze_Summary}" />
 
     <!-- Live measuring: what it is reading now, how long, how much -->
-    <Border Grid.Row="1" Style="{StaticResource Surface}" Visibility="{Binding IsScanning, Converter={StaticResource BoolVisible}}">
+    <Border Grid.Row="1" Style="{StaticResource StatusSurface}" Visibility="{Binding IsScanning, Converter={StaticResource BoolVisible}}">
       <DockPanel>
         <ui:Button DockPanel.Dock="Right" VerticalAlignment="Center" Command="{Binding StopCommand}" Content="{l:Tr Analyze_Stop}">
           <ui:Button.Icon>
@@ -89,7 +89,7 @@
           <ProgressBar Margin="{StaticResource LabelSpacing}" IsIndeterminate="True" />
           <DockPanel>
             <TextBlock DockPanel.Dock="Right" Style="{StaticResource SecondaryText}" Text="{Binding ElapsedText}" />
-            <TextBlock Style="{StaticResource SecondaryText}" Text="{Binding CountersText}" />
+            <TextBlock Style="{StaticResource SecondaryText}" TextTrimming="CharacterEllipsis" Text="{Binding CountersText}" />
           </DockPanel>
           <TextBlock Style="{StaticResource TertiaryText}" TextTrimming="CharacterEllipsis" Text="{Binding CurrentFolder}" />
         </StackPanel>
@@ -97,10 +97,10 @@
     </Border>
 
     <!-- Details on the right when there is room, below the tree when there is not -->
-    <common:SplitPanel Grid.Row="2" Margin="{StaticResource FieldSpacing}">
+    <common:SplitPanel Grid.Row="2" Margin="{StaticResource FieldSpacing}" SideWidth="240">
       <Border Margin="0" Padding="{StaticResource ListPadding}" Style="{StaticResource Surface}">
         <Grid>
-          <TreeView ItemsSource="{Binding Roots}" ItemContainerStyle="{StaticResource NodeContainer}"
+          <TreeView ItemsSource="{Binding Roots}" ItemContainerStyle="{StaticResource NodeContainer}" PreviewKeyDown="OnTreeKeyDown"
                     VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Standard"
                     Visibility="{Binding State, Converter={StaticResource LoadStateVisible}, ConverterParameter='Idle,Loaded'}">
             <TreeView.ItemTemplate>
@@ -135,15 +135,15 @@
                       <ColumnDefinition Width="*" MaxWidth="200" />
                       <ColumnDefinition Width="{StaticResource SizeColumnWidth}" />
                     </Grid.ColumnDefinitions>
-                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsSelected}" IsEnabled="{Binding CanSelect}" />
+                    <CheckBox VerticalAlignment="Center" Style="{StaticResource TickBox}" IsChecked="{Binding IsSelected}" AutomationProperties.Name="{Binding Name}" />
                     <common:AppIcon Grid.Column="1" Width="18" Height="18" Margin="{StaticResource InlineGap}" Style="{StaticResource FileIcon}" />
                     <StackPanel Grid.Column="2" VerticalAlignment="Center">
                       <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Name}" />
-                      <StackPanel Orientation="Horizontal" Style="{StaticResource LockedTag}" ToolTip="{l:Tr Analyze_SystemTip}">
-                        <common:AppIcon Width="14" Height="14" Margin="{StaticResource InlineGap}" Kind="Shield"
-                                        Foreground="{DynamicResource SystemFillColorCautionBrush}" />
-                        <TextBlock Style="{StaticResource LockedText}" />
-                      </StackPanel>
+                      <DockPanel Style="{StaticResource LockedTag}" ToolTip="{Binding LockText}">
+                        <common:AppIcon Width="14" Height="14" Margin="{StaticResource InlineGap}" Kind="LockClosed"
+                                        Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                        <TextBlock Style="{StaticResource TertiaryText}" TextTrimming="CharacterEllipsis" Text="{Binding LockText}" />
+                      </DockPanel>
                     </StackPanel>
                     <ProgressBar Grid.Column="3" Height="6" VerticalAlignment="Center" Maximum="100" common:Motion.Value="{Binding Share}" />
                     <Grid Grid.Column="4" VerticalAlignment="Center">
@@ -160,24 +160,13 @@
         </Grid>
       </Border>
 
-      <!-- Every folder read and everything removed, always in view -->
-      <Border Margin="0" Padding="{StaticResource ListPadding}" Style="{StaticResource Surface}">
-        <DockPanel>
-          <TextBlock DockPanel.Dock="Top" Margin="8,4,8,8" FontWeight="SemiBold" Style="{StaticResource SecondaryText}" Text="{l:Tr Common_Details}" />
-          <ListBox ItemsSource="{Binding Activity}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-            <ListBox.ItemTemplate>
-              <DataTemplate>
-                <TextBlock Style="{StaticResource TertiaryText}" TextWrapping="Wrap" Text="{Binding}" />
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>
-        </DockPanel>
-      </Border>
+      <common:ActivityPanel ItemsSource="{Binding Activity}" />
     </common:SplitPanel>
 
-    <!-- The only way anything is removed: ticked rows, this button, then a confirmation -->
+    <!-- The only way anything is removed: ticked rows, this button, then a confirmation.
+         The user picked these, not Mole, so the button is the accent, not the safe color. -->
     <DockPanel Grid.Row="3">
-      <ui:Button DockPanel.Dock="Right" Appearance="Danger" Command="{Binding RecycleSelectedCommand}" Content="{l:Tr Analyze_Recycle}">
+      <ui:Button DockPanel.Dock="Right" Appearance="Primary" Command="{Binding RecycleSelectedCommand}" Content="{l:Tr Analyze_Recycle}" ToolTip="Del">
         <ui:Button.Icon>
           <common:AppIconElement Kind="Delete" />
         </ui:Button.Icon>

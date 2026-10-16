@@ -9,6 +9,14 @@ public sealed partial class CleanCategoryRow(CleanCategory category) : Observabl
 {
     public CleanCategory Category { get; } = category;
     public string Name { get; } = Tr.Get($"Clean_Category_{category}");
+
+    // What removing the group does, in plain words.
+    public string Note { get; } = Tr.Get($"Clean_Note_{category}");
+
+    // Caches and temp data that rebuild on their own. Apps and AI tools hold things a person
+    // may want back (offline media, old chats), so they are marked for review instead.
+    public bool IsSafe { get; } = category is CleanCategory.System or CleanCategory.Browsers
+        or CleanCategory.Gpu or CleanCategory.Developer;
     public ObservableCollection<CleanTargetRow> Targets { get; } = [];
 
     public IconKind Icon { get; } = category switch

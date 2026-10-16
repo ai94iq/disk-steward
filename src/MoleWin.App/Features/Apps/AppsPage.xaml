@@ -8,8 +8,28 @@
       ScrollViewer.CanContentScroll="False">
   <!-- CanContentScroll="False": WPF-UI's NavigationView then skips its own scroll viewer and
        the lists below get a real height (it wraps the page when this is true, the Page default). -->
+  <Page.InputBindings>
+    <KeyBinding Key="F5" Command="{Binding ReloadCommand}" />
+  </Page.InputBindings>
   <Page.Resources>
     <BooleanToVisibilityConverter x:Key="BoolVisible" />
+    <!-- "Not reported" recedes so real dates and sizes stay the ones the eye finds. -->
+    <Style x:Key="DateCell" TargetType="TextBlock" BasedOn="{StaticResource SecondaryText}">
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding HasDate}" Value="False">
+          <Setter Property="Foreground" Value="{DynamicResource TextFillColorTertiaryBrush}" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+    <Style x:Key="SizeCell" TargetType="TextBlock">
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding HasSize}" Value="False">
+          <Setter Property="FontWeight" Value="Normal" />
+          <Setter Property="Foreground" Value="{DynamicResource TextFillColorTertiaryBrush}" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
     <Style x:Key="CollapsedWithoutLeftovers" TargetType="Border" BasedOn="{StaticResource Surface}">
       <Style.Triggers>
         <DataTrigger Binding="{Binding Leftovers.Count}" Value="0">
@@ -31,7 +51,7 @@
       <common:PageHeader.Actions>
         <!-- Search and sort, as in Windows Settings > Installed apps -->
         <StackPanel Orientation="Horizontal">
-          <ui:TextBox MinWidth="200" Margin="{StaticResource CardGap}"
+          <ui:TextBox MinWidth="200" ToolTip="Ctrl+F" Margin="{StaticResource CardGap}"
                       PlaceholderText="{l:Tr Apps_Search}" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}">
             <ui:TextBox.Icon>
               <common:AppIconElement Kind="Search" />
@@ -102,8 +122,8 @@
                     <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Name}" />
                     <TextBlock Style="{StaticResource TertiaryText}" TextTrimming="CharacterEllipsis" Text="{Binding Detail}" />
                   </StackPanel>
-                  <TextBlock Grid.Column="2" VerticalAlignment="Center" Style="{StaticResource SecondaryText}" Text="{Binding DateText}" />
-                  <TextBlock Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding SizeText}" />
+                  <TextBlock Grid.Column="2" VerticalAlignment="Center" Style="{StaticResource DateCell}" Text="{Binding DateText}" />
+                  <TextBlock Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource SizeCell}" Text="{Binding SizeText}" />
                 </Grid>
               </DataTemplate>
             </ListBox.ItemTemplate>
@@ -128,7 +148,7 @@
                 </DataTemplate>
               </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <ui:Button HorizontalAlignment="Right" Appearance="Danger" Command="{Binding RecycleLeftoversCommand}" Content="{l:Tr Analyze_Recycle}">
+            <ui:Button HorizontalAlignment="Right" Appearance="Primary" Command="{Binding RecycleLeftoversCommand}" Content="{l:Tr Analyze_Recycle}">
               <ui:Button.Icon>
                 <common:AppIconElement Kind="Delete" />
               </ui:Button.Icon>
