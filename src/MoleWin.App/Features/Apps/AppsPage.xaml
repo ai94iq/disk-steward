@@ -47,7 +47,7 @@
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
 
-    <common:PageHeader Grid.Row="0" Kind="Apps" Title="{l:Tr Nav_Apps}" Summary="{Binding CountText}">
+    <common:PageHeader Grid.Row="0" Title="{l:Tr Nav_Apps}" Summary="{Binding CountText}">
       <common:PageHeader.Actions>
         <!-- Search and sort, as in Windows Settings > Installed apps -->
         <StackPanel Orientation="Horizontal">

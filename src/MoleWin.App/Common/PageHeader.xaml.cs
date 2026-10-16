@@ -1,13 +1,9 @@
 using System.Windows.Controls;
-using MoleWin.App.Resources;
 
 namespace MoleWin.App.Common;
 
 public sealed partial class PageHeader : UserControl
 {
-    public static readonly DependencyProperty KindProperty = DependencyProperty.Register(
-        nameof(Kind), typeof(IconKind), typeof(PageHeader), new PropertyMetadata(default(IconKind)));
-
     public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(
         nameof(Title), typeof(string), typeof(PageHeader), new PropertyMetadata(null));
 
@@ -17,9 +13,8 @@ public sealed partial class PageHeader : UserControl
     public static readonly DependencyProperty ActionsProperty = DependencyProperty.Register(
         nameof(Actions), typeof(object), typeof(PageHeader), new PropertyMetadata(null));
 
-    // Room the title keeps before the actions move under it; icon tile plus its gap beside.
+    // Room the title keeps before the actions move under it.
     private const double TitleMinWidth = 240;
-    private const double IconWidth = 64;
 
     public PageHeader()
     {
@@ -31,18 +26,12 @@ public sealed partial class PageHeader : UserControl
     private void PlaceActions()
     {
         ActionsHost.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-        var below = ActualWidth < IconWidth + TitleMinWidth + ActionsHost.DesiredSize.Width;
+        var below = ActualWidth < TitleMinWidth + ActionsHost.DesiredSize.Width;
         Grid.SetRow(ActionsHost, below ? 1 : 0);
-        Grid.SetColumn(ActionsHost, below ? 1 : 2);
+        Grid.SetColumn(ActionsHost, below ? 0 : 1);
         Grid.SetColumnSpan(ActionsHost, below ? 2 : 1);
         ActionsHost.HorizontalAlignment = below ? HorizontalAlignment.Left : HorizontalAlignment.Right;
         ActionsHost.Margin = below ? new Thickness(0, 12, 0, 0) : default;
-    }
-
-    public IconKind Kind
-    {
-        get => (IconKind)GetValue(KindProperty);
-        set => SetValue(KindProperty, value);
     }
 
     public string? Title

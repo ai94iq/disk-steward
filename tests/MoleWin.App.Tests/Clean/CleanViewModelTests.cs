@@ -59,7 +59,8 @@ public sealed class CleanViewModelTests : IDisposable
 
         await vm.EnsureLoadedAsync();
 
-        Assert.Equal(MoleWin.App.Localization.SizeText.Format(300), vm.SafeText);
+        Assert.Contains(MoleWin.App.Localization.SizeText.Format(300), vm.SafeText, StringComparison.Ordinal);
+        Assert.Contains(MoleWin.App.Localization.SizeText.Format(100), vm.ReviewText, StringComparison.Ordinal);
         Assert.False(vm.Categories.Single(c => c.Category == CleanCategory.AiTools).IsSafe);
         Assert.True(vm.Categories.Single(c => c.Category == CleanCategory.Browsers).IsSafe);
     }

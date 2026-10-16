@@ -17,7 +17,7 @@
   <data name="Analyze_DriveFree" xml:space="preserve"><value>{0} free of {1}</value></data>
   <data name="Analyze_Drives" xml:space="preserve"><value>This PC</value></data>
   <data name="Analyze_Elapsed" xml:space="preserve"><value>{0:%m}:{0:ss}</value></data>
-  <data name="Analyze_Hint" xml:space="preserve"><value>Ticked items go to the Recycle Bin after you confirm. Space ticks the selected row, Del moves ticked items.</value></data>
+  <data name="Analyze_Hint" xml:space="preserve"><value>Ticked items go to the Recycle Bin after you confirm.</value></data>
   <data name="Analyze_Lock_AppOwnData" xml:space="preserve"><value>MoleWin's own data</value></data>
   <data name="Analyze_Lock_PersonalFolder" xml:space="preserve"><value>Your folder; open it to clean inside</value></data>
   <data name="Analyze_Lock_ProgramData" xml:space="preserve"><value>Shared data of installed programs</value></data>
@@ -43,7 +43,7 @@
   <data name="Apps_Clean" xml:space="preserve"><value>{0} left nothing behind.</value></data>
   <data name="Apps_Confirm" xml:space="preserve"><value>Run the uninstaller for {0}? Its own window will guide you, and Windows may ask for permission.</value></data>
   <data name="Apps_Count" xml:space="preserve"><value>{0} of {1} apps</value></data>
-  <data name="Apps_Hint" xml:space="preserve"><value>Select an app and uninstall it with its own uninstaller. Leftovers are shown afterwards; nothing else is removed unless you tick it.</value></data>
+  <data name="Apps_Hint" xml:space="preserve"><value>Uninstall runs the app's own uninstaller. Leftovers are listed after, unticked.</value></data>
   <data name="Apps_LeftoversFound" xml:space="preserve"><value>{0} left {1} items behind. Tick what to remove.</value></data>
   <data name="Apps_LogLeftover" xml:space="preserve"><value>Leftover: {0} ({1})</value></data>
   <data name="Apps_LogRemoved" xml:space="preserve"><value>{0} is no longer installed</value></data>
@@ -67,9 +67,8 @@
   <data name="Clean_Category_Gpu" xml:space="preserve"><value>Graphics drivers</value></data>
   <data name="Clean_Category_System" xml:space="preserve"><value>System</value></data>
   <data name="Clean_Confirm" xml:space="preserve"><value>Move {0} items ({1}) to the Recycle Bin? Nothing is deleted permanently; the space comes back when you empty the Recycle Bin.</value></data>
-  <data name="Clean_HeadlineDetail" xml:space="preserve"><value>{0} found in {1} places in all.</value></data>
-  <data name="Clean_HeadlineRest" xml:space="preserve"><value> is cache and temporary data that rebuilds on its own.</value></data>
-  <data name="Clean_Hint" xml:space="preserve"><value>Ticked items go to the Recycle Bin after you confirm. Del moves them, F5 scans again.</value></data>
+  <data name="Clean_Headline" xml:space="preserve"><value>{0} found in {1} places</value></data>
+  <data name="Clean_Hint" xml:space="preserve"><value>Ticked items go to the Recycle Bin after you confirm.</value></data>
   <data name="Clean_ItemsIn" xml:space="preserve"><value>{0} in {1}</value></data>
   <data name="Clean_Items_few" xml:space="preserve"><value>{0} items</value></data>
   <data name="Clean_Items_many" xml:space="preserve"><value>{0} items</value></data>
@@ -79,12 +78,12 @@
   <data name="Clean_Items_zero" xml:space="preserve"><value>No items</value></data>
   <data name="Clean_LogDone" xml:space="preserve"><value>Scan finished in {0:%m}:{0:ss}: {1} in {2} places</value></data>
   <data name="Clean_LogStarted" xml:space="preserve"><value>Scan started</value></data>
-  <data name="Clean_Note_AiTools" xml:space="preserve"><value>Chats and sessions older than 30 days, and editor caches. Removed chats cannot be resumed.</value></data>
-  <data name="Clean_Note_Apps" xml:space="preserve"><value>App caches. Most rebuild on next launch; open the group to check each one.</value></data>
-  <data name="Clean_Note_Browsers" xml:space="preserve"><value>Browser caches only. Sign-ins, history and bookmarks stay.</value></data>
-  <data name="Clean_Note_Developer" xml:space="preserve"><value>Package and build caches. Tools download them again when needed.</value></data>
-  <data name="Clean_Note_Gpu" xml:space="preserve"><value>Shader caches the graphics driver rebuilds. Games may load slower once.</value></data>
-  <data name="Clean_Note_System" xml:space="preserve"><value>Temporary files, error reports and logs older than a week.</value></data>
+  <data name="Clean_Note_AiTools" xml:space="preserve"><value>Chats over 30 days old, and editor caches</value></data>
+  <data name="Clean_Note_Apps" xml:space="preserve"><value>App caches; most rebuild on next launch</value></data>
+  <data name="Clean_Note_Browsers" xml:space="preserve"><value>Caches only; sign-ins, history and bookmarks stay</value></data>
+  <data name="Clean_Note_Developer" xml:space="preserve"><value>Package caches; tools download them again</value></data>
+  <data name="Clean_Note_Gpu" xml:space="preserve"><value>Shader caches; games may load slower once</value></data>
+  <data name="Clean_Note_System" xml:space="preserve"><value>Temp files, error reports and logs over a week old</value></data>
   <data name="Clean_Nothing" xml:space="preserve"><value>Nothing to clean right now.</value></data>
   <data name="Clean_Places_few" xml:space="preserve"><value>{0} places</value></data>
   <data name="Clean_Places_many" xml:space="preserve"><value>{0} places</value></data>
@@ -95,8 +94,10 @@
   <data name="Clean_Recycle" xml:space="preserve"><value>Move to Recycle Bin</value></data>
   <data name="Clean_RecycleAmount" xml:space="preserve"><value>Move {0} to the Recycle Bin</value></data>
   <data name="Clean_Rescan" xml:space="preserve"><value>Scan again</value></data>
-  <data name="Clean_Review" xml:space="preserve"><value>Review first: may hold things you want to keep</value></data>
-  <data name="Clean_Safe" xml:space="preserve"><value>Safe to remove: rebuilds on its own</value></data>
+  <data name="Clean_Review" xml:space="preserve"><value>Review first</value></data>
+  <data name="Clean_ReviewAmount" xml:space="preserve"><value>{0} to review first</value></data>
+  <data name="Clean_Safe" xml:space="preserve"><value>Safe to remove</value></data>
+  <data name="Clean_SafeAmount" xml:space="preserve"><value>{0} safe to remove</value></data>
   <data name="Clean_Scanned" xml:space="preserve"><value>Checked {0} places in {1:%m}:{1:ss}</value></data>
   <data name="Clean_Scanning" xml:space="preserve"><value>Checking {0}</value></data>
   <data name="Clean_SelectAll" xml:space="preserve"><value>Select all</value></data>
@@ -211,6 +212,7 @@
   <data name="Monitor_DriveFree" xml:space="preserve"><value>{0:N0} GB free of {1:N0} GB</value></data>
   <data name="Monitor_DriveRemovable" xml:space="preserve"><value>{0}, removable</value></data>
   <data name="Monitor_Drives" xml:space="preserve"><value>Drives</value></data>
+  <data name="Monitor_HealthScore" xml:space="preserve"><value>Health score</value></data>
   <data name="Monitor_Issue_Cpu" xml:space="preserve"><value>High CPU load</value></data>
   <data name="Monitor_Issue_Disk" xml:space="preserve"><value>A drive is almost full</value></data>
   <data name="Monitor_Issue_Memory" xml:space="preserve"><value>Memory almost full</value></data>

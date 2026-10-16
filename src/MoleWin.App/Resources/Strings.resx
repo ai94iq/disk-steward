@@ -17,7 +17,7 @@
   <data name="Analyze_DriveFree" xml:space="preserve"><value>{0} متاحة من {1}</value></data>
   <data name="Analyze_Drives" xml:space="preserve"><value>هذا الحاسوب</value></data>
   <data name="Analyze_Elapsed" xml:space="preserve"><value>{0:%m}:{0:ss}</value></data>
-  <data name="Analyze_Hint" xml:space="preserve"><value>تذهب العناصر المحددة إلى سلة المحذوفات بعد تأكيدك. المسافة تحدد الصف المختار، وDel ينقل المحدد.</value></data>
+  <data name="Analyze_Hint" xml:space="preserve"><value>تذهب العناصر المحددة إلى سلة المحذوفات بعد تأكيدك.</value></data>
   <data name="Analyze_Lock_AppOwnData" xml:space="preserve"><value>بيانات MoleWin نفسه</value></data>
   <data name="Analyze_Lock_PersonalFolder" xml:space="preserve"><value>مجلدك؛ افتحه لتنظيف ما بداخله</value></data>
   <data name="Analyze_Lock_ProgramData" xml:space="preserve"><value>بيانات مشتركة للبرامج المثبتة</value></data>
@@ -43,7 +43,7 @@
   <data name="Apps_Clean" xml:space="preserve"><value>لم يترك {0} أي بقايا.</value></data>
   <data name="Apps_Confirm" xml:space="preserve"><value>تشغيل أداة إلغاء تثبيت {0}؟ ستقودك نافذتها، وقد يطلب Windows الإذن.</value></data>
   <data name="Apps_Count" xml:space="preserve"><value>{0} من {1} تطبيق</value></data>
-  <data name="Apps_Hint" xml:space="preserve"><value>اختر تطبيقًا وألغِ تثبيته بأداة الإزالة الخاصة به. تظهر البقايا بعد ذلك، ولا يُزال شيء آخر إلا إذا حددته.</value></data>
+  <data name="Apps_Hint" xml:space="preserve"><value>يشغّل إلغاء التثبيت أداة الإزالة الخاصة بالتطبيق. تُعرض البقايا بعدها دون تحديد.</value></data>
   <data name="Apps_LeftoversFound" xml:space="preserve"><value>ترك {0} عدد {1} من البقايا. حدد ما تريد إزالته.</value></data>
   <data name="Apps_LogLeftover" xml:space="preserve"><value>بقايا: {0} ({1})</value></data>
   <data name="Apps_LogRemoved" xml:space="preserve"><value>لم يعد {0} مثبتًا</value></data>
@@ -67,9 +67,8 @@
   <data name="Clean_Category_Gpu" xml:space="preserve"><value>برامج تشغيل الرسوميات</value></data>
   <data name="Clean_Category_System" xml:space="preserve"><value>النظام</value></data>
   <data name="Clean_Confirm" xml:space="preserve"><value>نقل {0} عنصر ({1}) إلى سلة المحذوفات؟ لا يُحذف شيء نهائيًا، وتعود المساحة عند إفراغ سلة المحذوفات.</value></data>
-  <data name="Clean_HeadlineDetail" xml:space="preserve"><value>المجموع {0} في {1} موضع.</value></data>
-  <data name="Clean_HeadlineRest" xml:space="preserve"><value> بيانات مؤقتة وذاكرة تخزين يُعاد إنشاؤها تلقائيًا.</value></data>
-  <data name="Clean_Hint" xml:space="preserve"><value>تذهب العناصر المحددة إلى سلة المحذوفات بعد تأكيدك. Del ينقلها، وF5 يعيد الفحص.</value></data>
+  <data name="Clean_Headline" xml:space="preserve"><value>{0} في {1} موضع</value></data>
+  <data name="Clean_Hint" xml:space="preserve"><value>تذهب العناصر المحددة إلى سلة المحذوفات بعد تأكيدك.</value></data>
   <data name="Clean_ItemsIn" xml:space="preserve"><value>{0} في {1}</value></data>
   <data name="Clean_Items_few" xml:space="preserve"><value>{0} عناصر</value></data>
   <data name="Clean_Items_many" xml:space="preserve"><value>{0} عنصرًا</value></data>
@@ -79,12 +78,12 @@
   <data name="Clean_Items_zero" xml:space="preserve"><value>لا عناصر</value></data>
   <data name="Clean_LogDone" xml:space="preserve"><value>انتهى الفحص في {0:%m}:{0:ss}: {1} في {2} موضع</value></data>
   <data name="Clean_LogStarted" xml:space="preserve"><value>بدأ الفحص</value></data>
-  <data name="Clean_Note_AiTools" xml:space="preserve"><value>محادثات وجلسات أقدم من 30 يومًا وذاكرة المحررات. لا يمكن متابعة المحادثات المحذوفة.</value></data>
-  <data name="Clean_Note_Apps" xml:space="preserve"><value>ذاكرة التطبيقات المؤقتة. معظمها يُعاد إنشاؤه عند التشغيل التالي؛ افتح المجموعة لمراجعة كل موضع.</value></data>
-  <data name="Clean_Note_Browsers" xml:space="preserve"><value>ذاكرة المتصفحات المؤقتة فقط. تبقى تسجيلات الدخول والسجل والمفضلة.</value></data>
-  <data name="Clean_Note_Developer" xml:space="preserve"><value>ذاكرة الحزم والبناء. تعيد الأدوات تنزيلها عند الحاجة.</value></data>
-  <data name="Clean_Note_Gpu" xml:space="preserve"><value>ذاكرة المظللات التي يعيد برنامج تشغيل الرسوميات بناءها. قد تبطؤ الألعاب في أول تشغيل.</value></data>
-  <data name="Clean_Note_System" xml:space="preserve"><value>ملفات مؤقتة وتقارير أخطاء وسجلات أقدم من أسبوع.</value></data>
+  <data name="Clean_Note_AiTools" xml:space="preserve"><value>محادثات أقدم من 30 يومًا وذاكرة المحررات</value></data>
+  <data name="Clean_Note_Apps" xml:space="preserve"><value>ذاكرة التطبيقات؛ معظمها يُعاد إنشاؤه عند التشغيل التالي</value></data>
+  <data name="Clean_Note_Browsers" xml:space="preserve"><value>ذاكرة مؤقتة فقط؛ تبقى تسجيلات الدخول والسجل والمفضلة</value></data>
+  <data name="Clean_Note_Developer" xml:space="preserve"><value>ذاكرة الحزم؛ تعيد الأدوات تنزيلها</value></data>
+  <data name="Clean_Note_Gpu" xml:space="preserve"><value>ذاكرة المظللات؛ قد تبطؤ الألعاب مرة واحدة</value></data>
+  <data name="Clean_Note_System" xml:space="preserve"><value>ملفات مؤقتة وتقارير أخطاء وسجلات أقدم من أسبوع</value></data>
   <data name="Clean_Nothing" xml:space="preserve"><value>لا يوجد ما يُنظَّف الآن.</value></data>
   <data name="Clean_Places_few" xml:space="preserve"><value>{0} مواضع</value></data>
   <data name="Clean_Places_many" xml:space="preserve"><value>{0} موضعًا</value></data>
@@ -95,8 +94,10 @@
   <data name="Clean_Recycle" xml:space="preserve"><value>نقل إلى سلة المحذوفات</value></data>
   <data name="Clean_RecycleAmount" xml:space="preserve"><value>انقل {0} إلى سلة المحذوفات</value></data>
   <data name="Clean_Rescan" xml:space="preserve"><value>فحص من جديد</value></data>
-  <data name="Clean_Review" xml:space="preserve"><value>راجِع أولًا: قد يحتوي ما تريد الاحتفاظ به</value></data>
-  <data name="Clean_Safe" xml:space="preserve"><value>آمن للحذف: يُعاد إنشاؤه تلقائيًا</value></data>
+  <data name="Clean_Review" xml:space="preserve"><value>راجِع أولًا</value></data>
+  <data name="Clean_ReviewAmount" xml:space="preserve"><value>{0} للمراجعة أولًا</value></data>
+  <data name="Clean_Safe" xml:space="preserve"><value>آمن للحذف</value></data>
+  <data name="Clean_SafeAmount" xml:space="preserve"><value>{0} آمن للحذف</value></data>
   <data name="Clean_Scanned" xml:space="preserve"><value>فُحص {0} موضعًا في {1:%m}:{1:ss}</value></data>
   <data name="Clean_Scanning" xml:space="preserve"><value>جارٍ فحص {0}</value></data>
   <data name="Clean_SelectAll" xml:space="preserve"><value>تحديد الكل</value></data>
@@ -211,6 +212,7 @@
   <data name="Monitor_DriveFree" xml:space="preserve"><value>{0:N0} GB متاحة من {1:N0} GB</value></data>
   <data name="Monitor_DriveRemovable" xml:space="preserve"><value>{0}، قابل للإزالة</value></data>
   <data name="Monitor_Drives" xml:space="preserve"><value>الأقراص</value></data>
+  <data name="Monitor_HealthScore" xml:space="preserve"><value>مؤشر الصحة</value></data>
   <data name="Monitor_Issue_Cpu" xml:space="preserve"><value>حمل مرتفع على المعالج</value></data>
   <data name="Monitor_Issue_Disk" xml:space="preserve"><value>أحد الأقراص شبه ممتلئ</value></data>
   <data name="Monitor_Issue_Memory" xml:space="preserve"><value>الذاكرة شبه ممتلئة</value></data>

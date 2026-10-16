@@ -75,7 +75,7 @@
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
 
-    <common:PageHeader Grid.Row="0" Kind="DataPie" Title="{l:Tr Nav_Analyze}" Summary="{l:Tr Analyze_Summary}" />
+    <common:PageHeader Grid.Row="0" Title="{l:Tr Nav_Analyze}" Summary="{l:Tr Analyze_Summary}" />
 
     <!-- Live measuring: what it is reading now, how long, how much -->
     <Border Grid.Row="1" Style="{StaticResource StatusSurface}" Visibility="{Binding IsScanning, Converter={StaticResource BoolVisible}}">

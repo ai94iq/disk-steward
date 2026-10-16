@@ -12,19 +12,13 @@
        height and the mouse wheel. -->
   <Page.Resources>
     <BooleanToVisibilityConverter x:Key="BoolVisible" />
-    <!-- The number inside a ring: text color, never the arc color (dataviz rule). -->
-    <Style x:Key="RingValue" TargetType="TextBlock">
-      <Setter Property="HorizontalAlignment" Value="Center" />
-      <Setter Property="VerticalAlignment" Value="Center" />
-      <Setter Property="FontWeight" Value="SemiBold" />
-    </Style>
     <!-- Tiles: small label, big number, one supporting line, then the chart -->
     <Style x:Key="TileTitle" TargetType="TextBlock" BasedOn="{StaticResource SecondaryText}">
       <Setter Property="Margin" Value="{StaticResource LabelSpacing}" />
       <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
     <Style x:Key="TileValue" TargetType="TextBlock">
-      <Setter Property="FontSize" Value="28" />
+      <Setter Property="FontSize" Value="24" />
       <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
     <!-- Up to two lines (a long CPU name wraps instead of being cut), then trimmed. -->
@@ -35,26 +29,6 @@
       <Setter Property="MaxHeight" Value="40" />
     </Style>
 
-    <!-- Health takes room only when it has something to say: a healthy machine gets a small
-         ring, a strained one the full size. -->
-    <Style x:Key="HealthRing" TargetType="Grid">
-      <Setter Property="Width" Value="120" />
-      <Setter Property="Height" Value="120" />
-      <Style.Triggers>
-        <DataTrigger Binding="{Binding HealthLevel}" Value="Normal">
-          <Setter Property="Width" Value="64" />
-          <Setter Property="Height" Value="64" />
-        </DataTrigger>
-      </Style.Triggers>
-    </Style>
-    <Style x:Key="HealthScore" TargetType="TextBlock" BasedOn="{StaticResource RingValue}">
-      <Setter Property="FontSize" Value="36" />
-      <Style.Triggers>
-        <DataTrigger Binding="{Binding HealthLevel}" Value="Normal">
-          <Setter Property="FontSize" Value="20" />
-        </DataTrigger>
-      </Style.Triggers>
-    </Style>
   </Page.Resources>
 
   <Grid Margin="{StaticResource PagePadding}">
@@ -64,7 +38,7 @@
     </Grid.RowDefinitions>
 
     <!-- Title, the live badge beside it, and keep awake on the right -->
-    <common:PageHeader Grid.Row="0" Kind="HeartPulse" Title="{l:Tr Nav_Monitor}" Summary="{Binding UptimeText}">
+    <common:PageHeader Grid.Row="0" Title="{l:Tr Nav_Monitor}" Summary="{Binding UptimeText}">
       <common:PageHeader.Actions>
         <StackPanel Orientation="Horizontal">
           <Border Margin="{StaticResource CardGap}" Padding="{StaticResource BadgePadding}" VerticalAlignment="Center"
@@ -99,19 +73,22 @@
           <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- Health: one score for the whole machine, next to what the machine is -->
+        <!-- Health: a status line, the machine, and the score as plain text -->
         <Border Grid.ColumnSpan="5" Style="{StaticResource Surface}">
           <DockPanel>
-            <Grid DockPanel.Dock="Left" Margin="{StaticResource HeroGap}" Style="{StaticResource HealthRing}">
-              <common:RingGauge Thickness="8" Value="{Binding HealthScore}"
-                                Stroke="{Binding HealthLevel, Converter={StaticResource LoadLevelBrush}}"
-                                TrackBrush="{DynamicResource SubtleFillColorSecondaryBrush}" />
-              <TextBlock Style="{StaticResource HealthScore}" Text="{Binding HealthScore}" />
-            </Grid>
+            <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center">
+              <TextBlock HorizontalAlignment="Right" FontSize="24" FontWeight="SemiBold" Text="{Binding HealthScore}" />
+              <TextBlock HorizontalAlignment="Right" Style="{StaticResource TertiaryText}" Text="{l:Tr Monitor_HealthScore}" />
+            </StackPanel>
             <StackPanel VerticalAlignment="Center">
-              <ui:TextBlock FontTypography="Subtitle" Text="{Binding HealthMessage}" />
-              <TextBlock Margin="{StaticResource LabelSpacing}" FontWeight="SemiBold" Text="{Binding Device}" />
-              <TextBlock Style="{StaticResource SecondaryText}" Text="{Binding DeviceDetail}" />
+              <StackPanel Orientation="Horizontal">
+                <Ellipse Width="8" Height="8" Margin="0,0,10,0" VerticalAlignment="Center"
+                         Fill="{Binding HealthLevel, Converter={StaticResource LoadLevelBrush}}" />
+                <ui:TextBlock FontTypography="BodyStrong" Text="{Binding HealthMessage}" />
+              </StackPanel>
+              <TextBlock Margin="18,4,0,0" FontSize="14" Style="{StaticResource SecondaryText}" TextTrimming="CharacterEllipsis">
+                <Run Text="{Binding Device, Mode=OneWay}" /><Run Text="  " /><Run Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="{Binding DeviceDetail, Mode=OneWay}" />
+              </TextBlock>
             </StackPanel>
           </DockPanel>
         </Border>

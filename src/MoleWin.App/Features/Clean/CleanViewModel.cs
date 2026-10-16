@@ -41,9 +41,10 @@ public sealed partial class CleanViewModel : PageViewModel
     [ObservableProperty] public partial long TotalBytes { get; set; }
     [ObservableProperty] public partial string? TotalText { get; set; }
 
-    // After a scan: how much of the total rebuilds on its own, the header's scan summary.
+    // After a scan: the total, how it splits into safe and review-first, the scan summary.
+    [ObservableProperty] public partial string? Headline { get; set; }
     [ObservableProperty] public partial string? SafeText { get; set; }
-    [ObservableProperty] public partial string? HeadlineDetail { get; set; }
+    [ObservableProperty] public partial string? ReviewText { get; set; }
     [ObservableProperty] public partial string? ScanSummary { get; set; }
     [ObservableProperty] public partial string EmptyText { get; set; }
 
@@ -140,8 +141,10 @@ public sealed partial class CleanViewModel : PageViewModel
         if (!any) return;
 
         TotalText = SizeText.Format(TotalBytes);
-        SafeText = SizeText.Format(Categories.Where(c => c.IsSafe).Sum(c => c.Bytes));
-        HeadlineDetail = Tr.Format("Clean_HeadlineDetail", TotalText, Categories.Sum(c => c.Targets.Count));
+        var review = Categories.Where(c => !c.IsSafe).Sum(c => c.Bytes);
+        Headline = Tr.Format("Clean_Headline", TotalText, Categories.Sum(c => c.Targets.Count));
+        SafeText = Tr.Format("Clean_SafeAmount", SizeText.Format(TotalBytes - review));
+        ReviewText = review > 0 ? Tr.Format("Clean_ReviewAmount", SizeText.Format(review)) : null;
         // Bars compare places within their own group; one huge cache elsewhere would flatten them.
         foreach (var category in Categories)
         {
@@ -167,8 +170,9 @@ public sealed partial class CleanViewModel : PageViewModel
         Categories.Clear();
         TotalBytes = 0;
         TotalText = null;
+        Headline = null;
         SafeText = null;
-        HeadlineDetail = null;
+        ReviewText = null;
         UpdateSelection();
     }
 

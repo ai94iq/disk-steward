@@ -15,7 +15,6 @@
   <Thickness x:Key="InlineGap">0,0,8,0</Thickness>
   <Thickness x:Key="InlineStart">8,0,0,0</Thickness>
   <Thickness x:Key="BadgePadding">10,4</Thickness>
-  <Thickness x:Key="HeroGap">0,0,24,0</Thickness>
   <!-- List cards: no right padding, so the scroll bar sits on the card edge -->
   <Thickness x:Key="ListPadding">8,8,0,8</Thickness>
   <Thickness x:Key="PageScrollGap">0,0,8,0</Thickness>
@@ -27,13 +26,6 @@
   <GridLength x:Key="DateColumnWidth">140</GridLength>
   <GridLength x:Key="IconColumnWidth">48</GridLength>
   <CornerRadius x:Key="CardRadius">8</CornerRadius>
-
-  <!-- Safe to remove (green) and review first (amber): the theme's own status colors, faint for
-       a fill and stronger for an edge, so the two read apart in light and dark themes. -->
-  <SolidColorBrush x:Key="SafeTint" Color="{DynamicResource SystemFillColorSuccess}" Opacity="0.12" />
-  <SolidColorBrush x:Key="SafeEdge" Color="{DynamicResource SystemFillColorSuccess}" Opacity="0.45" />
-  <SolidColorBrush x:Key="ReviewTint" Color="{DynamicResource SystemFillColorCaution}" Opacity="0.12" />
-  <SolidColorBrush x:Key="ReviewEdge" Color="{DynamicResource SystemFillColorCaution}" Opacity="0.45" />
 
   <!-- List rows, for every list. WPF-UI's own item paints the whole selected row in the accent
        and switches its text to a dark brush (black on the dark theme); its background is set on

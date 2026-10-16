@@ -17,13 +17,6 @@ public static class Motion
     public static readonly DependencyProperty PulseOnProperty = DependencyProperty.RegisterAttached(
         "PulseOn", typeof(object), typeof(Motion), new PropertyMetadata(null, OnPulse));
 
-    // Motion.FadeIn="True": the element fades in when it first appears (results arriving mid-scan).
-    public static readonly DependencyProperty FadeInProperty = DependencyProperty.RegisterAttached(
-        "FadeIn", typeof(bool), typeof(Motion), new PropertyMetadata(false, OnFadeInChanged));
-
-    public static bool GetFadeIn(DependencyObject d) => (bool)d.GetValue(FadeInProperty);
-    public static void SetFadeIn(DependencyObject d, bool value) => d.SetValue(FadeInProperty, value);
-
     public static double GetValue(DependencyObject d) => (double)d.GetValue(ValueProperty);
     public static void SetValue(DependencyObject d, double value) => d.SetValue(ValueProperty, value);
     public static object? GetPulseOn(DependencyObject d) => d.GetValue(PulseOnProperty);
@@ -43,18 +36,6 @@ public static class Motion
             return;
         }
         bar.BeginAnimation(RangeBase.ValueProperty, new DoubleAnimation(target, Glide) { EasingFunction = EaseOut });
-    }
-
-    private static void OnFadeInChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-        if (d is not FrameworkElement element || e.NewValue is not true) return;
-
-        element.Loaded += (_, _) =>
-        {
-            if (!Animate) return;
-            element.BeginAnimation(UIElement.OpacityProperty,
-                new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(200)) { EasingFunction = EaseOut });
-        };
     }
 
     private static void OnPulse(DependencyObject d, DependencyPropertyChangedEventArgs e)
