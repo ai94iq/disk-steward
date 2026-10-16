@@ -18,9 +18,18 @@
       <Setter Property="VerticalAlignment" Value="Center" />
       <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
-    <Style x:Key="CardTitle" TargetType="TextBlock" BasedOn="{StaticResource SecondaryText}">
-      <Setter Property="Margin" Value="{StaticResource FieldSpacing}" />
+    <!-- Tiles: small label, big number, one supporting line, then the chart -->
+    <Style x:Key="TileTitle" TargetType="TextBlock" BasedOn="{StaticResource SecondaryText}">
+      <Setter Property="Margin" Value="{StaticResource LabelSpacing}" />
       <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style x:Key="TileValue" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="28" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style x:Key="TileDetail" TargetType="TextBlock" BasedOn="{StaticResource TertiaryText}">
+      <Setter Property="Margin" Value="{StaticResource FieldSpacing}" />
+      <Setter Property="TextTrimming" Value="CharacterEllipsis" />
     </Style>
   </Page.Resources>
 
@@ -57,16 +66,17 @@
           <ColumnDefinition Width="*" />
           <ColumnDefinition Width="{StaticResource GutterWidth}" />
           <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="{StaticResource GutterWidth}" />
+          <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-          <RowDefinition Height="Auto" />
           <RowDefinition Height="Auto" />
           <RowDefinition Height="Auto" />
           <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <!-- Health: one score for the whole machine, next to what the machine is -->
-        <Border Grid.ColumnSpan="3" Style="{StaticResource Surface}">
+        <Border Grid.ColumnSpan="5" Style="{StaticResource Surface}">
           <DockPanel>
             <Grid DockPanel.Dock="Left" Width="120" Height="120" Margin="{StaticResource HeroGap}">
               <common:RingGauge Thickness="12" Value="{Binding HealthScore}"
@@ -82,61 +92,62 @@
           </DockPanel>
         </Border>
 
-        <!-- CPU: now, as a ring, and the last minute, as a line -->
+        <!-- Three readings, one shape: the number now, what it means, the last minute -->
         <Border Grid.Row="1" Style="{StaticResource Surface}">
           <StackPanel>
-            <TextBlock Style="{StaticResource CardTitle}" Text="{l:Tr Monitor_Cpu}" />
-            <DockPanel Margin="{StaticResource FieldSpacing}">
-              <Grid DockPanel.Dock="Left" Width="88" Height="88" Margin="{StaticResource CardGap}">
-                <common:RingGauge Thickness="9" Value="{Binding CpuPercent}"
-                                  Stroke="{Binding CpuLevel, Converter={StaticResource LoadLevelBrush}}"
-                                  TrackBrush="{DynamicResource SubtleFillColorSecondaryBrush}" />
-                <TextBlock Style="{StaticResource RingValue}" FontSize="20" Text="{Binding CpuPercentText}" />
-              </Grid>
-              <TextBlock VerticalAlignment="Center" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" Text="{Binding CpuDetail}" />
-            </DockPanel>
-            <common:HistoryChart Height="72" Capacity="{x:Static monitor:MonitorViewModel.HistoryLength}"
+            <TextBlock Style="{StaticResource TileTitle}" Text="{l:Tr Monitor_Cpu}" />
+            <TextBlock Style="{StaticResource TileValue}" Text="{Binding CpuPercentText}" />
+            <TextBlock Style="{StaticResource TileDetail}" Text="{Binding CpuDetail}" ToolTip="{Binding CpuDetail}" />
+            <common:HistoryChart Height="56" Capacity="{x:Static monitor:MonitorViewModel.HistoryLength}"
                                  Stroke="{Binding CpuLevel, Converter={StaticResource LoadLevelBrush}}"
                                  GridBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
                                  Values="{Binding CpuHistory}" />
           </StackPanel>
         </Border>
 
-        <!-- Memory -->
         <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource Surface}">
           <StackPanel>
-            <TextBlock Style="{StaticResource CardTitle}" Text="{l:Tr Monitor_Memory}" />
-            <DockPanel>
-              <Grid DockPanel.Dock="Left" Width="88" Height="88" Margin="{StaticResource CardGap}">
-                <common:RingGauge Thickness="9" Value="{Binding MemoryPercent}"
-                                  Stroke="{Binding MemoryLevel, Converter={StaticResource LoadLevelBrush}}"
-                                  TrackBrush="{DynamicResource SubtleFillColorSecondaryBrush}" />
-                <TextBlock Style="{StaticResource RingValue}" FontSize="20" Text="{Binding MemoryPercentText}" />
-              </Grid>
-              <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding MemoryText}" />
-            </DockPanel>
+            <TextBlock Style="{StaticResource TileTitle}" Text="{l:Tr Monitor_Memory}" />
+            <TextBlock Style="{StaticResource TileValue}" Text="{Binding MemoryPercentText}" />
+            <TextBlock Style="{StaticResource TileDetail}" Text="{Binding MemoryText}" />
+            <common:HistoryChart Height="56" Capacity="{x:Static monitor:MonitorViewModel.HistoryLength}"
+                                 Stroke="{Binding MemoryLevel, Converter={StaticResource LoadLevelBrush}}"
+                                 GridBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
+                                 Values="{Binding MemoryHistory}" />
+          </StackPanel>
+        </Border>
+
+        <!-- Download over the last minute; scales to its peak, flat below 100 KB/s -->
+        <Border Grid.Row="1" Grid.Column="4" Style="{StaticResource Surface}">
+          <StackPanel>
+            <TextBlock Style="{StaticResource TileTitle}" Text="{l:Tr Monitor_Network}" />
+            <TextBlock Style="{StaticResource TileValue}" Text="{Binding NetworkText}" />
+            <TextBlock Style="{StaticResource TileDetail}" Text="{Binding NetworkDetail}" />
+            <common:HistoryChart Height="56" Capacity="{x:Static monitor:MonitorViewModel.HistoryLength}"
+                                 Maximum="NaN" Floor="102400"
+                                 Stroke="{DynamicResource AccentFillColorDefaultBrush}"
+                                 GridBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
+                                 Values="{Binding DownHistory}" />
           </StackPanel>
         </Border>
 
         <!-- Drives: used against capacity, colored as they fill -->
         <Border Grid.Row="2" Style="{StaticResource Surface}">
           <StackPanel>
-            <TextBlock Style="{StaticResource CardTitle}" Text="{l:Tr Monitor_Drives}" />
+            <TextBlock Style="{StaticResource TileTitle}" Text="{l:Tr Monitor_Drives}" />
             <ItemsControl ItemsSource="{Binding Drives}">
               <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                  <StackPanel Margin="{StaticResource FieldSpacing}">
+                  <StackPanel Margin="{StaticResource RowSpacing}">
                     <DockPanel Margin="{StaticResource LabelSpacing}">
-                      <TextBlock DockPanel.Dock="Right" Style="{StaticResource SecondaryText}" Text="{Binding FreeText}" />
-                      <common:AppIcon Width="16" Height="16" Margin="{StaticResource InlineGap}" Kind="HardDrive" />
-                      <TextBlock>
-                        <Run FontWeight="SemiBold" Text="{Binding Root, Mode=OneWay}" />
-                        <Run Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="{Binding Detail, Mode=OneWay}" />
-                      </TextBlock>
+                      <common:AppIcon Width="16" Height="16" Margin="{StaticResource InlineGap}" VerticalAlignment="Center" Kind="HardDrive" />
+                      <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding Root}" />
+                      <TextBlock Margin="{StaticResource InlineStart}" VerticalAlignment="Center" Style="{StaticResource TertiaryText}" Text="{Binding Detail}" />
                     </DockPanel>
-                    <ProgressBar Height="8" Maximum="100"
+                    <ProgressBar Height="6" Margin="{StaticResource LabelSpacing}" Maximum="100"
                                  Foreground="{Binding Level, Converter={StaticResource LoadLevelBrush}}"
                                  common:Motion.Value="{Binding UsedPercent}" />
+                    <TextBlock Style="{StaticResource SecondaryText}" Text="{Binding FreeText}" />
                   </StackPanel>
                 </DataTemplate>
               </ItemsControl.ItemTemplate>
@@ -144,34 +155,38 @@
           </StackPanel>
         </Border>
 
-        <!-- Network: download over the last minute -->
-        <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource Surface}">
-          <StackPanel>
-            <TextBlock Style="{StaticResource CardTitle}" Text="{l:Tr Monitor_Network}" />
-            <TextBlock Margin="{StaticResource FieldSpacing}" FontSize="16" FontWeight="SemiBold" Text="{Binding NetworkText}" />
-            <common:HistoryChart Height="72" Capacity="{x:Static monitor:MonitorViewModel.HistoryLength}"
-                                 Maximum="NaN" Floor="1"
-                                 Stroke="{DynamicResource AccentFillColorDefaultBrush}"
-                                 GridBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
-                                 Values="{Binding DownHistory}" />
-          </StackPanel>
-        </Border>
-
-        <!-- What is using the machine right now -->
-        <Border Grid.Row="3" Grid.ColumnSpan="3" Style="{StaticResource Surface}">
-          <StackPanel>
-            <TextBlock Style="{StaticResource CardTitle}" Text="{l:Tr Monitor_Processes}" />
-            <ItemsControl ItemsSource="{Binding Processes}">
+        <!-- What is using the machine right now, grouped by name like Task Manager -->
+        <Border Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="3" Style="{StaticResource Surface}">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="{StaticResource SizeColumnWidth}" />
+              <ColumnDefinition Width="{StaticResource SizeColumnWidth}" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock Style="{StaticResource TileTitle}" Text="{l:Tr Monitor_Processes}" />
+            <TextBlock Grid.Column="1" HorizontalAlignment="Right" Style="{StaticResource TileTitle}" Text="{l:Tr Monitor_Cpu}" />
+            <TextBlock Grid.Column="2" HorizontalAlignment="Right" Style="{StaticResource TileTitle}" Text="{l:Tr Monitor_Memory}" />
+            <ItemsControl Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding Processes}">
               <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                  <DockPanel Margin="{StaticResource RowSpacing}">
-                    <TextBlock DockPanel.Dock="Right" Style="{StaticResource SecondaryText}" Text="{Binding UsageText}" />
+                  <Grid Margin="{StaticResource RowSpacing}">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="{StaticResource SizeColumnWidth}" />
+                      <ColumnDefinition Width="{StaticResource SizeColumnWidth}" />
+                    </Grid.ColumnDefinitions>
                     <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Name}" />
-                  </DockPanel>
+                    <TextBlock Grid.Column="1" HorizontalAlignment="Right" FontWeight="SemiBold" Text="{Binding CpuText}" />
+                    <TextBlock Grid.Column="2" HorizontalAlignment="Right" Style="{StaticResource SecondaryText}" Text="{Binding MemoryText}" />
+                  </Grid>
                 </DataTemplate>
               </ItemsControl.ItemTemplate>
             </ItemsControl>
-          </StackPanel>
+          </Grid>
         </Border>
       </Grid>
     </ScrollViewer>

@@ -28,6 +28,16 @@ public static class MonitorMath
         return new HealthReport(Math.Clamp(score, 0, 100), issue);
     }
 
+    // Processes grouped by name as Task Manager does, busiest first, then largest.
+    public static List<ProcessUsage> TopProcesses(IEnumerable<ProcessUsage> processes, int count) =>
+        processes
+            .GroupBy(p => p.Name, StringComparer.OrdinalIgnoreCase)
+            .Select(g => new ProcessUsage(g.First().Name, g.Sum(p => p.CpuPercent), g.Sum(p => p.MemoryBytes), g.Sum(p => p.Count)))
+            .OrderByDescending(p => p.CpuPercent)
+            .ThenByDescending(p => p.MemoryBytes)
+            .Take(count)
+            .ToList();
+
     private static double Penalty(double percent, double from, double cap) =>
         percent <= from ? 0 : Math.Min(percent - from, 100 - from) / (100 - from) * cap;
 }

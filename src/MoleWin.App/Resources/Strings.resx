@@ -204,10 +204,12 @@
   <data name="Monitor_Memory" xml:space="preserve"><value>الذاكرة</value></data>
   <data name="Monitor_MemoryValue" xml:space="preserve"><value>{0:N1} من {1:N1} GB مستخدمة</value></data>
   <data name="Monitor_Network" xml:space="preserve"><value>الشبكة</value></data>
-  <data name="Monitor_NetworkValue" xml:space="preserve"><value>تنزيل {0:N2} MB/s، رفع {1:N2} MB/s</value></data>
   <data name="Monitor_Percent" xml:space="preserve"><value>{0:N0}%</value></data>
-  <data name="Monitor_ProcessValue" xml:space="preserve"><value>المعالج {0:N0}%، {1:N0} MB</value></data>
+  <data name="Monitor_ProcessCpu" xml:space="preserve"><value>{0:N1}%</value></data>
+  <data name="Monitor_ProcessGroup" xml:space="preserve"><value>{0} ({1})</value></data>
   <data name="Monitor_Processes" xml:space="preserve"><value>أكثر العمليات استهلاكًا</value></data>
+  <data name="Monitor_Rate" xml:space="preserve"><value>{0}/ث</value></data>
+  <data name="Monitor_Upload" xml:space="preserve"><value>تنزيل، رفع {0}/ث</value></data>
   <data name="Monitor_Uptime" xml:space="preserve"><value>يعمل منذ {0:%h}س {0:%m}د، {1:N0} عملية</value></data>
   <data name="Monitor_UptimeDays" xml:space="preserve"><value>يعمل منذ {0:%d}ي {0:%h}س، {1:N0} عملية</value></data>
   <data name="Monitor_WithBattery" xml:space="preserve"><value>{0}، البطارية {1}%</value></data>

@@ -204,10 +204,12 @@
   <data name="Monitor_Memory" xml:space="preserve"><value>Memory</value></data>
   <data name="Monitor_MemoryValue" xml:space="preserve"><value>{0:N1} of {1:N1} GB used</value></data>
   <data name="Monitor_Network" xml:space="preserve"><value>Network</value></data>
-  <data name="Monitor_NetworkValue" xml:space="preserve"><value>Down {0:N2} MB/s, up {1:N2} MB/s</value></data>
   <data name="Monitor_Percent" xml:space="preserve"><value>{0:N0}%</value></data>
-  <data name="Monitor_ProcessValue" xml:space="preserve"><value>CPU {0:N0}%, {1:N0} MB</value></data>
+  <data name="Monitor_ProcessCpu" xml:space="preserve"><value>{0:N1}%</value></data>
+  <data name="Monitor_ProcessGroup" xml:space="preserve"><value>{0} ({1})</value></data>
   <data name="Monitor_Processes" xml:space="preserve"><value>Top processes</value></data>
+  <data name="Monitor_Rate" xml:space="preserve"><value>{0}/s</value></data>
+  <data name="Monitor_Upload" xml:space="preserve"><value>Download, {0}/s upload</value></data>
   <data name="Monitor_Uptime" xml:space="preserve"><value>Up {0:%h}h {0:%m}m, {1:N0} processes</value></data>
   <data name="Monitor_UptimeDays" xml:space="preserve"><value>Up {0:%d}d {0:%h}h, {1:N0} processes</value></data>
   <data name="Monitor_WithBattery" xml:space="preserve"><value>{0}, battery {1}%</value></data>

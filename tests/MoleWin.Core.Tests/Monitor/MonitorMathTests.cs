@@ -19,6 +19,16 @@ public sealed class MonitorMathTests
         Assert.Equal(0, MonitorMath.CpuPercent(new CpuTimes(5, 5, 5), new CpuTimes(5, 5, 5)));
     }
 
+    [Fact]
+    public void Top_processes_group_by_name_and_rank_by_cpu()
+    {
+        var top = MonitorMath.TopProcesses(
+            [new ProcessUsage("chrome", 0.5, 100), new ProcessUsage("Chrome", 0.25, 50), new ProcessUsage("idle", 0, 900), new ProcessUsage("code", 0.5, 10)],
+            2);
+
+        Assert.Equal([new ProcessUsage("chrome", 0.75, 150, 2), new ProcessUsage("code", 0.5, 10)], top);
+    }
+
     [Theory]
     [InlineData(1000, 3000, 2, 1000)]
     [InlineData(3000, 1000, 2, 0)]

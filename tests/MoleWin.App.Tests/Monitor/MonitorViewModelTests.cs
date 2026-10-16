@@ -57,9 +57,10 @@ public sealed class MonitorViewModelTests
 
         Assert.Equal(LoadState.Loaded, vm.State);
         Assert.Equal("Laptop", vm.Device);
-        Assert.Equal(50, vm.MemoryPercent);
+        Assert.Equal([50], vm.MemoryHistory);
         Assert.Single(vm.Drives);
         Assert.Equal(2, vm.Processes.Count);
+        Assert.Equal("50.0%", vm.Processes[0].CpuText);
         Assert.False(string.IsNullOrEmpty(vm.NetworkText));
     }
 

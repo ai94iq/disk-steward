@@ -10,11 +10,11 @@ public sealed partial class MonitorViewModel : PageViewModel
     // 30 samples at two seconds: the last minute.
     public const int HistoryLength = 30;
     private const double Gb = 1L << 30;
-    private const double Mb = 1L << 20;
     private readonly IMonitorService _monitor;
     private readonly IKeepAwake _awake;
     private readonly ILogger _log;
     private readonly Queue<double> _cpuHistory = new();
+    private readonly Queue<double> _memoryHistory = new();
     private readonly Queue<double> _downHistory = new();
     private CancellationTokenSource? _live;
 
@@ -25,6 +25,7 @@ public sealed partial class MonitorViewModel : PageViewModel
         KeepAwake = KeepAwakeOption.All[0];
         _log = log;
         CpuHistory = [];
+        MemoryHistory = [];
         DownHistory = [];
     }
 
@@ -36,16 +37,16 @@ public sealed partial class MonitorViewModel : PageViewModel
     [ObservableProperty] public partial string? Device { get; set; }
     [ObservableProperty] public partial string? DeviceDetail { get; set; }
     [ObservableProperty] public partial string? UptimeText { get; set; }
-    [ObservableProperty] public partial double CpuPercent { get; set; }
     [ObservableProperty] public partial string? CpuPercentText { get; set; }
     [ObservableProperty] public partial LoadLevel CpuLevel { get; set; }
     [ObservableProperty] public partial string? CpuDetail { get; set; }
     [ObservableProperty] public partial IReadOnlyList<double> CpuHistory { get; set; }
-    [ObservableProperty] public partial double MemoryPercent { get; set; }
     [ObservableProperty] public partial string? MemoryPercentText { get; set; }
     [ObservableProperty] public partial LoadLevel MemoryLevel { get; set; }
     [ObservableProperty] public partial string? MemoryText { get; set; }
+    [ObservableProperty] public partial IReadOnlyList<double> MemoryHistory { get; set; }
     [ObservableProperty] public partial string? NetworkText { get; set; }
+    [ObservableProperty] public partial string? NetworkDetail { get; set; }
     [ObservableProperty] public partial IReadOnlyList<double> DownHistory { get; set; }
 
     // Bumps once per sample; the view pulses the live dot on each change.
@@ -125,26 +126,28 @@ public sealed partial class MonitorViewModel : PageViewModel
         if (s.Battery is { } b) DeviceDetail = Tr.Format("Monitor_WithBattery", DeviceDetail, b.Percent);
         UptimeText = Tr.Format(s.Uptime.Days > 0 ? "Monitor_UptimeDays" : "Monitor_Uptime", s.Uptime, s.ProcessCount);
 
-        CpuPercent = s.CpuPercent;
         CpuPercentText = Tr.Format("Monitor_Percent", s.CpuPercent);
         CpuLevel = LoadLevels.Cpu(s.CpuPercent);
         CpuDetail = Tr.Format("Monitor_CpuDetail", s.Device.CpuModel, s.Device.LogicalProcessors);
         CpuHistory = Push(_cpuHistory, s.CpuPercent);
 
-        MemoryPercent = s.MemoryPercent;
         MemoryPercentText = Tr.Format("Monitor_Percent", s.MemoryPercent);
         MemoryLevel = LoadLevels.Fill(s.MemoryPercent);
         MemoryText = Tr.Format("Monitor_MemoryValue", s.MemoryUsed / Gb, s.MemoryTotal / Gb);
+        MemoryHistory = Push(_memoryHistory, s.MemoryPercent);
 
-        NetworkText = Tr.Format("Monitor_NetworkValue", s.NetworkDownBytesPerSecond / Mb, s.NetworkUpBytesPerSecond / Mb);
-        DownHistory = Push(_downHistory, s.NetworkDownBytesPerSecond / Mb);
+        NetworkText = Tr.Format("Monitor_Rate", SizeText.Format((long)s.NetworkDownBytesPerSecond));
+        NetworkDetail = Tr.Format("Monitor_Upload", SizeText.Format((long)s.NetworkUpBytesPerSecond));
+        DownHistory = Push(_downHistory, s.NetworkDownBytesPerSecond);
 
         Replace(Drives, s.Drives.Select(d => new DriveRow(
             d.Root, d.UsedPercent, LoadLevels.Fill(d.UsedPercent),
             Tr.Format("Monitor_DriveFree", (d.Total - d.Used) / Gb, d.Total / Gb),
             d.Removable ? Tr.Format("Monitor_DriveRemovable", d.Format) : d.Format)));
         Replace(Processes, s.TopProcesses.Select(p => new ProcessRow(
-            p.Name, Tr.Format("Monitor_ProcessValue", p.CpuPercent, p.MemoryBytes / Mb))));
+            p.Count > 1 ? Tr.Format("Monitor_ProcessGroup", p.Name, p.Count) : p.Name,
+            Tr.Format("Monitor_ProcessCpu", p.CpuPercent),
+            SizeText.Format(p.MemoryBytes))));
         Pulse++;
     }
 

@@ -123,7 +123,7 @@ public sealed class WindowsMonitor : IMonitorService
         }
         _processCpu.Clear();
         foreach (var (id, cpu) in seen) _processCpu[id] = cpu;
-        return usage.OrderByDescending(p => p.CpuPercent).ThenByDescending(p => p.MemoryBytes).Take(TopProcessCount).ToList();
+        return MonitorMath.TopProcesses(usage, TopProcessCount);
     }
 
     private static DeviceInfo ReadDevice()

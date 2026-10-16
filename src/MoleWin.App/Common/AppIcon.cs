@@ -47,7 +47,10 @@ public sealed class AppIcon : FrameworkElement
         set => SetValue(ForegroundProperty, value);
     }
 
-    protected override Size MeasureOverride(Size availableSize) => new(20, 20);
+    // 20 by default; a set Width/Height arrives here as the constraint and wins. Asking for
+    // more than it makes WPF clip the icon's top edge.
+    protected override Size MeasureOverride(Size availableSize) =>
+        new(Math.Min(20, availableSize.Width), Math.Min(20, availableSize.Height));
 
     protected override void OnRender(DrawingContext drawingContext)
     {
