@@ -5,12 +5,15 @@ cache cleanup, app uninstall with leftover cleanup, a disk usage tree and a
 live system monitor. Built with WPF and WPF-UI (Fluent) on .NET 10, in English
 and Arabic. Runs as the normal user, no elevation.
 
+![The Monitor page](docs/images/monitor.png)
+
 ## Contents
 
 - [Requirements](#requirements)
 - [Build and run](#build-and-run)
 - [Features](#features)
 - [Safety](#safety)
+- [License](#license)
 - [Docs](#docs)
 
 ## Requirements
@@ -47,6 +50,10 @@ Pass `--no-pause` to skip the final key press.
   Folders list at once and measure in the background. Locked rows show why
   they cannot be removed.
 
+| Clean | Apps | Analyze |
+|---|---|---|
+| ![Clean](docs/images/clean.png) | ![Apps](docs/images/apps.png) | ![Analyze](docs/images/analyze.png) |
+
 ## Safety
 
 Nothing is removed without ticking it and confirming, and removal only ever
@@ -55,6 +62,10 @@ which resolves junctions and links to the real path, re-checks
 `ProtectedPaths` (Windows, Program Files, ProgramData, drive roots, the
 profile and its known folders, system files such as the page file) and refuses
 drives without a Recycle Bin rather than deleting.
+
+## License
+
+[MIT](LICENSE).
 
 ## Docs
 
