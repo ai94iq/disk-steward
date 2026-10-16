@@ -58,9 +58,22 @@ public sealed class ProtectedPaths(ProtectedRoots roots)
     private static string Normalize(string path)
     {
         if (string.IsNullOrWhiteSpace(path) || !Path.IsPathFullyQualified(path)) return "";
-        var full = Path.GetFullPath(path);
+        var full = Path.GetFullPath(StripDevicePrefix(path));
         var root = Path.GetPathRoot(full) ?? "";
         var trimmed = full.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         return trimmed.Length > root.TrimEnd(Path.DirectorySeparatorChar).Length ? trimmed : root;
+    }
+
+    // The \\?\ and \\.\ extended-length/device prefixes name the same files as a plain path but
+    // GetFullPath keeps them, so "\\?\C:\Windows" would not match the "C:\Windows" root and the
+    // guard would fail open. Reduce them to the plain form before comparing. \\?\UNC\srv\share
+    // is the UNC form \\srv\share.
+    private static string StripDevicePrefix(string path)
+    {
+        if (path.StartsWith(@"\\?\UNC\", StringComparison.Ordinal) || path.StartsWith(@"\\.\UNC\", StringComparison.Ordinal))
+            return @"\\" + path[8..];
+        if (path.StartsWith(@"\\?\", StringComparison.Ordinal) || path.StartsWith(@"\\.\", StringComparison.Ordinal))
+            return path[4..];
+        return path;
     }
 }

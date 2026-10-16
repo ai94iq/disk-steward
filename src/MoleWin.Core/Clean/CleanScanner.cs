@@ -22,7 +22,10 @@ public sealed class CleanScanner(IFolderScanner folders, ProtectedPaths rules, I
         var cutoff = target.OlderThanDays > 0 ? now.AddDays(-target.OlderThanDays) : DateTime.MaxValue;
         foreach (var root in Expand(Environment.ExpandEnvironmentVariables(target.Path)))
         {
-            if (IsWhitelisted(root) || !Directory.Exists(root)) continue;
+            // A cache root that is itself a junction/symlink would list the real target's
+            // contents under the cache's name; do not descend into it. (SafeRemover also
+            // refuses such paths, but this keeps them out of the list the user sees.)
+            if (IsWhitelisted(root) || !Directory.Exists(root) || IsReparsePoint(root)) continue;
             foreach (var path in Candidates(root, target))
             {
                 ct.ThrowIfCancellationRequested();
@@ -38,6 +41,13 @@ public sealed class CleanScanner(IFolderScanner folders, ProtectedPaths rules, I
     }
 
     public bool IsWhitelisted(string path) => _whitelist.Any(w => w.IsMatch(path.TrimEnd('\\')));
+
+    // A path that can't be read is treated as a reparse point, so a scan never descends into it.
+    private static bool IsReparsePoint(string path)
+    {
+        try { return (File.GetAttributes(path) & FileAttributes.ReparsePoint) != 0; }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { return true; }
+    }
 
     private static IEnumerable<string> Candidates(string root, CleanTarget target) =>
         target.Mode == CleanMode.Files

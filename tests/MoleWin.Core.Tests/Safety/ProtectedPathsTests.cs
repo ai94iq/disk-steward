@@ -30,6 +30,8 @@ public sealed class ProtectedPathsTests
     [InlineData(@"D:\System Volume Information")]
     [InlineData(@"relative\path")]
     [InlineData("")]
+    [InlineData(@"\\?\C:\Windows\System32")]            // extended-length prefix must not bypass
+    [InlineData(@"\\.\C:\Program Files (x86)\Steam")]   // device prefix must not bypass
     public void System_and_profile_roots_are_protected(string path) =>
         Assert.True(Rules.IsProtected(path));
 

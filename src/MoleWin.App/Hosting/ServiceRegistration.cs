@@ -64,7 +64,20 @@ public static class ServiceRegistration
         return services;
     }
 
-    // Only fixed local drives have a Recycle Bin; anywhere else Windows deletes for good.
-    private static bool IsOnFixedDrive(string path) =>
-        Path.GetPathRoot(path) is { Length: > 0 } root && new DriveInfo(root).DriveType == DriveType.Fixed;
+    // Only fixed local drives have a Recycle Bin; anywhere else Windows deletes for good, so
+    // anything that is not plainly a fixed drive (UNC shares, which make DriveInfo throw,
+    // removable and network drives) is treated as not recyclable.
+    private static bool IsOnFixedDrive(string path)
+    {
+        try
+        {
+            return Path.GetPathRoot(path) is { Length: > 0 } root
+                && !root.StartsWith(@"\\", StringComparison.Ordinal)
+                && new DriveInfo(root).DriveType == DriveType.Fixed;
+        }
+        catch (ArgumentException)
+        {
+            return false;
+        }
+    }
 }

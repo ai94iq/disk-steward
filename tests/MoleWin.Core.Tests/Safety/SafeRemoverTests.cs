@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using MoleWin.Core.Safety;
 using NSubstitute;
 
@@ -32,10 +33,14 @@ public sealed class SafeRemoverTests : IDisposable
         Assert.False(gone(@"C:\ab"));
     }
 
-    private SafeRemover Remover(params string[] protectedRoots) => new(
+    // A path with no links resolves to itself, so these stay deterministic without the OS.
+    private SafeRemover Remover(params string[] protectedRoots) => Remover(p => p, protectedRoots);
+
+    private SafeRemover Remover(Func<string, string?> resolve, string[] protectedRoots) => new(
         new ProtectedPaths(new ProtectedRoots(@"Z:\Windows", [], @"Z:\ProgramData", @"Z:\Users\me", @"Z:\own", protectedRoots)),
         _bin,
-        isRecyclableDrive: _ => true);
+        isRecyclableDrive: _ => true,
+        resolveRealPath: resolve);
 
     private string Make(string name)
     {
@@ -70,7 +75,7 @@ public sealed class SafeRemoverTests : IDisposable
     public void Paths_on_drives_without_a_recycle_bin_are_refused()
     {
         var cache = Make("cache");
-        var remover = new SafeRemover(new ProtectedPaths(new ProtectedRoots(@"Z:\W", [], @"Z:\P", @"Z:\U", @"Z:\O", [])), _bin, _ => false);
+        var remover = new SafeRemover(new ProtectedPaths(new ProtectedRoots(@"Z:\W", [], @"Z:\P", @"Z:\U", @"Z:\O", [])), _bin, _ => false, resolveRealPath: p => p);
 
         var results = remover.Recycle([cache]);
 
@@ -121,5 +126,86 @@ public sealed class SafeRemoverTests : IDisposable
 
         Assert.Equal(RemovalOutcome.Failed, results.Single(r => r.Path == bad).Outcome);
         Assert.Equal(RemovalOutcome.Recycled, results.Single(r => r.Path == good).Outcome);
+    }
+
+    [Fact]
+    public void A_path_whose_real_target_is_protected_is_refused()
+    {
+        // A cache path that looks harmless but resolves (through a junction) into a protected
+        // area. Z:\prot is a with-contents protected root (ProgramFiles slot).
+        var cache = Make("cache");
+        var remover = new SafeRemover(
+            new ProtectedPaths(new ProtectedRoots(@"Z:\Windows", [@"Z:\prot"], @"Z:\P", @"Z:\U", @"Z:\own", [])),
+            _bin, _ => true, resolveRealPath: _ => @"Z:\prot\inside");
+
+        var results = remover.Recycle([cache]);
+
+        Assert.Equal(RemovalOutcome.Protected, Assert.Single(results).Outcome);
+        Assert.Empty(Binned());
+    }
+
+    [Fact]
+    public void A_path_whose_real_target_cannot_be_resolved_is_refused()
+    {
+        var cache = Make("cache");
+        var remover = Remover(_ => null, []);
+
+        var results = remover.Recycle([cache]);
+
+        Assert.Equal(RemovalOutcome.Failed, Assert.Single(results).Outcome);
+        Assert.Empty(Binned());
+    }
+
+    [Fact]
+    public void A_real_junction_into_a_protected_target_is_refused_end_to_end()
+    {
+        // The whole chain with a real junction and the real OS resolver (no injected fake).
+        var protectedTarget = Make("protected-target");
+        File.WriteAllText(Path.Combine(protectedTarget, "keep.txt"), "x");
+        var cache = Path.Combine(_root, "cache"); // a junction that aims the cache at the protected dir
+        if (!TryCreateJunction(cache, protectedTarget))
+        {
+            Assert.Skip("Could not create a directory junction on this machine.");
+            return;
+        }
+        try
+        {
+            // protectedTarget is a with-contents protected root (ProgramFiles slot).
+            var remover = new SafeRemover(
+                new ProtectedPaths(new ProtectedRoots(@"Z:\W", [protectedTarget], @"Z:\P", @"Z:\U", @"Z:\O", [])),
+                _bin, _ => true);
+
+            var results = remover.Recycle([Path.Combine(cache, "keep.txt")]);
+
+            Assert.Equal(RemovalOutcome.Protected, Assert.Single(results).Outcome);
+            Assert.Empty(Binned());
+            Assert.True(File.Exists(Path.Combine(protectedTarget, "keep.txt")));
+        }
+        finally
+        {
+            // Remove the junction link itself (not its target) before the recursive teardown
+            // so Dispose does not walk into the real folder.
+            Directory.Delete(cache);
+        }
+    }
+
+    private static bool TryCreateJunction(string link, string target)
+    {
+        try
+        {
+            using var process = Process.Start(new ProcessStartInfo("cmd.exe", $"/c mklink /J \"{link}\" \"{target}\"")
+            {
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+            });
+            process!.WaitForExit();
+            return process.ExitCode == 0 && Directory.Exists(link);
+        }
+        catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or IOException)
+        {
+            return false;
+        }
     }
 }
