@@ -1,4 +1,6 @@
 using MoleWin.App.Features.Analyze;
+using MoleWin.App.Features.Apps;
+using MoleWin.Core.Apps;
 using MoleWin.App.Features.Clean;
 using MoleWin.Core.Clean;
 using MoleWin.App.Features.Monitor;
@@ -38,6 +40,10 @@ public static class ServiceRegistration
         services.AddSingleton(sp => new CleanScanner(
             sp.GetRequiredService<IFolderScanner>(), sp.GetRequiredService<ProtectedPaths>(), CleanRules.Whitelist));
         services.AddSingleton(CleanRules.Defaults);
+        services.AddSingleton<IInstalledApps, RegistryApps>();
+        services.AddSingleton<IUninstallerRunner, UninstallerRunner>();
+        services.AddSingleton(sp => new LeftoverFinder(sp.GetRequiredService<ProtectedPaths>()));
+        services.AddSingleton(LeftoverRoots.ForCurrentUser());
 
         // Shell: Singleton. Pages: Transient. The NavigationView resolves pages from this provider.
         services.AddSingleton<MainWindow>();
@@ -45,6 +51,9 @@ public static class ServiceRegistration
         services.AddTransient<AnalyzePage>();
         // Singleton so a long scan and its activity survive switching pages.
         services.AddSingleton<AnalyzeViewModel>();
+        services.AddTransient<AppsPage>();
+        // Singleton so an uninstall in progress and its leftovers survive switching pages.
+        services.AddSingleton<AppsViewModel>();
         services.AddTransient<CleanPage>();
         // Singleton so the scan result survives switching pages.
         services.AddSingleton<CleanViewModel>();

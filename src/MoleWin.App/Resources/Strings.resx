@@ -35,6 +35,20 @@
   <data name="Analyze_Up" xml:space="preserve"><value>للأعلى</value></data>
   <data name="App_AlreadyRunning" xml:space="preserve"><value>التطبيق يعمل بالفعل.</value></data>
   <data name="App_Name" xml:space="preserve"><value>MoleWin</value></data>
+  <data name="Apps_Clean" xml:space="preserve"><value>لم يترك {0} أي بقايا.</value></data>
+  <data name="Apps_Confirm" xml:space="preserve"><value>تشغيل أداة إلغاء تثبيت {0}؟ ستقودك نافذتها، وقد يطلب Windows الإذن.</value></data>
+  <data name="Apps_Count" xml:space="preserve"><value>{0} من {1} تطبيق</value></data>
+  <data name="Apps_Hint" xml:space="preserve"><value>اختر تطبيقًا وألغِ تثبيته بأداة الإزالة الخاصة به. تظهر البقايا بعد ذلك، ولا يُزال شيء آخر إلا إذا حددته.</value></data>
+  <data name="Apps_LeftoversFound" xml:space="preserve"><value>ترك {0} عدد {1} من البقايا. حدد ما تريد إزالته.</value></data>
+  <data name="Apps_LogLeftover" xml:space="preserve"><value>بقايا: {0} ({1})</value></data>
+  <data name="Apps_LogRemoved" xml:space="preserve"><value>لم يعد {0} مثبتًا</value></data>
+  <data name="Apps_LogRunning" xml:space="preserve"><value>جارٍ إلغاء تثبيت {0}</value></data>
+  <data name="Apps_RunFailed" xml:space="preserve"><value>لم تبدأ أداة إلغاء تثبيت {0}.</value></data>
+  <data name="Apps_Running" xml:space="preserve"><value>جارٍ تشغيل أداة إلغاء تثبيت {0}</value></data>
+  <data name="Apps_Search" xml:space="preserve"><value>ابحث في التطبيقات</value></data>
+  <data name="Apps_StillInstalled" xml:space="preserve"><value>ما زال {0} مثبتًا. أُلغيت أداة الإزالة أو لم تنتهِ.</value></data>
+  <data name="Apps_Uninstall" xml:space="preserve"><value>إلغاء التثبيت</value></data>
+  <data name="Apps_Waiting" xml:space="preserve"><value>بانتظار انتهاء إلغاء تثبيت {0}</value></data>
   <data name="Clean_Category_AiTools" xml:space="preserve"><value>أدوات الذكاء الاصطناعي</value></data>
   <data name="Clean_Category_Apps" xml:space="preserve"><value>التطبيقات</value></data>
   <data name="Clean_Category_Browsers" xml:space="preserve"><value>المتصفحات</value></data>
@@ -182,6 +196,7 @@
   <data name="Monitor_Uptime" xml:space="preserve"><value>يعمل منذ {0:%d}ي {0:%h}س {0:%m}د، {1:N0} عملية</value></data>
   <data name="Monitor_WithBattery" xml:space="preserve"><value>{0}، البطارية {1}%</value></data>
   <data name="Nav_Analyze" xml:space="preserve"><value>التحليل</value></data>
+  <data name="Nav_Apps" xml:space="preserve"><value>التطبيقات</value></data>
   <data name="Nav_Clean" xml:space="preserve"><value>التنظيف</value></data>
   <data name="Nav_Monitor" xml:space="preserve"><value>المراقبة</value></data>
   <data name="Size_B" xml:space="preserve"><value>{0:N0} B</value></data>

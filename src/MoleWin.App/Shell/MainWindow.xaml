@@ -6,6 +6,7 @@
                  xmlns:common="clr-namespace:MoleWin.App.Common"
                  xmlns:analyze="clr-namespace:MoleWin.App.Features.Analyze"
                  xmlns:clean="clr-namespace:MoleWin.App.Features.Clean"
+                 xmlns:apps="clr-namespace:MoleWin.App.Features.Apps"
                  xmlns:monitor="clr-namespace:MoleWin.App.Features.Monitor"
                  Title="{l:Tr App_Name}"
                  Width="1200"
@@ -35,6 +36,11 @@
         <ui:NavigationViewItem Content="{l:Tr Nav_Clean}" TargetPageType="{x:Type clean:CleanPage}">
           <ui:NavigationViewItem.Icon>
             <common:AppIconElement Kind="Broom" />
+          </ui:NavigationViewItem.Icon>
+        </ui:NavigationViewItem>
+        <ui:NavigationViewItem Content="{l:Tr Nav_Apps}" TargetPageType="{x:Type apps:AppsPage}">
+          <ui:NavigationViewItem.Icon>
+            <common:AppIconElement Kind="Apps" />
           </ui:NavigationViewItem.Icon>
         </ui:NavigationViewItem>
         <ui:NavigationViewItem Content="{l:Tr Nav_Analyze}" TargetPageType="{x:Type analyze:AnalyzePage}">

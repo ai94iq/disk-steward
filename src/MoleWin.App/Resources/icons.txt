@@ -1,4 +1,5 @@
 add
+apps
 arrow_left
 arrow_right
 arrow_sync

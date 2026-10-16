@@ -35,6 +35,20 @@
   <data name="Analyze_Up" xml:space="preserve"><value>Up</value></data>
   <data name="App_AlreadyRunning" xml:space="preserve"><value>The app is already running.</value></data>
   <data name="App_Name" xml:space="preserve"><value>MoleWin</value></data>
+  <data name="Apps_Clean" xml:space="preserve"><value>{0} left nothing behind.</value></data>
+  <data name="Apps_Confirm" xml:space="preserve"><value>Run the uninstaller for {0}? Its own window will guide you, and Windows may ask for permission.</value></data>
+  <data name="Apps_Count" xml:space="preserve"><value>{0} of {1} apps</value></data>
+  <data name="Apps_Hint" xml:space="preserve"><value>Select an app and uninstall it with its own uninstaller. Leftovers are shown afterwards; nothing else is removed unless you tick it.</value></data>
+  <data name="Apps_LeftoversFound" xml:space="preserve"><value>{0} left {1} items behind. Tick what to remove.</value></data>
+  <data name="Apps_LogLeftover" xml:space="preserve"><value>Leftover: {0} ({1})</value></data>
+  <data name="Apps_LogRemoved" xml:space="preserve"><value>{0} is no longer installed</value></data>
+  <data name="Apps_LogRunning" xml:space="preserve"><value>Uninstalling {0}</value></data>
+  <data name="Apps_RunFailed" xml:space="preserve"><value>The uninstaller for {0} did not start.</value></data>
+  <data name="Apps_Running" xml:space="preserve"><value>Running the uninstaller for {0}</value></data>
+  <data name="Apps_Search" xml:space="preserve"><value>Search apps</value></data>
+  <data name="Apps_StillInstalled" xml:space="preserve"><value>{0} is still installed. The uninstaller was cancelled or did not finish.</value></data>
+  <data name="Apps_Uninstall" xml:space="preserve"><value>Uninstall</value></data>
+  <data name="Apps_Waiting" xml:space="preserve"><value>Waiting for {0} to finish uninstalling</value></data>
   <data name="Clean_Category_AiTools" xml:space="preserve"><value>AI tools</value></data>
   <data name="Clean_Category_Apps" xml:space="preserve"><value>Apps</value></data>
   <data name="Clean_Category_Browsers" xml:space="preserve"><value>Browsers</value></data>
@@ -182,6 +196,7 @@
   <data name="Monitor_Uptime" xml:space="preserve"><value>Up {0:%d}d {0:%h}h {0:%m}m, {1:N0} processes</value></data>
   <data name="Monitor_WithBattery" xml:space="preserve"><value>{0}, battery {1}%</value></data>
   <data name="Nav_Analyze" xml:space="preserve"><value>Analyze</value></data>
+  <data name="Nav_Apps" xml:space="preserve"><value>Apps</value></data>
   <data name="Nav_Clean" xml:space="preserve"><value>Clean</value></data>
   <data name="Nav_Monitor" xml:space="preserve"><value>Monitor</value></data>
   <data name="Size_B" xml:space="preserve"><value>{0:N0} B</value></data>

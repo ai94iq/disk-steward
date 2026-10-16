@@ -1,0 +1,123 @@
+using MoleWin.App.Features.Apps;
+using MoleWin.App.Services;
+using MoleWin.Core.Analyze;
+using MoleWin.Core.Apps;
+using MoleWin.Core.Safety;
+using NSubstitute;
+
+namespace MoleWin.App.Tests.Apps;
+
+public sealed class AppsViewModelTests : IDisposable
+{
+    private readonly string _root = Directory.CreateTempSubdirectory("molewin-appsvm-").FullName;
+    private readonly IInstalledApps _installed = Substitute.For<IInstalledApps>();
+    private readonly IUninstallerRunner _runner = Substitute.For<IUninstallerRunner>();
+    private readonly IRecycleBin _bin = Substitute.For<IRecycleBin>();
+    private readonly IDialogService _dialogs = Substitute.For<IDialogService>();
+    private readonly InstalledApp _tool;
+    private readonly InstalledApp _big;
+
+    public AppsViewModelTests()
+    {
+        _tool = new InstalledApp("k1", "Tool", "Acme", "1.0", 10L << 20, null, "unins.exe", null);
+        _big = new InstalledApp("k2", "Big Game", "Studio", "2.0", 5L << 30, null, "unins.exe", null);
+        _installed.List().Returns([_tool, _big]);
+    }
+
+    public void Dispose() => Directory.Delete(_root, recursive: true);
+
+    private AppsViewModel Create()
+    {
+        var rules = new ProtectedPaths(new ProtectedRoots(@"Z:\Windows", [], @"Z:\ProgramData", @"Z:\Users\me", @"Z:\own", [_root]));
+        return new AppsViewModel(_installed, _runner, new LeftoverFinder(rules), new LeftoverRoots([_root], []), new FolderScanner(),
+            new SafeRemover(rules, _bin, _ => true), _dialogs, NullLogger<AppsViewModel>.Instance)
+        { PollInterval = TimeSpan.FromMilliseconds(1), PollLimit = TimeSpan.FromMilliseconds(200) };
+    }
+
+    [Fact]
+    public async Task Apps_list_largest_first()
+    {
+        var vm = Create();
+
+        await vm.EnsureLoadedAsync();
+
+        Assert.Equal(["Big Game", "Tool"], vm.Apps.Select(a => a.Name));
+    }
+
+    [Fact]
+    public async Task Search_filters_by_name_or_publisher()
+    {
+        var vm = Create();
+        await vm.EnsureLoadedAsync();
+
+        vm.SearchText = "acme";
+
+        Assert.Equal("Tool", Assert.Single(vm.Apps).Name);
+    }
+
+    [Fact]
+    public async Task Declining_the_confirmation_runs_nothing()
+    {
+        var vm = Create();
+        await vm.EnsureLoadedAsync();
+        vm.SelectedApp = vm.Apps.Single(a => a.Name == "Tool");
+        _dialogs.ConfirmAsync(Arg.Any<string>()).Returns(false);
+
+        await vm.UninstallCommand.ExecuteAsync(null);
+
+        await _runner.DidNotReceiveWithAnyArgs().RunAsync(default!, TestContext.Current.CancellationToken);
+    }
+
+    [Fact]
+    public async Task After_uninstall_leftovers_are_listed_unticked()
+    {
+        Directory.CreateDirectory(Path.Combine(_root, "Tool"));
+        File.WriteAllBytes(Path.Combine(_root, "Tool", "settings.json"), new byte[42]);
+        var vm = Create();
+        await vm.EnsureLoadedAsync();
+        vm.SelectedApp = vm.Apps.Single(a => a.Name == "Tool");
+        _dialogs.ConfirmAsync(Arg.Any<string>()).Returns(true);
+        _installed.IsInstalled(_tool).Returns(false);
+
+        await vm.UninstallCommand.ExecuteAsync(null);
+
+        await _runner.Received(1).RunAsync(_tool, Arg.Any<CancellationToken>());
+        var leftover = Assert.Single(vm.Leftovers);
+        Assert.Equal(42, leftover.Size);
+        Assert.False(leftover.IsSelected);
+        _bin.DidNotReceiveWithAnyArgs().MoveToRecycleBin(default!);
+    }
+
+    [Fact]
+    public async Task An_app_still_installed_gets_no_leftover_scan()
+    {
+        Directory.CreateDirectory(Path.Combine(_root, "Tool"));
+        var vm = Create();
+        await vm.EnsureLoadedAsync();
+        vm.SelectedApp = vm.Apps.Single(a => a.Name == "Tool");
+        _dialogs.ConfirmAsync(Arg.Any<string>()).Returns(true);
+        _installed.IsInstalled(_tool).Returns(true);
+
+        await vm.UninstallCommand.ExecuteAsync(null);
+
+        Assert.Empty(vm.Leftovers);
+    }
+
+    [Fact]
+    public async Task Ticked_leftovers_go_to_the_recycle_bin_after_confirmation()
+    {
+        var folder = Path.Combine(_root, "Tool");
+        Directory.CreateDirectory(folder);
+        var vm = Create();
+        await vm.EnsureLoadedAsync();
+        vm.SelectedApp = vm.Apps.Single(a => a.Name == "Tool");
+        _dialogs.ConfirmAsync(Arg.Any<string>()).Returns(true);
+        _installed.IsInstalled(_tool).Returns(false);
+        await vm.UninstallCommand.ExecuteAsync(null);
+
+        vm.Leftovers[0].IsSelected = true;
+        await vm.RecycleLeftoversCommand.ExecuteAsync(null);
+
+        _bin.Received(1).MoveToRecycleBin(folder);
+    }
+}
