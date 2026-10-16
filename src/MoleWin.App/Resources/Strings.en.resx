@@ -35,6 +35,7 @@
   <data name="Analyze_Up" xml:space="preserve"><value>Up</value></data>
   <data name="App_AlreadyRunning" xml:space="preserve"><value>The app is already running.</value></data>
   <data name="App_Name" xml:space="preserve"><value>MoleWin</value></data>
+  <data name="Clean_Category_AiTools" xml:space="preserve"><value>AI tools</value></data>
   <data name="Clean_Category_Apps" xml:space="preserve"><value>Apps</value></data>
   <data name="Clean_Category_Browsers" xml:space="preserve"><value>Browsers</value></data>
   <data name="Clean_Category_Developer" xml:space="preserve"><value>Developer tools</value></data>
@@ -72,7 +73,14 @@
   <data name="Clean_Target_chrome-grshader" xml:space="preserve"><value>Chrome graphics shader cache</value></data>
   <data name="Clean_Target_chrome-shader" xml:space="preserve"><value>Chrome shader cache</value></data>
   <data name="Clean_Target_chrome-sw" xml:space="preserve"><value>Chrome service worker cache</value></data>
+  <data name="Clean_Target_claude-chats" xml:space="preserve"><value>Claude Code chats older than 30 days</value></data>
+  <data name="Clean_Target_codex-sessions" xml:space="preserve"><value>Codex sessions older than 30 days</value></data>
   <data name="Clean_Target_crash-dumps" xml:space="preserve"><value>Crash dumps</value></data>
+  <data name="Clean_Target_cursor-cache" xml:space="preserve"><value>Cursor cache</value></data>
+  <data name="Clean_Target_cursor-cached-data" xml:space="preserve"><value>Cursor cached data</value></data>
+  <data name="Clean_Target_cursor-code" xml:space="preserve"><value>Cursor code cache</value></data>
+  <data name="Clean_Target_cursor-gpu" xml:space="preserve"><value>Cursor GPU cache</value></data>
+  <data name="Clean_Target_cursor-workspaces" xml:space="preserve"><value>Cursor workspaces unused for 30 days</value></data>
   <data name="Clean_Target_d3d-cache" xml:space="preserve"><value>DirectX shader cache</value></data>
   <data name="Clean_Target_discord-cache" xml:space="preserve"><value>Discord cache</value></data>
   <data name="Clean_Target_discord-code" xml:space="preserve"><value>Discord code cache</value></data>

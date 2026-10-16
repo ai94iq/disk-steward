@@ -101,9 +101,20 @@ public static class CleanRules
         new("terraform-cache", CleanCategory.Developer, $@"{Roaming}\terraform.d\plugin-cache"),
         new("hex-cache", CleanCategory.Developer, $@"{Home}\.hex\cache"),
         new("opam-download", CleanCategory.Developer, $@"{Home}\.opam\download-cache"),
+
+        // AI tools: MoleWin's own rules (mo has none). Old chats and sessions only; anything
+        // touched in the last 30 days stays, and Claude Code's memory folders are whitelisted.
+        new("claude-chats", CleanCategory.AiTools, $@"{Home}\.claude\projects\*", CleanMode.Files, "*.jsonl", 30),
+        new("codex-sessions", CleanCategory.AiTools, $@"{Home}\.codex\sessions\*\*\*", CleanMode.Files, "*.jsonl", 30),
+        new("cursor-workspaces", CleanCategory.AiTools, $@"{Roaming}\Cursor\User\workspaceStorage", OlderThanDays: 30),
+        new("cursor-cache", CleanCategory.AiTools, $@"{Roaming}\Cursor\Cache"),
+        new("cursor-cached-data", CleanCategory.AiTools, $@"{Roaming}\Cursor\CachedData"),
+        new("cursor-code", CleanCategory.AiTools, $@"{Roaming}\Cursor\Code Cache"),
+        new("cursor-gpu", CleanCategory.AiTools, $@"{Roaming}\Cursor\GPUCache"),
     ];
 
-    // mo 1.30.0's default whitelist: never cleaned, even when a rule would reach it.
+    // mo 1.30.0's default whitelist, plus Claude Code memory: never cleaned, even when a rule
+    // would reach it.
     public static IReadOnlyList<string> Whitelist { get; } =
     [
         $@"{Local}\Microsoft\Windows\Explorer",
@@ -118,5 +129,6 @@ public static class CleanRules
         $@"{Home}\.gradle\caches\modules-2\files-*",
         $@"{Home}\.ollama\models",
         $@"{Local}\JetBrains",
+        $@"{Home}\.claude\projects\*\memory",
     ];
 }

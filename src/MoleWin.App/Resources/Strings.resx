@@ -35,6 +35,7 @@
   <data name="Analyze_Up" xml:space="preserve"><value>للأعلى</value></data>
   <data name="App_AlreadyRunning" xml:space="preserve"><value>التطبيق يعمل بالفعل.</value></data>
   <data name="App_Name" xml:space="preserve"><value>MoleWin</value></data>
+  <data name="Clean_Category_AiTools" xml:space="preserve"><value>أدوات الذكاء الاصطناعي</value></data>
   <data name="Clean_Category_Apps" xml:space="preserve"><value>التطبيقات</value></data>
   <data name="Clean_Category_Browsers" xml:space="preserve"><value>المتصفحات</value></data>
   <data name="Clean_Category_Developer" xml:space="preserve"><value>أدوات المطورين</value></data>
@@ -72,7 +73,14 @@
   <data name="Clean_Target_chrome-grshader" xml:space="preserve"><value>ذاكرة مؤقتة: Chrome graphics shader cache</value></data>
   <data name="Clean_Target_chrome-shader" xml:space="preserve"><value>ذاكرة مؤقتة: Chrome shader cache</value></data>
   <data name="Clean_Target_chrome-sw" xml:space="preserve"><value>ذاكرة مؤقتة: Chrome service worker cache</value></data>
+  <data name="Clean_Target_claude-chats" xml:space="preserve"><value>محادثات Claude Code الأقدم من 30 يومًا</value></data>
+  <data name="Clean_Target_codex-sessions" xml:space="preserve"><value>جلسات Codex الأقدم من 30 يومًا</value></data>
   <data name="Clean_Target_crash-dumps" xml:space="preserve"><value>ملفات تفريغ الأعطال</value></data>
+  <data name="Clean_Target_cursor-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Cursor cache</value></data>
+  <data name="Clean_Target_cursor-cached-data" xml:space="preserve"><value>بيانات Cursor المخزنة مؤقتًا</value></data>
+  <data name="Clean_Target_cursor-code" xml:space="preserve"><value>ذاكرة مؤقتة: Cursor code cache</value></data>
+  <data name="Clean_Target_cursor-gpu" xml:space="preserve"><value>ذاكرة مؤقتة: Cursor GPU cache</value></data>
+  <data name="Clean_Target_cursor-workspaces" xml:space="preserve"><value>مساحات عمل Cursor غير المستخدمة منذ 30 يومًا</value></data>
   <data name="Clean_Target_d3d-cache" xml:space="preserve"><value>ذاكرة مؤقتة: DirectX shader cache</value></data>
   <data name="Clean_Target_discord-cache" xml:space="preserve"><value>ذاكرة مؤقتة: Discord cache</value></data>
   <data name="Clean_Target_discord-code" xml:space="preserve"><value>ذاكرة مؤقتة: Discord code cache</value></data>

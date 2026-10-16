@@ -7,4 +7,5 @@ public enum CleanCategory
     Apps,
     Gpu,
     Developer,
+    AiTools,
 }

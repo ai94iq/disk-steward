@@ -88,6 +88,19 @@ public sealed class CleanScannerTests : IDisposable
     }
 
     [Fact]
+    public void Old_chat_transcripts_go_but_memory_and_recent_chats_stay()
+    {
+        File(Path.Combine("projects", "repo-a", "old.jsonl"), 10, ageDays: 40);
+        File(Path.Combine("projects", "repo-a", "new.jsonl"), 10, ageDays: 2);
+        File(Path.Combine("projects", "repo-a", "memory", "MEMORY.md"), 10, ageDays: 400);
+        var chats = new CleanTarget("claude-chats", CleanCategory.AiTools, Path.Combine(_root, "projects", "*"), CleanMode.Files, "*.jsonl", 30);
+
+        var finding = Scan(Scanner(Path.Combine(_root, "projects", "*", "memory")), chats);
+
+        Assert.EndsWith("old.jsonl", Assert.Single(finding.Items).Path, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void Missing_targets_give_an_empty_finding()
     {
         var finding = Scan(Scanner(), new CleanTarget("t", CleanCategory.Apps, Path.Combine(_root, "nope")));
