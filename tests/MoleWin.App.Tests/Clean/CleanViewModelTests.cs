@@ -51,6 +51,19 @@ public sealed class CleanViewModelTests : IDisposable
     }
 
     [Fact]
+    public async Task Categories_start_collapsed_with_their_totals_visible()
+    {
+        var vm = Create(
+            new CleanTarget("chrome-cache", CleanCategory.Browsers, Folder("c1", ("a", 10))),
+            new CleanTarget("nvidia-dx", CleanCategory.Gpu, Folder("c2", ("b", 30))));
+
+        await vm.EnsureLoadedAsync();
+
+        Assert.All(vm.Categories, c => Assert.False(c.IsExpanded));
+        Assert.All(vm.Categories, c => Assert.True(c.Bytes > 0));
+    }
+
+    [Fact]
     public async Task Empty_targets_do_not_show()
     {
         var vm = Create(new CleanTarget("chrome-cache", CleanCategory.Browsers, Folder("empty")));

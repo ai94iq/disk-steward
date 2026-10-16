@@ -14,6 +14,7 @@
   <Thickness x:Key="CardGap">0,0,16,0</Thickness>
   <Thickness x:Key="InlineGap">0,0,8,0</Thickness>
   <Thickness x:Key="InlineStart">8,0,0,0</Thickness>
+  <Thickness x:Key="SideGap">16,0,0,0</Thickness>
   <Thickness x:Key="ListPadding">8</Thickness>
   <Thickness x:Key="SurfacePadding">20</Thickness>
   <Thickness x:Key="HeadlineLabelGap">12,0,0,8</Thickness>

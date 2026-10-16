@@ -57,9 +57,8 @@
 
     <Grid Grid.Row="2" Margin="{StaticResource FieldSpacing}">
       <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="2*" />
-        <ColumnDefinition Width="{StaticResource GutterWidth}" />
         <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
       </Grid.ColumnDefinitions>
 
       <Border Style="{StaticResource Surface}" Padding="{StaticResource ListPadding}" Margin="0">
@@ -84,9 +83,8 @@
         </Grid>
       </Border>
 
-      <DockPanel Grid.Column="2">
-        <!-- Found after an uninstall: shown unticked, removed only on request -->
-        <Border DockPanel.Dock="Top" Style="{StaticResource CollapsedWithoutLeftovers}">
+      <!-- Found after an uninstall: shown unticked beside the list, removed only on request -->
+      <Border Grid.Column="1" Width="380" Margin="{StaticResource SideGap}" VerticalAlignment="Top" Style="{StaticResource CollapsedWithoutLeftovers}">
           <StackPanel>
             <TextBlock Margin="{StaticResource LabelSpacing}" FontWeight="SemiBold" TextWrapping="Wrap" Text="{Binding StatusText}" />
             <ItemsControl Margin="{StaticResource FieldSpacing}" ItemsSource="{Binding Leftovers}">
@@ -107,21 +105,7 @@
               </ui:Button.Icon>
             </ui:Button>
           </StackPanel>
-        </Border>
-
-        <Border Style="{StaticResource Surface}" Margin="0">
-          <DockPanel>
-            <TextBlock DockPanel.Dock="Top" Margin="{StaticResource FieldSpacing}" Style="{StaticResource SecondaryText}" Text="{l:Tr Analyze_Activity}" />
-            <ListBox ItemsSource="{Binding Activity}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-              <ListBox.ItemTemplate>
-                <DataTemplate>
-                  <TextBlock Style="{StaticResource TertiaryText}" TextWrapping="Wrap" Text="{Binding}" />
-                </DataTemplate>
-              </ListBox.ItemTemplate>
-            </ListBox>
-          </DockPanel>
-        </Border>
-      </DockPanel>
+      </Border>
     </Grid>
 
     <!-- Runs the app's own uninstaller after a confirmation -->

@@ -4,6 +4,7 @@ arrow_left
 arrow_right
 arrow_sync
 arrow_up
+bot
 broom
 calendar
 checkmark
@@ -11,9 +12,12 @@ chevron_down
 chevron_left
 chevron_right
 chevron_up
+code
 color
 data_pie
 delete
+desktop
+developer_board
 dismiss
 document
 edit
@@ -22,6 +26,7 @@ eye
 eye_off
 filter
 folder
+globe
 heart_pulse
 home
 image
@@ -38,6 +43,7 @@ save
 search
 settings
 share
+shield
 sign_out
 stop
 warning

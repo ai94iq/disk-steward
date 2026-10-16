@@ -142,10 +142,13 @@ public sealed partial class CleanViewModel : PageViewModel
         if (!any) return;
 
         TotalText = SizeText.Format(TotalBytes);
-        var targets = Categories.SelectMany(c => c.Targets).ToList();
-        FoundText = Tr.Format("Clean_Found", TotalText, targets.Count);
-        var largest = targets.Max(t => t.Bytes);
-        foreach (var target in targets) target.Share = largest > 0 ? target.Bytes * 100.0 / largest : 0;
+        FoundText = Tr.Format("Clean_Found", TotalText, Categories.Sum(c => c.Targets.Count));
+        // Bars compare places within their own group; one huge cache elsewhere would flatten them.
+        foreach (var category in Categories)
+        {
+            var largest = category.Targets.Max(t => t.Bytes);
+            foreach (var target in category.Targets) target.Share = largest > 0 ? target.Bytes * 100.0 / largest : 0;
+        }
     }
 
     // Categories keep the enum order (System first) whatever order the scan finishes in.

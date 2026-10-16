@@ -10,10 +10,12 @@
        the lists below get a real height (it wraps the page when this is true, the Page default). -->
   <Page.Resources>
     <BooleanToVisibilityConverter x:Key="BoolVisible" />
+    <common:CategoryBrushConverter x:Key="CategoryBrush" />
   </Page.Resources>
 
   <Grid Margin="{StaticResource PagePadding}">
     <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
       <RowDefinition Height="Auto" />
       <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
@@ -45,77 +47,81 @@
       </StackPanel>
     </Border>
 
-    <Grid Grid.Row="2" Margin="{StaticResource FieldSpacing}">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="2*" />
-        <ColumnDefinition Width="{StaticResource GutterWidth}" />
-        <ColumnDefinition Width="*" />
-      </Grid.ColumnDefinitions>
+    <!-- The full log of every rule checked and everything removed, only when asked for -->
+    <Expander Grid.Row="2" Margin="{StaticResource FieldSpacing}" Header="{l:Tr Common_ShowDetails}">
+      <ListBox Height="160" ItemsSource="{Binding Activity}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <TextBlock Style="{StaticResource TertiaryText}" TextWrapping="Wrap" Text="{Binding}" />
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Expander>
 
-      <Grid>
-        <ScrollViewer VerticalScrollBarVisibility="Auto"
-                      Visibility="{Binding State, Converter={StaticResource LoadStateVisible}, ConverterParameter='Idle,Loading,Loaded'}">
-          <ItemsControl ItemsSource="{Binding Categories}">
-            <ItemsControl.ItemTemplate>
-              <DataTemplate>
-                <Border Style="{StaticResource Surface}" common:Motion.FadeIn="True">
-                  <StackPanel>
-                    <DockPanel Margin="{StaticResource LabelSpacing}">
-                      <TextBlock DockPanel.Dock="Right" VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding SizeText}" />
-                      <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsSelected}">
-                        <ui:TextBlock FontTypography="BodyStrong" Text="{Binding Name}" />
-                      </CheckBox>
-                    </DockPanel>
-                    <ItemsControl ItemsSource="{Binding Targets}">
-                      <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                          <Grid Margin="{StaticResource RowSpacing}" Background="Transparent" ToolTip="{Binding PathsPreview}">
-                            <Grid.ColumnDefinitions>
-                              <ColumnDefinition Width="Auto" />
-                              <ColumnDefinition Width="2*" />
-                              <ColumnDefinition Width="*" />
-                              <ColumnDefinition Width="{StaticResource SizeColumnWidth}" />
-                            </Grid.ColumnDefinitions>
-                            <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsSelected}" />
-                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                              <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Label}" />
-                              <TextBlock Style="{StaticResource TertiaryText}" Text="{Binding ItemsText}" />
-                            </StackPanel>
-                            <ProgressBar Grid.Column="2" Height="6" Margin="{StaticResource CardGap}" VerticalAlignment="Center"
-                                         Maximum="100" common:Motion.Value="{Binding Share}" />
-                            <TextBlock Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center"
-                                       Style="{StaticResource SecondaryText}" Text="{Binding SizeText}" />
-                          </Grid>
-                        </DataTemplate>
-                      </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                  </StackPanel>
-                </Border>
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-          </ItemsControl>
-        </ScrollViewer>
-        <common:LoadStateOverlay State="{Binding State}" ErrorMessage="{Binding ErrorMessage}"
-                                 EmptyText="{Binding EmptyText}" RetryCommand="{Binding RescanCommand}" />
-      </Grid>
-
-      <!-- Every rule checked and everything removed, newest first -->
-      <Border Grid.Column="2" Style="{StaticResource Surface}" Margin="0">
-        <DockPanel>
-          <TextBlock DockPanel.Dock="Top" Margin="{StaticResource FieldSpacing}" Style="{StaticResource SecondaryText}" Text="{l:Tr Analyze_Activity}" />
-          <ListBox ItemsSource="{Binding Activity}" VirtualizingPanel.IsVirtualizing="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-            <ListBox.ItemTemplate>
-              <DataTemplate>
-                <TextBlock Style="{StaticResource TertiaryText}" TextWrapping="Wrap" Text="{Binding}" />
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>
-        </DockPanel>
-      </Border>
+    <Grid Grid.Row="3" Margin="{StaticResource FieldSpacing}">
+      <ScrollViewer VerticalScrollBarVisibility="Auto"
+                    Visibility="{Binding State, Converter={StaticResource LoadStateVisible}, ConverterParameter='Idle,Loading,Loaded'}">
+        <ItemsControl ItemsSource="{Binding Categories}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <!-- One card per category: collapsed shows the total, opened shows each place -->
+              <ui:CardExpander Margin="{StaticResource LabelSpacing}" IsExpanded="{Binding IsExpanded}" common:Motion.FadeIn="True">
+                <ui:CardExpander.Header>
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="Auto" />
+                      <ColumnDefinition Width="Auto" />
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsSelected}" />
+                    <Border Grid.Column="1" Width="36" Height="36" Margin="{StaticResource InlineGap}" CornerRadius="8"
+                            Background="{DynamicResource SubtleFillColorSecondaryBrush}">
+                      <common:AppIcon Width="20" Height="20" Kind="{Binding Icon}"
+                                      Foreground="{Binding Category, Converter={StaticResource CategoryBrush}}" />
+                    </Border>
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                      <ui:TextBlock FontTypography="BodyStrong" Text="{Binding Name}" />
+                      <TextBlock Style="{StaticResource TertiaryText}" Text="{Binding ItemsText}" />
+                    </StackPanel>
+                    <TextBlock Grid.Column="3" Margin="{StaticResource CardGap}" VerticalAlignment="Center"
+                               FontSize="16" FontWeight="SemiBold" Text="{Binding SizeText}" />
+                  </Grid>
+                </ui:CardExpander.Header>
+                <ItemsControl ItemsSource="{Binding Targets}">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <Grid Margin="{StaticResource RowSpacing}" Background="Transparent" ToolTip="{Binding PathsPreview}">
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="Auto" />
+                          <ColumnDefinition Width="2*" />
+                          <ColumnDefinition Width="*" />
+                          <ColumnDefinition Width="{StaticResource SizeColumnWidth}" />
+                        </Grid.ColumnDefinitions>
+                        <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsSelected}" />
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                          <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Label}" />
+                          <TextBlock Style="{StaticResource TertiaryText}" Text="{Binding ItemsText}" />
+                        </StackPanel>
+                        <ProgressBar Grid.Column="2" Height="6" Margin="{StaticResource CardGap}" VerticalAlignment="Center"
+                                     Maximum="100" common:Motion.Value="{Binding Share}" />
+                        <TextBlock Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                   Style="{StaticResource SecondaryText}" Text="{Binding SizeText}" />
+                      </Grid>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </ui:CardExpander>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+      <common:LoadStateOverlay State="{Binding State}" ErrorMessage="{Binding ErrorMessage}"
+                               EmptyText="{Binding EmptyText}" RetryCommand="{Binding RescanCommand}" />
     </Grid>
 
     <!-- The only way anything is removed: ticked rows, this button, then a confirmation -->
-    <DockPanel Grid.Row="3">
+    <DockPanel Grid.Row="4">
       <ui:Button DockPanel.Dock="Right" Appearance="Danger" Command="{Binding RecycleSelectedCommand}" Content="{l:Tr Clean_Recycle}">
         <ui:Button.Icon>
           <common:AppIconElement Kind="Delete" />

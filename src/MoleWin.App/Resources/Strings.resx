@@ -67,6 +67,12 @@
   <data name="Clean_LogChecked" xml:space="preserve"><value>{0}: {1}</value></data>
   <data name="Clean_LogDone" xml:space="preserve"><value>انتهى الفحص في {0:%m}:{0:ss}</value></data>
   <data name="Clean_Nothing" xml:space="preserve"><value>لا يوجد ما يُنظَّف الآن.</value></data>
+  <data name="Clean_Places_few" xml:space="preserve"><value>{0} مواضع</value></data>
+  <data name="Clean_Places_many" xml:space="preserve"><value>{0} موضعًا</value></data>
+  <data name="Clean_Places_one" xml:space="preserve"><value>موضع واحد</value></data>
+  <data name="Clean_Places_other" xml:space="preserve"><value>{0} موضع</value></data>
+  <data name="Clean_Places_two" xml:space="preserve"><value>موضعان</value></data>
+  <data name="Clean_Places_zero" xml:space="preserve"><value>لا مواضع</value></data>
   <data name="Clean_Recycle" xml:space="preserve"><value>نقل إلى سلة المحذوفات</value></data>
   <data name="Clean_Rescan" xml:space="preserve"><value>فحص من جديد</value></data>
   <data name="Clean_Scanning" xml:space="preserve"><value>جارٍ فحص {0}</value></data>
@@ -163,6 +169,7 @@
   <data name="Common_Ok" xml:space="preserve"><value>حسنًا</value></data>
   <data name="Common_Retry" xml:space="preserve"><value>إعادة المحاولة</value></data>
   <data name="Common_Save" xml:space="preserve"><value>حفظ</value></data>
+  <data name="Common_ShowDetails" xml:space="preserve"><value>عرض التفاصيل</value></data>
   <data name="Common_Yes" xml:space="preserve"><value>نعم</value></data>
   <data name="Date_Approx" xml:space="preserve"><value>حوالي {0}</value></data>
   <data name="Error_LoadFailed" xml:space="preserve"><value>تعذّر تحميل البيانات.</value></data>
