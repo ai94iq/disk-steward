@@ -104,4 +104,22 @@ public sealed class AppsCoreTests : IDisposable
 
         Assert.Empty(finder.Find(app, new LeftoverRoots([], [])));
     }
+
+    [Fact]
+    public void A_crafted_app_name_cannot_point_leftovers_outside_the_search_root()
+    {
+        // DisplayName/Publisher come from the registry (user-writable). An absolute value, or
+        // one that climbs out with "..", must not turn an unrelated existing folder into a
+        // deletable leftover, even when nothing marks that folder protected.
+        var search = Path.Combine(_root, "Roaming");
+        var outside = Path.Combine(_root, "Secrets");
+        Directory.CreateDirectory(outside);
+        var finder = new LeftoverFinder(new ProtectedPaths(new ProtectedRoots(@"Z:\W", [], @"Z:\P", @"Z:\U", @"Z:\O", [])));
+
+        foreach (var evil in new[] { outside, @"..\Secrets" })
+        {
+            var app = InstalledAppParser.FromValues("k", Values(name: evil))! with { InstallLocation = null };
+            Assert.Empty(finder.Find(app, new LeftoverRoots([search], [search])));
+        }
+    }
 }
