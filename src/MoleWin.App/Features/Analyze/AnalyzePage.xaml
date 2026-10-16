@@ -71,7 +71,6 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
@@ -97,81 +96,90 @@
       </DockPanel>
     </Border>
 
-    <!-- The full log, only when asked for -->
-    <Expander Grid.Row="2" Margin="{StaticResource FieldSpacing}" Header="{l:Tr Common_ShowDetails}">
-      <ListBox Height="160" ItemsSource="{Binding Activity}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-        <ListBox.ItemTemplate>
-          <DataTemplate>
-            <TextBlock Style="{StaticResource TertiaryText}" TextWrapping="Wrap" Text="{Binding}" />
-          </DataTemplate>
-        </ListBox.ItemTemplate>
-      </ListBox>
-    </Expander>
-
-    <Border Grid.Row="3" Margin="{StaticResource FieldSpacing}" Padding="{StaticResource ListPadding}" Style="{StaticResource Surface}">
-      <Grid>
-        <TreeView ItemsSource="{Binding Roots}" ItemContainerStyle="{StaticResource NodeContainer}"
-                  VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Standard"
-                  Visibility="{Binding State, Converter={StaticResource LoadStateVisible}, ConverterParameter='Idle,Loaded'}">
-          <TreeView.ItemTemplate>
-            <HierarchicalDataTemplate ItemsSource="{Binding Children}" ItemContainerStyle="{StaticResource NodeContainer}">
-              <Grid>
-                <!-- A drive: what it holds against what it can hold -->
-                <Grid Style="{StaticResource DriveRow}" Margin="{StaticResource RowSpacing}">
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="{StaticResource NameColumnWidth}" />
-                    <ColumnDefinition Width="{StaticResource BarColumnWidth}" />
-                    <ColumnDefinition Width="Auto" />
-                  </Grid.ColumnDefinitions>
-                  <common:AppIcon Width="24" Height="24" Margin="{StaticResource InlineGap}" Kind="HardDrive" />
-                  <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                    <TextBlock FontWeight="SemiBold" Text="{Binding Name}" />
-                    <TextBlock Style="{StaticResource TertiaryText}" Text="{Binding FreeText}" />
-                  </StackPanel>
-                  <ProgressBar Grid.Column="2" Height="8" VerticalAlignment="Center" Maximum="100"
-                               Foreground="{Binding Level, Converter={StaticResource LoadLevelBrush}}"
-                               common:Motion.Value="{Binding UsedPercent}" />
-                  <TextBlock Grid.Column="3" Margin="{StaticResource InlineStart}" VerticalAlignment="Center"
-                             FontWeight="SemiBold" Text="{Binding SizeText}" />
-                </Grid>
-
-                <!-- A folder or file: tick it to remove, unless Windows needs it -->
-                <Grid Style="{StaticResource ItemRow}" Margin="{StaticResource RowSpacing}">
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="{StaticResource NameColumnWidth}" />
-                    <ColumnDefinition Width="{StaticResource BarColumnWidth}" />
-                    <ColumnDefinition Width="{StaticResource SizeColumnWidth}" />
-                  </Grid.ColumnDefinitions>
-                  <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsSelected}" IsEnabled="{Binding CanSelect}" />
-                  <common:AppIcon Grid.Column="1" Width="18" Height="18" Margin="{StaticResource InlineGap}" Style="{StaticResource FileIcon}" />
-                  <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                    <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Name}" />
-                    <StackPanel Orientation="Horizontal" Style="{StaticResource LockedTag}" ToolTip="{l:Tr Analyze_SystemTip}">
-                      <common:AppIcon Width="14" Height="14" Margin="{StaticResource InlineGap}" Kind="Shield"
-                                      Foreground="{DynamicResource SystemFillColorCautionBrush}" />
-                      <TextBlock Style="{StaticResource LockedText}" />
+    <Grid Grid.Row="2" Margin="{StaticResource FieldSpacing}">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+      <Border Margin="0" Padding="{StaticResource ListPadding}" Style="{StaticResource Surface}">
+        <Grid>
+          <TreeView ItemsSource="{Binding Roots}" ItemContainerStyle="{StaticResource NodeContainer}"
+                    VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Standard"
+                    Visibility="{Binding State, Converter={StaticResource LoadStateVisible}, ConverterParameter='Idle,Loaded'}">
+            <TreeView.ItemTemplate>
+              <HierarchicalDataTemplate ItemsSource="{Binding Children}" ItemContainerStyle="{StaticResource NodeContainer}">
+                <Grid>
+                  <!-- A drive: what it holds against what it can hold -->
+                  <Grid Style="{StaticResource DriveRow}" Margin="{StaticResource RowSpacing}">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="Auto" />
+                      <ColumnDefinition Width="{StaticResource NameColumnWidth}" />
+                      <ColumnDefinition Width="{StaticResource BarColumnWidth}" />
+                      <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <common:AppIcon Width="24" Height="24" Margin="{StaticResource InlineGap}" Kind="HardDrive" />
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                      <TextBlock FontWeight="SemiBold" Text="{Binding Name}" />
+                      <TextBlock Style="{StaticResource TertiaryText}" Text="{Binding FreeText}" />
                     </StackPanel>
-                  </StackPanel>
-                  <ProgressBar Grid.Column="3" Height="6" VerticalAlignment="Center" Maximum="100" common:Motion.Value="{Binding Share}" />
-                  <Grid Grid.Column="4" VerticalAlignment="Center">
-                    <TextBlock HorizontalAlignment="Right" FontWeight="SemiBold" Text="{Binding SizeText}" />
-                    <TextBlock HorizontalAlignment="Right" Style="{StaticResource TertiaryText}" Text="{l:Tr Analyze_Measuring}"
-                               Visibility="{Binding IsMeasuring, Converter={StaticResource BoolVisible}}" />
+                    <ProgressBar Grid.Column="2" Height="8" VerticalAlignment="Center" Maximum="100"
+                                 Foreground="{Binding Level, Converter={StaticResource LoadLevelBrush}}"
+                                 common:Motion.Value="{Binding UsedPercent}" />
+                    <TextBlock Grid.Column="3" Margin="{StaticResource InlineStart}" VerticalAlignment="Center"
+                               FontWeight="SemiBold" Text="{Binding SizeText}" />
+                  </Grid>
+
+                  <!-- A folder or file: tick it to remove, unless Windows needs it -->
+                  <Grid Style="{StaticResource ItemRow}" Margin="{StaticResource RowSpacing}">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="Auto" />
+                      <ColumnDefinition Width="Auto" />
+                      <ColumnDefinition Width="{StaticResource NameColumnWidth}" />
+                      <ColumnDefinition Width="{StaticResource BarColumnWidth}" />
+                      <ColumnDefinition Width="{StaticResource SizeColumnWidth}" />
+                    </Grid.ColumnDefinitions>
+                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsSelected}" IsEnabled="{Binding CanSelect}" />
+                    <common:AppIcon Grid.Column="1" Width="18" Height="18" Margin="{StaticResource InlineGap}" Style="{StaticResource FileIcon}" />
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                      <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Name}" />
+                      <StackPanel Orientation="Horizontal" Style="{StaticResource LockedTag}" ToolTip="{l:Tr Analyze_SystemTip}">
+                        <common:AppIcon Width="14" Height="14" Margin="{StaticResource InlineGap}" Kind="Shield"
+                                        Foreground="{DynamicResource SystemFillColorCautionBrush}" />
+                        <TextBlock Style="{StaticResource LockedText}" />
+                      </StackPanel>
+                    </StackPanel>
+                    <ProgressBar Grid.Column="3" Height="6" VerticalAlignment="Center" Maximum="100" common:Motion.Value="{Binding Share}" />
+                    <Grid Grid.Column="4" VerticalAlignment="Center">
+                      <TextBlock HorizontalAlignment="Right" FontWeight="SemiBold" Text="{Binding SizeText}" />
+                      <TextBlock HorizontalAlignment="Right" Style="{StaticResource TertiaryText}" Text="{l:Tr Analyze_Measuring}"
+                                 Visibility="{Binding IsMeasuring, Converter={StaticResource BoolVisible}}" />
+                    </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
-            </HierarchicalDataTemplate>
-          </TreeView.ItemTemplate>
-        </TreeView>
-        <common:LoadStateOverlay State="{Binding State}" ErrorMessage="{Binding ErrorMessage}" RetryCommand="{Binding ReloadCommand}" />
-      </Grid>
-    </Border>
+              </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+          </TreeView>
+          <common:LoadStateOverlay State="{Binding State}" ErrorMessage="{Binding ErrorMessage}" RetryCommand="{Binding ReloadCommand}" />
+        </Grid>
+      </Border>
+
+      <!-- Every folder read and everything removed, always in view -->
+      <Border Grid.Column="1" Width="300" Margin="{StaticResource SideGap}" Padding="{StaticResource ListPadding}" Style="{StaticResource Surface}">
+        <DockPanel>
+          <TextBlock DockPanel.Dock="Top" Margin="8,4,8,8" FontWeight="SemiBold" Style="{StaticResource SecondaryText}" Text="{l:Tr Common_Details}" />
+          <ListBox ItemsSource="{Binding Activity}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Style="{StaticResource TertiaryText}" TextWrapping="Wrap" Text="{Binding}" />
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </DockPanel>
+      </Border>
+    </Grid>
 
     <!-- The only way anything is removed: ticked rows, this button, then a confirmation -->
-    <DockPanel Grid.Row="4">
+    <DockPanel Grid.Row="3">
       <ui:Button DockPanel.Dock="Right" Appearance="Danger" Command="{Binding RecycleSelectedCommand}" Content="{l:Tr Analyze_Recycle}">
         <ui:Button.Icon>
           <common:AppIconElement Kind="Delete" />

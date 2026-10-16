@@ -10,7 +10,6 @@
        the lists below get a real height (it wraps the page when this is true, the Page default). -->
   <Page.Resources>
     <BooleanToVisibilityConverter x:Key="BoolVisible" />
-    <common:AppIconConverter x:Key="AppIcon" />
     <Style x:Key="CollapsedWithoutLeftovers" TargetType="Border" BasedOn="{StaticResource Surface}">
       <Style.Triggers>
         <DataTrigger Binding="{Binding Leftovers.Count}" Value="0">
@@ -68,36 +67,51 @@
 
       <Border Style="{StaticResource Surface}" Padding="{StaticResource ListPadding}" Margin="0">
         <Grid>
-          <ListBox ItemsSource="{Binding Apps}" SelectedItem="{Binding SelectedApp}"
-                   VirtualizingPanel.IsVirtualizing="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                   HorizontalContentAlignment="Stretch"
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+          </Grid.RowDefinitions>
+          <!-- Column headers, inset to line up with the rows: row padding on the left, row
+               padding plus the scroll bar on the right -->
+          <Grid Margin="12,4,28,4">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="{StaticResource IconColumnWidth}" />
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="{StaticResource DateColumnWidth}" />
+              <ColumnDefinition Width="{StaticResource SizeColumnWidth}" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="1" Style="{StaticResource ColumnHeader}" Text="{l:Tr Apps_ColName}" />
+            <TextBlock Grid.Column="2" Style="{StaticResource ColumnHeader}" Text="{l:Tr Apps_SortDate}" />
+            <TextBlock Grid.Column="3" HorizontalAlignment="Right" Style="{StaticResource ColumnHeader}" Text="{l:Tr Apps_SortSize}" />
+          </Grid>
+          <ListBox Grid.Row="1" ItemsSource="{Binding Apps}" SelectedItem="{Binding SelectedApp}"
+                   ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch"
                    Visibility="{Binding State, Converter={StaticResource LoadStateVisible}, ConverterParameter='Idle,Loaded'}">
             <ListBox.ItemTemplate>
               <DataTemplate>
-                <Grid Margin="{StaticResource LabelSpacing}">
+                <Grid>
                   <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="{StaticResource IconColumnWidth}" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="{StaticResource DateColumnWidth}" />
                     <ColumnDefinition Width="{StaticResource SizeColumnWidth}" />
                   </Grid.ColumnDefinitions>
-                  <!-- The app's own icon, or the generic outline when it has none -->
-                  <Grid Width="32" Height="32" Margin="{StaticResource CardGap}" VerticalAlignment="Center">
+                  <!-- The app's own icon once loaded, or the generic outline when it has none -->
+                  <Grid Width="32" Height="32" HorizontalAlignment="Left" VerticalAlignment="Center">
                     <common:AppIcon Width="24" Height="24" Kind="Apps" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
-                    <Image Source="{Binding App, Converter={StaticResource AppIcon}}" RenderOptions.BitmapScalingMode="HighQuality" />
+                    <Image Source="{Binding Icon}" RenderOptions.BitmapScalingMode="HighQuality" />
                   </Grid>
-                  <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                  <StackPanel Grid.Column="1" Margin="{StaticResource InlineGap}" VerticalAlignment="Center">
                     <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Name}" />
                     <TextBlock Style="{StaticResource TertiaryText}" TextTrimming="CharacterEllipsis" Text="{Binding Detail}" />
                   </StackPanel>
-                  <TextBlock Grid.Column="2" Margin="{StaticResource CardGap}" VerticalAlignment="Center"
-                             Style="{StaticResource SecondaryText}" Text="{Binding DateText}" />
+                  <TextBlock Grid.Column="2" VerticalAlignment="Center" Style="{StaticResource SecondaryText}" Text="{Binding DateText}" />
                   <TextBlock Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding SizeText}" />
                 </Grid>
               </DataTemplate>
             </ListBox.ItemTemplate>
           </ListBox>
-          <common:LoadStateOverlay State="{Binding State}" ErrorMessage="{Binding ErrorMessage}" RetryCommand="{Binding ReloadCommand}" />
+          <common:LoadStateOverlay Grid.Row="1" State="{Binding State}" ErrorMessage="{Binding ErrorMessage}" RetryCommand="{Binding ReloadCommand}" />
         </Grid>
       </Border>
 

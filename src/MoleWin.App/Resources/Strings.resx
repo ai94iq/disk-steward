@@ -12,7 +12,6 @@
   <data name="Accent_Rose" xml:space="preserve"><value>وردي</value></data>
   <data name="Accent_System" xml:space="preserve"><value>لون النظام</value></data>
   <data name="Accent_Teal" xml:space="preserve"><value>أزرق مخضر</value></data>
-  <data name="Analyze_Activity" xml:space="preserve"><value>النشاط</value></data>
   <data name="Analyze_Confirm" xml:space="preserve"><value>نقل {0} عنصر ({1}) إلى سلة المحذوفات؟ لا يُحذف شيء نهائيًا، ويمكنك استعادتها من سلة المحذوفات.</value></data>
   <data name="Analyze_Counters" xml:space="preserve"><value>{0:N0} ملف، {1:N0} مجلد، {2}</value></data>
   <data name="Analyze_DriveFree" xml:space="preserve"><value>{0} متاحة من {1}</value></data>
@@ -49,6 +48,7 @@
   <data name="Apps_LogRunning" xml:space="preserve"><value>جارٍ إلغاء تثبيت {0}</value></data>
   <data name="Apps_RunFailed" xml:space="preserve"><value>لم تبدأ أداة إلغاء تثبيت {0}.</value></data>
   <data name="Apps_Running" xml:space="preserve"><value>جارٍ تشغيل أداة إلغاء تثبيت {0}</value></data>
+  <data name="Apps_ColName" xml:space="preserve"><value>الاسم</value></data>
   <data name="Apps_Search" xml:space="preserve"><value>ابحث في التطبيقات</value></data>
   <data name="Apps_SortBy" xml:space="preserve"><value>الترتيب حسب</value></data>
   <data name="Apps_SortDate" xml:space="preserve"><value>تاريخ التثبيت</value></data>
@@ -177,7 +177,7 @@
   <data name="Common_Ok" xml:space="preserve"><value>حسنًا</value></data>
   <data name="Common_Retry" xml:space="preserve"><value>إعادة المحاولة</value></data>
   <data name="Common_Save" xml:space="preserve"><value>حفظ</value></data>
-  <data name="Common_ShowDetails" xml:space="preserve"><value>عرض التفاصيل</value></data>
+  <data name="Common_Details" xml:space="preserve"><value>التفاصيل</value></data>
   <data name="Common_Yes" xml:space="preserve"><value>نعم</value></data>
   <data name="Date_Approx" xml:space="preserve"><value>حوالي {0}</value></data>
   <data name="Error_LoadFailed" xml:space="preserve"><value>تعذّر تحميل البيانات.</value></data>

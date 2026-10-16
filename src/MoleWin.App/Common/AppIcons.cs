@@ -1,30 +1,23 @@
+using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
-using System.Windows.Data;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using MoleWin.Core.Apps;
 
 namespace MoleWin.App.Common;
 
 // An installed app's own icon from its DisplayIcon value ("path" or "path,index", sometimes
-// quoted, sometimes with %variables%). Null when there is none or it cannot be read; the
-// row then shows the generic outline icon. Icons are cached by DisplayIcon value.
-public sealed class AppIconConverter : IValueConverter
+// quoted, sometimes with %variables%). Null when there is none or it cannot be read. Safe off
+// the UI thread (the image is frozen), so the Apps list reads icons in the background instead
+// of stalling while it scrolls. Cached by DisplayIcon value.
+public static class AppIcons
 {
-    private static readonly Dictionary<string, ImageSource?> Cache = new(StringComparer.OrdinalIgnoreCase);
+    private static readonly ConcurrentDictionary<string, ImageSource?> Cache = new(StringComparer.OrdinalIgnoreCase);
 
-    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-    {
-        if (value is not InstalledApp { IconPath: { Length: > 0 } iconPath }) return null;
-        if (Cache.TryGetValue(iconPath, out var cached)) return cached;
-        return Cache[iconPath] = Load(iconPath);
-    }
+    public static ImageSource? Load(string? iconPath) =>
+        string.IsNullOrWhiteSpace(iconPath) ? null : Cache.GetOrAdd(iconPath, Read);
 
-    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) =>
-        throw new NotSupportedException();
-
-    private static ImageSource? Load(string iconPath)
+    private static ImageSource? Read(string iconPath)
     {
         var (file, index) = Split(iconPath);
         if (!File.Exists(file)) return null;

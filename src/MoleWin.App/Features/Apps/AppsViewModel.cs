@@ -84,7 +84,15 @@ public sealed partial class AppsViewModel : PageViewModel
         var apps = await Task.Run(_installed.List, ct);
         _all = [.. apps.Select(a => new AppRow(a, _dates))];
         Filter();
+        _ = LoadIconsAsync(_all);
         return _all.Count > 0;
+    }
+
+    // Icons are read off the UI thread, then set together; a failed icon stays generic.
+    private static async Task LoadIconsAsync(IReadOnlyList<AppRow> rows)
+    {
+        var icons = await Task.Run(() => rows.Select(r => AppIcons.Load(r.App.IconPath)).ToList());
+        for (var i = 0; i < rows.Count; i++) rows[i].Icon = icons[i];
     }
 
     [RelayCommand(CanExecute = nameof(CanUninstall))]

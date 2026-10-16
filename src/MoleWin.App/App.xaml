@@ -11,6 +11,11 @@
         <ResourceDictionary Source="Resources/Styles.xaml" />
         <ResourceDictionary Source="Resources/Scrolling.xaml" />
       </ResourceDictionary.MergedDictionaries>
+
+      <!-- WPF-UI 4.3 paints a pressed button's text and icon black on the dark theme. -->
+      <Style TargetType="ui:Button" BasedOn="{StaticResource DefaultUiButtonStyle}">
+        <Setter Property="PressedForeground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+      </Style>
     </ResourceDictionary>
   </Application.Resources>
 </Application>

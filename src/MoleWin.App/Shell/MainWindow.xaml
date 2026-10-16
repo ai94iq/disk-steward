@@ -29,6 +29,7 @@
                        PaneDisplayMode="Left"
                        IsBackButtonVisible="Collapsed"
                        IsPaneToggleVisible="False"
+                       IsFooterSeparatorVisible="False"
                        OpenPaneLength="200"
                        Transition="FadeInWithSlide"
                        TransitionDuration="200">

@@ -23,8 +23,10 @@
   <Thickness x:Key="SurfacePadding">20</Thickness>
   <GridLength x:Key="GutterWidth">16</GridLength>
   <GridLength x:Key="SizeColumnWidth">96</GridLength>
-  <GridLength x:Key="NameColumnWidth">380</GridLength>
-  <GridLength x:Key="BarColumnWidth">200</GridLength>
+  <GridLength x:Key="NameColumnWidth">260</GridLength>
+  <GridLength x:Key="BarColumnWidth">140</GridLength>
+  <GridLength x:Key="DateColumnWidth">140</GridLength>
+  <GridLength x:Key="IconColumnWidth">48</GridLength>
   <CornerRadius x:Key="CardRadius">8</CornerRadius>
 
   <!-- List rows, for every list. WPF-UI's own item paints the whole selected row in the accent
@@ -63,12 +65,67 @@
     </Setter>
   </Style>
 
+  <!-- A card that opens and closes at once. WPF-UI's CardExpander animates its height, which
+       re-lays out the whole page every frame and stutters on long pages. Header: whatever the
+       page puts there; clicking anywhere but its own controls toggles the card. -->
+  <Style x:Key="CardSection" TargetType="Expander">
+    <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="Expander">
+          <Border CornerRadius="{StaticResource CardRadius}" Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource SurfaceStrokeColorDefaultBrush}" BorderThickness="1">
+            <DockPanel>
+              <ToggleButton DockPanel.Dock="Top" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                            Content="{TemplateBinding Header}" Foreground="{TemplateBinding Foreground}"
+                            IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+                <ToggleButton.Template>
+                  <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="Row" Padding="16,12" Background="Transparent" CornerRadius="{StaticResource CardRadius}">
+                      <DockPanel>
+                        <common:AppIcon x:Name="Chevron" DockPanel.Dock="Right" Width="16" Height="16" Margin="{StaticResource InlineStart}"
+                                        Kind="ChevronDown" RenderTransformOrigin="0.5,0.5" />
+                        <ContentPresenter VerticalAlignment="Center" />
+                      </DockPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                      <Trigger Property="IsMouseOver" Value="True">
+                        <Setter TargetName="Row" Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
+                      </Trigger>
+                      <Trigger Property="IsChecked" Value="True">
+                        <Setter TargetName="Chevron" Property="RenderTransform">
+                          <Setter.Value>
+                            <RotateTransform Angle="180" />
+                          </Setter.Value>
+                        </Setter>
+                      </Trigger>
+                    </ControlTemplate.Triggers>
+                  </ControlTemplate>
+                </ToggleButton.Template>
+              </ToggleButton>
+              <ContentPresenter x:Name="Body" Margin="16,0,16,12" Visibility="Collapsed" />
+            </DockPanel>
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsExpanded" Value="True">
+              <Setter TargetName="Body" Property="Visibility" Value="Visible" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
   <!-- Labels and supporting lines under a value -->
   <Style x:Key="SecondaryText" TargetType="TextBlock">
     <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
   </Style>
   <Style x:Key="TertiaryText" TargetType="TextBlock">
     <Setter Property="Foreground" Value="{DynamicResource TextFillColorTertiaryBrush}" />
+  </Style>
+  <Style x:Key="ColumnHeader" TargetType="TextBlock" BasedOn="{StaticResource TertiaryText}">
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="FontWeight" Value="SemiBold" />
   </Style>
 
   <!-- One outlined surface per section; never nested -->

@@ -17,7 +17,6 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
@@ -45,26 +44,19 @@
       </StackPanel>
     </Border>
 
-    <!-- The full log of every rule checked and everything removed, only when asked for -->
-    <Expander Grid.Row="2" Margin="{StaticResource FieldSpacing}" Header="{l:Tr Common_ShowDetails}">
-      <ListBox Height="160" ItemsSource="{Binding Activity}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-        <ListBox.ItemTemplate>
-          <DataTemplate>
-            <TextBlock Style="{StaticResource TertiaryText}" TextWrapping="Wrap" Text="{Binding}" />
-          </DataTemplate>
-        </ListBox.ItemTemplate>
-      </ListBox>
-    </Expander>
-
-    <Grid Grid.Row="3" Margin="{StaticResource FieldSpacing}">
+    <Grid Grid.Row="2" Margin="{StaticResource FieldSpacing}">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
       <ScrollViewer VerticalScrollBarVisibility="Auto"
                     Visibility="{Binding State, Converter={StaticResource LoadStateVisible}, ConverterParameter='Idle,Loading,Loaded'}">
         <ItemsControl ItemsSource="{Binding Categories}">
           <ItemsControl.ItemTemplate>
             <DataTemplate>
               <!-- One card per category: collapsed shows the total, opened shows each place -->
-              <ui:CardExpander Margin="{StaticResource LabelSpacing}" IsExpanded="{Binding IsExpanded}" common:Motion.FadeIn="True">
-                <ui:CardExpander.Header>
+              <Expander Margin="{StaticResource LabelSpacing}" Style="{StaticResource CardSection}" IsExpanded="{Binding IsExpanded}" common:Motion.FadeIn="True">
+                <Expander.Header>
                   <Grid>
                     <Grid.ColumnDefinitions>
                       <ColumnDefinition Width="Auto" />
@@ -85,7 +77,7 @@
                     <TextBlock Grid.Column="3" Margin="{StaticResource CardGap}" VerticalAlignment="Center"
                                FontSize="16" FontWeight="SemiBold" Text="{Binding SizeText}" />
                   </Grid>
-                </ui:CardExpander.Header>
+                </Expander.Header>
                 <ItemsControl ItemsSource="{Binding Targets}">
                   <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -109,17 +101,31 @@
                     </DataTemplate>
                   </ItemsControl.ItemTemplate>
                 </ItemsControl>
-              </ui:CardExpander>
+              </Expander>
             </DataTemplate>
           </ItemsControl.ItemTemplate>
         </ItemsControl>
       </ScrollViewer>
       <common:LoadStateOverlay State="{Binding State}" ErrorMessage="{Binding ErrorMessage}"
                                EmptyText="{Binding EmptyText}" RetryCommand="{Binding RescanCommand}" />
+
+      <!-- Every rule checked and everything removed, always in view -->
+      <Border Grid.Column="1" Width="300" Margin="{StaticResource SideGap}" Padding="{StaticResource ListPadding}" Style="{StaticResource Surface}">
+        <DockPanel>
+          <TextBlock DockPanel.Dock="Top" Margin="8,4,8,8" FontWeight="SemiBold" Style="{StaticResource SecondaryText}" Text="{l:Tr Common_Details}" />
+          <ListBox ItemsSource="{Binding Activity}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Style="{StaticResource TertiaryText}" TextWrapping="Wrap" Text="{Binding}" />
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </DockPanel>
+      </Border>
     </Grid>
 
     <!-- The only way anything is removed: ticked rows, this button, then a confirmation -->
-    <DockPanel Grid.Row="4">
+    <DockPanel Grid.Row="3">
       <ui:Button DockPanel.Dock="Right" Appearance="Danger" Command="{Binding RecycleSelectedCommand}" Content="{l:Tr Clean_Recycle}">
         <ui:Button.Icon>
           <common:AppIconElement Kind="Delete" />

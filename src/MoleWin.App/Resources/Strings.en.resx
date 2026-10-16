@@ -12,7 +12,6 @@
   <data name="Accent_Rose" xml:space="preserve"><value>Rose</value></data>
   <data name="Accent_System" xml:space="preserve"><value>Windows accent</value></data>
   <data name="Accent_Teal" xml:space="preserve"><value>Teal</value></data>
-  <data name="Analyze_Activity" xml:space="preserve"><value>Activity</value></data>
   <data name="Analyze_Confirm" xml:space="preserve"><value>Move {0} items ({1}) to the Recycle Bin? Nothing is deleted permanently; you can restore them from the Recycle Bin.</value></data>
   <data name="Analyze_Counters" xml:space="preserve"><value>{0:N0} files, {1:N0} folders, {2}</value></data>
   <data name="Analyze_DriveFree" xml:space="preserve"><value>{0} free of {1}</value></data>
@@ -49,6 +48,7 @@
   <data name="Apps_LogRunning" xml:space="preserve"><value>Uninstalling {0}</value></data>
   <data name="Apps_RunFailed" xml:space="preserve"><value>The uninstaller for {0} did not start.</value></data>
   <data name="Apps_Running" xml:space="preserve"><value>Running the uninstaller for {0}</value></data>
+  <data name="Apps_ColName" xml:space="preserve"><value>Name</value></data>
   <data name="Apps_Search" xml:space="preserve"><value>Search apps</value></data>
   <data name="Apps_SortBy" xml:space="preserve"><value>Sort by</value></data>
   <data name="Apps_SortDate" xml:space="preserve"><value>Install date</value></data>
@@ -177,7 +177,7 @@
   <data name="Common_Ok" xml:space="preserve"><value>OK</value></data>
   <data name="Common_Retry" xml:space="preserve"><value>Retry</value></data>
   <data name="Common_Save" xml:space="preserve"><value>Save</value></data>
-  <data name="Common_ShowDetails" xml:space="preserve"><value>Show details</value></data>
+  <data name="Common_Details" xml:space="preserve"><value>Details</value></data>
   <data name="Common_Yes" xml:space="preserve"><value>Yes</value></data>
   <data name="Date_Approx" xml:space="preserve"><value>c. {0}</value></data>
   <data name="Error_LoadFailed" xml:space="preserve"><value>Couldn't load the data.</value></data>
