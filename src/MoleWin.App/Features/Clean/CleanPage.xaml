@@ -44,11 +44,9 @@
       </StackPanel>
     </Border>
 
-    <Grid Grid.Row="2" Margin="{StaticResource FieldSpacing}">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="*" />
-        <ColumnDefinition Width="Auto" />
-      </Grid.ColumnDefinitions>
+    <!-- Details on the right when there is room, below the groups when there is not -->
+    <common:SplitPanel Grid.Row="2" Margin="{StaticResource FieldSpacing}">
+      <Grid>
       <ScrollViewer Padding="{StaticResource PageScrollGap}" VerticalScrollBarVisibility="Auto"
                     Visibility="{Binding State, Converter={StaticResource LoadStateVisible}, ConverterParameter='Idle,Loading,Loaded'}">
         <ItemsControl ItemsSource="{Binding Categories}">
@@ -109,9 +107,10 @@
       </ScrollViewer>
       <common:LoadStateOverlay State="{Binding State}" ErrorMessage="{Binding ErrorMessage}"
                                EmptyText="{Binding EmptyText}" RetryCommand="{Binding RescanCommand}" />
+      </Grid>
 
       <!-- Every rule checked and everything removed, always in view -->
-      <Border Grid.Column="1" Width="300" Margin="{StaticResource SideGap}" Padding="{StaticResource ListPadding}" Style="{StaticResource Surface}">
+      <Border Margin="0" Padding="{StaticResource ListPadding}" Style="{StaticResource Surface}">
         <DockPanel>
           <TextBlock DockPanel.Dock="Top" Margin="8,4,8,8" FontWeight="SemiBold" Style="{StaticResource SecondaryText}" Text="{l:Tr Common_Details}" />
           <ListBox ItemsSource="{Binding Activity}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
@@ -123,7 +122,7 @@
           </ListBox>
         </DockPanel>
       </Border>
-    </Grid>
+    </common:SplitPanel>
 
     <!-- The only way anything is removed: ticked rows, this button, then a confirmation -->
     <DockPanel Grid.Row="3">
@@ -132,9 +131,9 @@
           <common:AppIconElement Kind="Delete" />
         </ui:Button.Icon>
       </ui:Button>
-      <StackPanel VerticalAlignment="Center">
+      <StackPanel Margin="{StaticResource CardGap}" VerticalAlignment="Center">
         <TextBlock FontWeight="SemiBold" Text="{Binding SelectedText}" />
-        <TextBlock Style="{StaticResource TertiaryText}" Text="{l:Tr Clean_Hint}" />
+        <TextBlock Style="{StaticResource TertiaryText}" TextWrapping="Wrap" Text="{l:Tr Clean_Hint}" />
       </StackPanel>
     </DockPanel>
   </Grid>

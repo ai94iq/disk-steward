@@ -31,14 +31,14 @@
       <common:PageHeader.Actions>
         <!-- Search and sort, as in Windows Settings > Installed apps -->
         <StackPanel Orientation="Horizontal">
-          <ui:TextBox MinWidth="260" Margin="{StaticResource CardGap}"
+          <ui:TextBox MinWidth="200" Margin="{StaticResource CardGap}"
                       PlaceholderText="{l:Tr Apps_Search}" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}">
             <ui:TextBox.Icon>
               <common:AppIconElement Kind="Search" />
             </ui:TextBox.Icon>
           </ui:TextBox>
           <TextBlock Margin="{StaticResource InlineGap}" VerticalAlignment="Center" Style="{StaticResource SecondaryText}" Text="{l:Tr Apps_SortBy}" />
-          <ComboBox MinWidth="170" ItemsSource="{Binding SortOptions}" DisplayMemberPath="Label"
+          <ComboBox MinWidth="150" ItemsSource="{Binding SortOptions}" DisplayMemberPath="Label"
                     SelectedValuePath="Value" SelectedValue="{Binding SortBy}" />
         </StackPanel>
       </common:PageHeader.Actions>
@@ -59,11 +59,8 @@
       </DockPanel>
     </Border>
 
-    <Grid Grid.Row="2" Margin="{StaticResource FieldSpacing}">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="*" />
-        <ColumnDefinition Width="Auto" />
-      </Grid.ColumnDefinitions>
+    <!-- Leftovers beside the list when there is room, below it when there is not -->
+    <common:SplitPanel Grid.Row="2" Margin="{StaticResource FieldSpacing}" Breakpoint="900" SideWidth="380" SideHeight="220">
 
       <Border Style="{StaticResource Surface}" Padding="{StaticResource ListPadding}" Margin="0">
         <Grid>
@@ -116,7 +113,7 @@
       </Border>
 
       <!-- Found after an uninstall: shown unticked beside the list, removed only on request -->
-      <Border Grid.Column="1" Width="380" Margin="{StaticResource SideGap}" VerticalAlignment="Top" Style="{StaticResource CollapsedWithoutLeftovers}">
+      <Border Margin="0" VerticalAlignment="Top" Style="{StaticResource CollapsedWithoutLeftovers}">
           <StackPanel>
             <TextBlock Margin="{StaticResource LabelSpacing}" FontWeight="SemiBold" TextWrapping="Wrap" Text="{Binding StatusText}" />
             <ItemsControl Margin="{StaticResource FieldSpacing}" ItemsSource="{Binding Leftovers}">
@@ -138,7 +135,7 @@
             </ui:Button>
           </StackPanel>
       </Border>
-    </Grid>
+    </common:SplitPanel>
 
     <!-- Runs the app's own uninstaller after a confirmation -->
     <DockPanel Grid.Row="3">

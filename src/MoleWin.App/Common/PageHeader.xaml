@@ -5,9 +5,17 @@
              xmlns:common="clr-namespace:MoleWin.App.Common"
              x:Name="Root">
   <!-- Every page opens the same way: its icon on an accent tint, title, a live summary,
-       and the page's own actions on the right. -->
-  <DockPanel Margin="{StaticResource FieldSpacing}">
-    <ContentPresenter DockPanel.Dock="Right" VerticalAlignment="Center" Content="{Binding Actions, ElementName=Root}" />
+       and the page's own actions on the right, or under the title when the page is narrow. -->
+  <Grid Margin="{StaticResource FieldSpacing}">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="Auto" />
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
     <Border Width="48" Height="48" Margin="{StaticResource CardGap}" VerticalAlignment="Center" CornerRadius="12">
       <Border.Background>
         <SolidColorBrush Color="{DynamicResource SystemAccentColor}" Opacity="0.16" />
@@ -15,9 +23,11 @@
       <common:AppIcon Width="26" Height="26" Kind="{Binding Kind, ElementName=Root}"
                       Foreground="{DynamicResource AccentFillColorDefaultBrush}" />
     </Border>
-    <StackPanel VerticalAlignment="Center">
-      <ui:TextBlock FontTypography="Title" Text="{Binding Title, ElementName=Root}" />
-      <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" Text="{Binding Summary, ElementName=Root}" />
+    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+      <ui:TextBlock FontTypography="Title" TextTrimming="CharacterEllipsis" Text="{Binding Title, ElementName=Root}" />
+      <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" TextTrimming="CharacterEllipsis"
+                 Text="{Binding Summary, ElementName=Root}" ToolTip="{Binding Summary, ElementName=Root}" />
     </StackPanel>
-  </DockPanel>
+    <ContentPresenter x:Name="ActionsHost" Grid.Column="2" VerticalAlignment="Center" Content="{Binding Actions, ElementName=Root}" />
+  </Grid>
 </UserControl>
