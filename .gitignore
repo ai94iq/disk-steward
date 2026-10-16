@@ -1,0 +1,21 @@
+# .NET build output
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+# Rider / VS Code
+.idea/
+.vscode/
+
+# Local artifacts
+*.log
+TestResults/
+
+# Bundled engine binary (added at build time, pinned by checksum)
+third_party/mo.exe
+
+# OS
+Thumbs.db
+.DS_Store
