@@ -12,9 +12,29 @@
   <data name="Accent_Rose" xml:space="preserve"><value>وردي</value></data>
   <data name="Accent_System" xml:space="preserve"><value>لون النظام</value></data>
   <data name="Accent_Teal" xml:space="preserve"><value>أزرق مخضر</value></data>
+  <data name="Analyze_Activity" xml:space="preserve"><value>النشاط</value></data>
+  <data name="Analyze_Confirm" xml:space="preserve"><value>نقل {0} عنصر ({1}) إلى سلة المحذوفات؟ لا يُحذف شيء نهائيًا، ويمكنك استعادتها من سلة المحذوفات.</value></data>
+  <data name="Analyze_Counters" xml:space="preserve"><value>{0:N0} ملف، {1:N0} مجلد، {2}</value></data>
+  <data name="Analyze_Drives" xml:space="preserve"><value>هذا الحاسوب</value></data>
+  <data name="Analyze_Elapsed" xml:space="preserve"><value>{0:%m}:{0:ss}</value></data>
+  <data name="Analyze_Hint" xml:space="preserve"><value>حدد ما تريد إزالته. لا يُزال شيء قبل تأكيدك، ويذهب إلى سلة المحذوفات.</value></data>
+  <data name="Analyze_LogDone" xml:space="preserve"><value>انتهى فحص {0} في {1:%m}:{1:ss}، {2:N0} ملف</value></data>
+  <data name="Analyze_LogFailed" xml:space="preserve"><value>تعذر نقل {0}: {1}</value></data>
+  <data name="Analyze_LogMeasured" xml:space="preserve"><value>{0}: {1}</value></data>
+  <data name="Analyze_LogMissing" xml:space="preserve"><value>غير موجود أصلًا: {0}</value></data>
+  <data name="Analyze_LogNotRecyclable" xml:space="preserve"><value>رُفض، لا توجد سلة محذوفات على هذا القرص: {0}</value></data>
+  <data name="Analyze_LogProtected" xml:space="preserve"><value>رُفض، مسار محمي: {0}</value></data>
+  <data name="Analyze_LogRecycled" xml:space="preserve"><value>نُقل إلى سلة المحذوفات: {0}</value></data>
+  <data name="Analyze_LogScan" xml:space="preserve"><value>جارٍ فحص {0}</value></data>
+  <data name="Analyze_LogStopped" xml:space="preserve"><value>توقف فحص {0}</value></data>
+  <data name="Analyze_Measuring" xml:space="preserve"><value>جارٍ القياس</value></data>
+  <data name="Analyze_Protected" xml:space="preserve"><value>محمي</value></data>
+  <data name="Analyze_Recycle" xml:space="preserve"><value>نقل إلى سلة المحذوفات</value></data>
+  <data name="Analyze_Selected" xml:space="preserve"><value>{0} محدد، {1}</value></data>
+  <data name="Analyze_Stop" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="Analyze_Up" xml:space="preserve"><value>للأعلى</value></data>
   <data name="App_AlreadyRunning" xml:space="preserve"><value>التطبيق يعمل بالفعل.</value></data>
   <data name="App_Name" xml:space="preserve"><value>MoleWin</value></data>
-  <data name="App_Welcome" xml:space="preserve"><value>مرحبًا بك في MoleWin</value></data>
   <data name="Common_Cancel" xml:space="preserve"><value>إلغاء</value></data>
   <data name="Common_No" xml:space="preserve"><value>لا</value></data>
   <data name="Common_Ok" xml:space="preserve"><value>حسنًا</value></data>
@@ -25,6 +45,33 @@
   <data name="Error_LoadFailed" xml:space="preserve"><value>تعذّر تحميل البيانات.</value></data>
   <data name="Error_Startup" xml:space="preserve"><value>تعذّر تشغيل التطبيق. راجع ملفات السجل.</value></data>
   <data name="Error_Unexpected" xml:space="preserve"><value>حدث خطأ غير متوقع.</value></data>
+  <data name="Monitor_Cpu" xml:space="preserve"><value>المعالج</value></data>
+  <data name="Monitor_CpuDetail" xml:space="preserve"><value>{0}، {1} مسار</value></data>
+  <data name="Monitor_DeviceDetail" xml:space="preserve"><value>{0}، ذاكرة {1:N0} GB</value></data>
+  <data name="Monitor_DriveFree" xml:space="preserve"><value>{0:N0} GB متاحة من {1:N0} GB</value></data>
+  <data name="Monitor_DriveRemovable" xml:space="preserve"><value>{0}، قابل للإزالة</value></data>
+  <data name="Monitor_Drives" xml:space="preserve"><value>الأقراص</value></data>
+  <data name="Monitor_Issue_Cpu" xml:space="preserve"><value>حمل مرتفع على المعالج</value></data>
+  <data name="Monitor_Issue_Disk" xml:space="preserve"><value>أحد الأقراص شبه ممتلئ</value></data>
+  <data name="Monitor_Issue_Memory" xml:space="preserve"><value>الذاكرة شبه ممتلئة</value></data>
+  <data name="Monitor_Issue_None" xml:space="preserve"><value>يعمل بسلاسة</value></data>
+  <data name="Monitor_Live" xml:space="preserve"><value>مباشر</value></data>
+  <data name="Monitor_Memory" xml:space="preserve"><value>الذاكرة</value></data>
+  <data name="Monitor_MemoryValue" xml:space="preserve"><value>{0:N1} من {1:N1} GB مستخدمة</value></data>
+  <data name="Monitor_Network" xml:space="preserve"><value>الشبكة</value></data>
+  <data name="Monitor_NetworkValue" xml:space="preserve"><value>تنزيل {0:N2} MB/s، رفع {1:N2} MB/s</value></data>
+  <data name="Monitor_Percent" xml:space="preserve"><value>{0:N0}%</value></data>
+  <data name="Monitor_ProcessValue" xml:space="preserve"><value>المعالج {0:N0}%، {1:N0} MB</value></data>
+  <data name="Monitor_Processes" xml:space="preserve"><value>أكثر العمليات استهلاكًا</value></data>
+  <data name="Monitor_Uptime" xml:space="preserve"><value>يعمل منذ {0:%d}ي {0:%h}س {0:%m}د، {1:N0} عملية</value></data>
+  <data name="Monitor_WithBattery" xml:space="preserve"><value>{0}، البطارية {1}%</value></data>
+  <data name="Nav_Analyze" xml:space="preserve"><value>التحليل</value></data>
+  <data name="Nav_Monitor" xml:space="preserve"><value>المراقبة</value></data>
+  <data name="Size_B" xml:space="preserve"><value>{0:N0} B</value></data>
+  <data name="Size_GB" xml:space="preserve"><value>{0:N2} GB</value></data>
+  <data name="Size_KB" xml:space="preserve"><value>{0:N0} KB</value></data>
+  <data name="Size_MB" xml:space="preserve"><value>{0:N1} MB</value></data>
+  <data name="Size_TB" xml:space="preserve"><value>{0:N2} TB</value></data>
   <data name="Theme_Dark" xml:space="preserve"><value>داكن</value></data>
   <data name="Theme_Light" xml:space="preserve"><value>فاتح</value></data>
   <data name="Theme_System" xml:space="preserve"><value>حسب النظام</value></data>

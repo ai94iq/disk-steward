@@ -2,6 +2,7 @@ add
 arrow_left
 arrow_right
 arrow_sync
+arrow_up
 calendar
 checkmark
 chevron_down
@@ -9,6 +10,7 @@ chevron_left
 chevron_right
 chevron_up
 color
+data_pie
 delete
 dismiss
 document
@@ -18,6 +20,7 @@ eye
 eye_off
 filter
 folder
+heart_pulse
 home
 image
 info
@@ -34,6 +37,7 @@ search
 settings
 share
 sign_out
+stop
 warning
 weather_moon
 weather_sunny

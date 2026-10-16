@@ -1,13 +1,16 @@
+using MoleWin.App.Features.Analyze;
 using Wpf.Ui.Controls;
 
 namespace MoleWin.App.Shell;
 
 public sealed partial class MainWindow : FluentWindow
 {
-    public MainWindow(MainWindowViewModel viewModel, IThemeService theme)
+    public MainWindow(MainWindowViewModel viewModel, IThemeService theme, IServiceProvider services)
     {
         DataContext = viewModel;
         InitializeComponent();
+        RootNavigation.SetServiceProvider(services);
+        Loaded += (_, _) => RootNavigation.Navigate(typeof(AnalyzePage));
         this.ApplyCultureDirection();
 
         // Mica exists only on Windows 11; Windows 10 gets the solid theme background.

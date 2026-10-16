@@ -12,9 +12,29 @@
   <data name="Accent_Rose" xml:space="preserve"><value>Rose</value></data>
   <data name="Accent_System" xml:space="preserve"><value>Windows accent</value></data>
   <data name="Accent_Teal" xml:space="preserve"><value>Teal</value></data>
+  <data name="Analyze_Activity" xml:space="preserve"><value>Activity</value></data>
+  <data name="Analyze_Confirm" xml:space="preserve"><value>Move {0} items ({1}) to the Recycle Bin? Nothing is deleted permanently; you can restore them from the Recycle Bin.</value></data>
+  <data name="Analyze_Counters" xml:space="preserve"><value>{0:N0} files, {1:N0} folders, {2}</value></data>
+  <data name="Analyze_Drives" xml:space="preserve"><value>This PC</value></data>
+  <data name="Analyze_Elapsed" xml:space="preserve"><value>{0:%m}:{0:ss}</value></data>
+  <data name="Analyze_Hint" xml:space="preserve"><value>Tick what you want to remove. Nothing is removed until you confirm, and it goes to the Recycle Bin.</value></data>
+  <data name="Analyze_LogDone" xml:space="preserve"><value>Finished {0} in {1:%m}:{1:ss}, {2:N0} files</value></data>
+  <data name="Analyze_LogFailed" xml:space="preserve"><value>Could not recycle {0}: {1}</value></data>
+  <data name="Analyze_LogMeasured" xml:space="preserve"><value>{0}: {1}</value></data>
+  <data name="Analyze_LogMissing" xml:space="preserve"><value>Already gone: {0}</value></data>
+  <data name="Analyze_LogNotRecyclable" xml:space="preserve"><value>Refused, this drive has no Recycle Bin: {0}</value></data>
+  <data name="Analyze_LogProtected" xml:space="preserve"><value>Refused, protected: {0}</value></data>
+  <data name="Analyze_LogRecycled" xml:space="preserve"><value>Moved to the Recycle Bin: {0}</value></data>
+  <data name="Analyze_LogScan" xml:space="preserve"><value>Scanning {0}</value></data>
+  <data name="Analyze_LogStopped" xml:space="preserve"><value>Stopped scanning {0}</value></data>
+  <data name="Analyze_Measuring" xml:space="preserve"><value>Measuring</value></data>
+  <data name="Analyze_Protected" xml:space="preserve"><value>Protected</value></data>
+  <data name="Analyze_Recycle" xml:space="preserve"><value>Move to Recycle Bin</value></data>
+  <data name="Analyze_Selected" xml:space="preserve"><value>{0} selected, {1}</value></data>
+  <data name="Analyze_Stop" xml:space="preserve"><value>Stop</value></data>
+  <data name="Analyze_Up" xml:space="preserve"><value>Up</value></data>
   <data name="App_AlreadyRunning" xml:space="preserve"><value>The app is already running.</value></data>
   <data name="App_Name" xml:space="preserve"><value>MoleWin</value></data>
-  <data name="App_Welcome" xml:space="preserve"><value>Welcome to MoleWin</value></data>
   <data name="Common_Cancel" xml:space="preserve"><value>Cancel</value></data>
   <data name="Common_No" xml:space="preserve"><value>No</value></data>
   <data name="Common_Ok" xml:space="preserve"><value>OK</value></data>
@@ -25,6 +45,33 @@
   <data name="Error_LoadFailed" xml:space="preserve"><value>Couldn't load the data.</value></data>
   <data name="Error_Startup" xml:space="preserve"><value>The app couldn't start. Check the log files.</value></data>
   <data name="Error_Unexpected" xml:space="preserve"><value>An unexpected error occurred.</value></data>
+  <data name="Monitor_Cpu" xml:space="preserve"><value>CPU</value></data>
+  <data name="Monitor_CpuDetail" xml:space="preserve"><value>{0}, {1} threads</value></data>
+  <data name="Monitor_DeviceDetail" xml:space="preserve"><value>{0}, {1:N0} GB RAM</value></data>
+  <data name="Monitor_DriveFree" xml:space="preserve"><value>{0:N0} GB free of {1:N0} GB</value></data>
+  <data name="Monitor_DriveRemovable" xml:space="preserve"><value>{0}, removable</value></data>
+  <data name="Monitor_Drives" xml:space="preserve"><value>Drives</value></data>
+  <data name="Monitor_Issue_Cpu" xml:space="preserve"><value>High CPU load</value></data>
+  <data name="Monitor_Issue_Disk" xml:space="preserve"><value>A drive is almost full</value></data>
+  <data name="Monitor_Issue_Memory" xml:space="preserve"><value>Memory almost full</value></data>
+  <data name="Monitor_Issue_None" xml:space="preserve"><value>Running smoothly</value></data>
+  <data name="Monitor_Live" xml:space="preserve"><value>Live</value></data>
+  <data name="Monitor_Memory" xml:space="preserve"><value>Memory</value></data>
+  <data name="Monitor_MemoryValue" xml:space="preserve"><value>{0:N1} of {1:N1} GB used</value></data>
+  <data name="Monitor_Network" xml:space="preserve"><value>Network</value></data>
+  <data name="Monitor_NetworkValue" xml:space="preserve"><value>Down {0:N2} MB/s, up {1:N2} MB/s</value></data>
+  <data name="Monitor_Percent" xml:space="preserve"><value>{0:N0}%</value></data>
+  <data name="Monitor_ProcessValue" xml:space="preserve"><value>CPU {0:N0}%, {1:N0} MB</value></data>
+  <data name="Monitor_Processes" xml:space="preserve"><value>Top processes</value></data>
+  <data name="Monitor_Uptime" xml:space="preserve"><value>Up {0:%d}d {0:%h}h {0:%m}m, {1:N0} processes</value></data>
+  <data name="Monitor_WithBattery" xml:space="preserve"><value>{0}, battery {1}%</value></data>
+  <data name="Nav_Analyze" xml:space="preserve"><value>Analyze</value></data>
+  <data name="Nav_Monitor" xml:space="preserve"><value>Monitor</value></data>
+  <data name="Size_B" xml:space="preserve"><value>{0:N0} B</value></data>
+  <data name="Size_GB" xml:space="preserve"><value>{0:N2} GB</value></data>
+  <data name="Size_KB" xml:space="preserve"><value>{0:N0} KB</value></data>
+  <data name="Size_MB" xml:space="preserve"><value>{0:N1} MB</value></data>
+  <data name="Size_TB" xml:space="preserve"><value>{0:N2} TB</value></data>
   <data name="Theme_Dark" xml:space="preserve"><value>Dark</value></data>
   <data name="Theme_Light" xml:space="preserve"><value>Light</value></data>
   <data name="Theme_System" xml:space="preserve"><value>Use system setting</value></data>

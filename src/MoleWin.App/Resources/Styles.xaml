@@ -3,11 +3,40 @@
                     xmlns:common="clr-namespace:MoleWin.App.Common">
   <!-- Shared resources only. Feature-specific styles stay in the feature folder. -->
   <common:LoadStateToVisibilityConverter x:Key="LoadStateVisible" />
+  <common:LoadLevelBrushConverter x:Key="LoadLevelBrush" />
 
   <!-- Spacing tokens (4 px grid). Use these instead of literal margins. -->
   <Thickness x:Key="PagePadding">24</Thickness>
   <Thickness x:Key="SectionSpacing">0,0,0,32</Thickness>
   <Thickness x:Key="FieldSpacing">0,0,0,16</Thickness>
   <Thickness x:Key="LabelSpacing">0,0,0,4</Thickness>
+  <Thickness x:Key="RowSpacing">0,8</Thickness>
+  <Thickness x:Key="CardGap">0,0,16,0</Thickness>
+  <Thickness x:Key="InlineGap">0,0,8,0</Thickness>
+  <Thickness x:Key="InlineStart">8,0,0,0</Thickness>
+  <Thickness x:Key="ListPadding">8</Thickness>
+  <Thickness x:Key="SurfacePadding">20</Thickness>
+  <Thickness x:Key="HeadlineLabelGap">12,0,0,8</Thickness>
+  <Thickness x:Key="ScrollGutter">0,0,12,0</Thickness>
+  <GridLength x:Key="GutterWidth">16</GridLength>
+  <GridLength x:Key="SizeColumnWidth">96</GridLength>
   <CornerRadius x:Key="CardRadius">8</CornerRadius>
+
+  <!-- Labels and supporting lines under a value -->
+  <Style x:Key="SecondaryText" TargetType="TextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+  </Style>
+  <Style x:Key="TertiaryText" TargetType="TextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource TextFillColorTertiaryBrush}" />
+  </Style>
+
+  <!-- One outlined surface per section; never nested -->
+  <Style x:Key="Surface" TargetType="Border">
+    <Setter Property="Padding" Value="{StaticResource SurfacePadding}" />
+    <Setter Property="CornerRadius" Value="{StaticResource CardRadius}" />
+    <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+    <Setter Property="Margin" Value="{StaticResource FieldSpacing}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SurfaceStrokeColorDefaultBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
 </ResourceDictionary>

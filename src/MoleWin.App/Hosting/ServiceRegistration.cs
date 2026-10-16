@@ -1,4 +1,9 @@
+using MoleWin.App.Features.Analyze;
+using MoleWin.App.Features.Monitor;
 using MoleWin.App.Shell;
+using MoleWin.Core.Analyze;
+using MoleWin.Core.Monitor;
+using MoleWin.Core.Safety;
 
 namespace MoleWin.App.Hosting;
 
@@ -21,10 +26,26 @@ public static class ServiceRegistration
         services.AddSingleton<IDateFormatter, DateFormatter>();
         services.AddSingleton<IDataChangeNotifier, DataChangeNotifier>();
 
-        // Shell: Singleton. Pages and their ViewModels: Transient.
-        // When adding navigation, register WPF-UI services exactly as the installed WPF-UI 4.x sample does.
+        // Engine (MoleWin.Core). Removal only ever goes through SafeRemover.
+        services.AddSingleton(new ProtectedPaths(ProtectedRoots.ForCurrentUser(AppPaths.Root)));
+        services.AddSingleton<IRecycleBin, WindowsRecycleBin>();
+        services.AddSingleton(sp => new SafeRemover(
+            sp.GetRequiredService<ProtectedPaths>(), sp.GetRequiredService<IRecycleBin>(), IsOnFixedDrive));
+        services.AddSingleton<IFolderScanner, FolderScanner>();
+        services.AddTransient<IMonitorService, WindowsMonitor>();
+
+        // Shell: Singleton. Pages: Transient. The NavigationView resolves pages from this provider.
         services.AddSingleton<MainWindow>();
         services.AddSingleton<MainWindowViewModel>();
+        services.AddTransient<AnalyzePage>();
+        // Singleton so a long scan and its activity survive switching pages.
+        services.AddSingleton<AnalyzeViewModel>();
+        services.AddTransient<MonitorPage>();
+        services.AddTransient<MonitorViewModel>();
         return services;
     }
+
+    // Only fixed local drives have a Recycle Bin; anywhere else Windows deletes for good.
+    private static bool IsOnFixedDrive(string path) =>
+        Path.GetPathRoot(path) is { Length: > 0 } root && new DriveInfo(root).DriveType == DriveType.Fixed;
 }
