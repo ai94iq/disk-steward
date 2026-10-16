@@ -5,8 +5,8 @@ TBD). A native WPF Fluent app with its own C# engine that gives Windows users
 cleanup, app uninstall, AI-tool cleanup, disk analysis, and a read-only system
 monitor.
 
-Status: Analyze and Monitor work; Clean, Apps, AI-tool cleanup and keep-awake
-are not built yet (see [Next steps](#next-steps)).
+Status: Clean (with AI-tool cleanup), Apps, Analyze, Monitor and keep-awake
+work; see [Next steps](#next-steps) for what is left.
 
 ## Contents
 
@@ -27,6 +27,18 @@ that informed it.
 
 ## What works
 
+Nothing is ever removed without ticking it and confirming, and removal only
+ever goes to the Recycle Bin.
+
+- **Clean** (start page): scans on open, about a second, with a live activity
+  log. 86 cache locations in system, browsers, apps, GPU drivers, developer
+  tools and AI tools (old Claude Code chats and Codex sessions, Cursor caches;
+  Claude Code memory is never touched). Rules and the default whitelist come
+  from `mo` 1.30.0 (MIT, see `third_party/`).
+- **Apps:** installed apps from the registry, largest first, with search.
+  Uninstall runs the app's own uninstaller visibly, waits until Windows no
+  longer lists the app, then shows exact-name leftovers unticked. Store apps
+  are not listed yet.
 - **Analyze:** opens on the fixed drives; a folder lists at once and its
   subfolders are measured in parallel, with a live activity log, the folder
   being read, elapsed time and file/folder/byte counters. Sizes are space on
@@ -34,7 +46,8 @@ that informed it.
   to move them to the Recycle Bin.
 - **Monitor:** health score, CPU with a one-minute history, memory, drives,
   network, battery and top processes, sampled every 2 s from plain Windows
-  APIs while the page is open.
+  APIs while the page is open. A Keep awake picker holds off sleep for a set
+  time or until turned off.
 - **Safety:** every removal goes through `SafeRemover`, which re-checks
   `ProtectedPaths` (Windows, Program Files, ProgramData, drive roots, the
   profile and its known folders) and only recycles. Drives without a Recycle
@@ -63,8 +76,10 @@ Pass `--no-pause` to skip the final key press.
 
 ## Next steps
 
-1. Clean: port the clean targets and default whitelist from `mo` 1.30.0 (MIT,
-   tag `v1.30.0-windows`) into `src/MoleWin.Core`, scan then apply through
-   `SafeRemover`. Keep the MIT notice in `third_party/`.
-2. Apps (uninstall and leftovers), AI-tool cleanup, keep-awake.
-3. Owner sign-off before reusing any Mole art; consumer name.
+1. Your review of the running app (`run.bat`, or `artifacts\publish\win-x64\MoleWin.exe`
+   after `build.bat`).
+2. Store (Appx) apps on the Apps page: needs the WinRT target
+   `net10.0-windows10.0.19041.0`, an ADR under the wpf-fluent skill rules.
+3. Ollama models: listed by `mo` as whitelisted; removing them safely needs
+   `ollama rm`, which deletes permanently, so it is left out for now.
+4. Owner sign-off before reusing any Mole art; consumer name.
