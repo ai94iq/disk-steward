@@ -73,7 +73,7 @@
           </Grid.RowDefinitions>
           <!-- Column headers, inset to line up with the rows: row padding on the left, row
                padding plus the scroll bar on the right -->
-          <Grid Margin="12,4,28,4">
+          <Grid Margin="12,4,24,4">
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="{StaticResource IconColumnWidth}" />
               <ColumnDefinition Width="*" />

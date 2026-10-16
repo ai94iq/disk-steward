@@ -59,7 +59,7 @@
       </common:PageHeader.Actions>
     </common:PageHeader>
 
-    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
+    <ScrollViewer Grid.Row="1" Padding="{StaticResource PageScrollGap}" VerticalScrollBarVisibility="Auto"
                   Visibility="{Binding State, Converter={StaticResource LoadStateVisible}, ConverterParameter='Idle,Loaded'}">
       <Grid>
         <Grid.ColumnDefinitions>

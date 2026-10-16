@@ -17,7 +17,9 @@
   <Thickness x:Key="SideGap">16,0,0,0</Thickness>
   <Thickness x:Key="BadgePadding">10,4</Thickness>
   <Thickness x:Key="HeroGap">0,0,24,0</Thickness>
-  <Thickness x:Key="ListPadding">8</Thickness>
+  <!-- List cards: no right padding, so the scroll bar sits on the card edge -->
+  <Thickness x:Key="ListPadding">8,8,0,8</Thickness>
+  <Thickness x:Key="PageScrollGap">0,0,8,0</Thickness>
   <Thickness x:Key="ListItemPadding">12,8</Thickness>
   <Thickness x:Key="ListItemMargin">0,1</Thickness>
   <Thickness x:Key="SurfacePadding">20</Thickness>

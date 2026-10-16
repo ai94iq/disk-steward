@@ -49,7 +49,7 @@
         <ColumnDefinition Width="*" />
         <ColumnDefinition Width="Auto" />
       </Grid.ColumnDefinitions>
-      <ScrollViewer VerticalScrollBarVisibility="Auto"
+      <ScrollViewer Padding="{StaticResource PageScrollGap}" VerticalScrollBarVisibility="Auto"
                     Visibility="{Binding State, Converter={StaticResource LoadStateVisible}, ConverterParameter='Idle,Loading,Loaded'}">
         <ItemsControl ItemsSource="{Binding Categories}">
           <ItemsControl.ItemTemplate>
