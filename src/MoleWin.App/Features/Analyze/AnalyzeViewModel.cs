@@ -52,6 +52,11 @@ public sealed partial class AnalyzeViewModel : PageViewModel
 
     public ActivityLog Activity { get; } = [];
 
+    // While ticked items move to the Recycle Bin: the footer says so and the button waits.
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RecycleSelectedCommand))]
+    public partial bool IsRecycling { get; set; }
+
     protected override async Task<bool> LoadCoreAsync(CancellationToken ct)
     {
         var drives = await Task.Run(_scanner.ListRoots, ct);
@@ -93,20 +98,35 @@ public sealed partial class AnalyzeViewModel : PageViewModel
         var confirmed = await _dialogs.ConfirmAsync(Tr.Format("Analyze_Confirm", picked.Count, SizeText.Format(picked.Sum(n => n.Size))));
         if (!confirmed) return;
 
-        var results = await Task.Run(() => _remover.Recycle(picked.Select(n => n.Path)));
+        IReadOnlyList<RemovalResult> results;
+        IsRecycling = true;
+        try
+        {
+            results = await Task.Run(() => _remover.Recycle(picked.Select(n => n.Path)));
+        }
+        finally
+        {
+            IsRecycling = false;
+        }
         foreach (var result in results)
             _log.LogInformation("Recycle {Path}: {Outcome} {Error}", result.Path, result.Outcome, result.Error);
         Activity.AddRemovals(results);
 
-        foreach (var node in picked) Forget(node);
-        foreach (var parent in picked.Select(n => n.Parent).OfType<FolderNode>().Distinct())
+        // What went leaves the tree and its size comes off every folder above it; nothing is
+        // listed or measured again, so the tree updates at once.
+        foreach (var node in picked.Where(n => SafeRemover.IsGone(results, n.Path)))
         {
-            parent.IsLoaded = false;
-            await ExpandAsync(parent);
+            Forget(node);
+            node.IsSelected = false;
+            if (node.Parent is not { } parent) continue;
+            parent.Children.Remove(node);
+            foreach (var above in Ancestors(node)) above.SetSize(Math.Max(0, above.Size - node.Size));
+            Resort(parent);
         }
+        UpdateSelection();
     }
 
-    private bool CanRecycle() => SelectedCount > 0;
+    private bool CanRecycle() => SelectedCount > 0 && !IsRecycling;
 
     // Folders are measured in parallel off the UI thread; sizes and counters are applied
     // here, on one thread, every RefreshInterval.

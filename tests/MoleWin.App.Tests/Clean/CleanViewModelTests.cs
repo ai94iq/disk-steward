@@ -156,6 +156,26 @@ public sealed class CleanViewModelTests : IDisposable
     }
 
     [Fact]
+    public async Task Recycled_places_leave_the_list_without_a_rescan()
+    {
+        var vm = Create(
+            new CleanTarget("chrome-cache", CleanCategory.Browsers, Folder("g1", ("a", 300))),
+            new CleanTarget("nvidia-dx", CleanCategory.Gpu, Folder("g2", ("b", 200))));
+        await vm.EnsureLoadedAsync();
+        vm.Categories.Single(c => c.Category == CleanCategory.Browsers).Targets[0].IsSelected = true;
+        _dialogs.ConfirmAsync(Arg.Any<string>()).Returns(true);
+
+        await vm.RecycleSelectedCommand.ExecuteAsync(null);
+
+        Assert.Equal([CleanCategory.Gpu], vm.Categories.Select(c => c.Category));
+        Assert.Equal(200, vm.TotalBytes);
+        Assert.Equal(0, vm.SelectedCount);
+        Assert.False(vm.IsRecycling);
+        Assert.Equal(LoadState.Loaded, vm.State);
+        Assert.Single(vm.Activity, e => e.Text == MoleWin.App.Localization.Tr.Get("Clean_LogStarted"));
+    }
+
+    [Fact]
     public async Task Selecting_a_category_ticks_its_targets()
     {
         var vm = Create(

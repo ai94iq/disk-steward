@@ -10,6 +10,22 @@ public sealed class SafeRemoverTests : IDisposable
 
     public void Dispose() => Directory.Delete(_root, recursive: true);
 
+    [Fact]
+    public void A_path_is_gone_when_it_or_a_folder_above_it_went()
+    {
+        RemovalResult[] results =
+        [
+            new(@"C:\a", RemovalOutcome.Recycled),
+            new(@"C:\b", RemovalOutcome.Failed, "busy"),
+            new(@"C:\c", RemovalOutcome.Missing),
+        ];
+
+        Assert.True(SafeRemover.IsGone(results, @"C:\a\x.tmp"));
+        Assert.True(SafeRemover.IsGone(results, @"C:\c"));
+        Assert.False(SafeRemover.IsGone(results, @"C:\b\x.tmp"));
+        Assert.False(SafeRemover.IsGone(results, @"C:\ab"));
+    }
+
     private SafeRemover Remover(params string[] protectedRoots) => new(
         new ProtectedPaths(new ProtectedRoots(@"Z:\Windows", [], @"Z:\ProgramData", @"Z:\Users\me", @"Z:\own", protectedRoots)),
         _bin,

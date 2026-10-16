@@ -172,7 +172,18 @@
         </ui:Button.Icon>
       </ui:Button>
       <StackPanel Margin="{StaticResource CardGap}" VerticalAlignment="Center">
-        <TextBlock FontWeight="SemiBold" Text="{Binding SelectedText}" />
+        <TextBlock FontWeight="SemiBold">
+          <TextBlock.Style>
+            <Style TargetType="TextBlock">
+              <Setter Property="Text" Value="{Binding SelectedText}" />
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding IsRecycling}" Value="True">
+                  <Setter Property="Text" Value="{l:Tr Common_Recycling}" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </TextBlock.Style>
+        </TextBlock>
         <TextBlock Style="{StaticResource TertiaryText}" TextWrapping="Wrap" Text="{l:Tr Analyze_Hint}" />
       </StackPanel>
     </DockPanel>

@@ -21,7 +21,6 @@ public sealed partial class AppsViewModel : PageViewModel
     private readonly IDateFormatter _dates;
     private readonly ILogger _log;
     private List<AppRow> _all = [];
-    private CancellationTokenSource? _wait;
 
     public AppsViewModel(IInstalledApps installed, IUninstallerRunner runner, LeftoverFinder finder, LeftoverRoots roots,
         IFolderScanner folders, SafeRemover remover, IDialogService dialogs, IDateFormatter dates, ILogger<AppsViewModel> log) : base(log)
@@ -101,15 +100,16 @@ public sealed partial class AppsViewModel : PageViewModel
         if (SelectedApp is not { } row) return;
         if (!await _dialogs.ConfirmAsync(Tr.Format("Apps_Confirm", row.Name))) return;
 
+        // The app's own uninstaller is the progress the user sees; this page only waits for it,
+        // then lists leftovers. Nothing here can stop an uninstaller once it runs.
         IsBusy = true;
         ClearLeftovers();
-        _wait = new CancellationTokenSource();
         try
         {
             Log(Tr.Format("Apps_LogRunning", row.Name));
             StatusText = Tr.Format("Apps_Running", row.Name);
-            await _runner.RunAsync(row.App, _wait.Token);
-            if (!await WaitUntilGoneAsync(row.App, _wait.Token))
+            await _runner.RunAsync(row.App, CancellationToken.None);
+            if (!await WaitUntilGoneAsync(row.App, CancellationToken.None))
             {
                 StatusText = Tr.Format("Apps_StillInstalled", row.Name);
                 Log(StatusText);
@@ -117,7 +117,9 @@ public sealed partial class AppsViewModel : PageViewModel
             }
             Log(Tr.Format("Apps_LogRemoved", row.Name));
             await FindLeftoversAsync(row.App);
-            await ReloadCommand.ExecuteAsync(null);
+            // The app leaves the list in place; reloading would cover it with a spinner.
+            _all.Remove(row);
+            Filter();
         }
         catch (OperationCanceledException)
         {
@@ -137,9 +139,6 @@ public sealed partial class AppsViewModel : PageViewModel
     }
 
     private bool CanUninstall() => SelectedApp is not null && !IsBusy;
-
-    [RelayCommand]
-    private void StopWaiting() => _wait?.Cancel();
 
     [RelayCommand(CanExecute = nameof(CanRecycleLeftovers))]
     private async Task RecycleLeftoversAsync()

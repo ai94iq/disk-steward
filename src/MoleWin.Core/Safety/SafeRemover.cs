@@ -32,6 +32,13 @@ public sealed class SafeRemover(ProtectedPaths rules, IRecycleBin bin, Func<stri
         }
     }
 
+    // True when the results say the path is no longer there: it, or a folder above it, was
+    // recycled or was already gone. Lets a screen drop removed rows without scanning again.
+    public static bool IsGone(IEnumerable<RemovalResult> results, string path) =>
+        results.Any(r => r.Outcome is RemovalOutcome.Recycled or RemovalOutcome.Missing
+            && (path.Equals(r.Path, StringComparison.OrdinalIgnoreCase)
+                || path.StartsWith(r.Path.TrimEnd('\\') + "\\", StringComparison.OrdinalIgnoreCase)));
+
     // A folder and something inside it: recycling the folder covers both.
     private static List<string> WithoutNestedPaths(IEnumerable<string> paths)
     {

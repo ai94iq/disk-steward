@@ -192,6 +192,7 @@
   <data name="Common_LogRecycled" xml:space="preserve"><value>نُقل {0:N0} عنصرًا إلى سلة المحذوفات</value></data>
   <data name="Common_No" xml:space="preserve"><value>لا</value></data>
   <data name="Common_Ok" xml:space="preserve"><value>حسنًا</value></data>
+  <data name="Common_Recycling" xml:space="preserve"><value>جارٍ النقل إلى سلة المحذوفات...</value></data>
   <data name="Common_Retry" xml:space="preserve"><value>إعادة المحاولة</value></data>
   <data name="Common_Save" xml:space="preserve"><value>حفظ</value></data>
   <data name="Common_Details" xml:space="preserve"><value>التفاصيل</value></data>

@@ -44,6 +44,18 @@ public sealed partial class CleanCategoryRow(CleanCategory category) : Observabl
     {
         Targets.Add(row);
         Bytes += row.Bytes;
+        Refresh();
+    }
+
+    public void Remove(CleanTargetRow row)
+    {
+        if (!Targets.Remove(row)) return;
+        Bytes -= row.Bytes;
+        Refresh();
+    }
+
+    private void Refresh()
+    {
         SizeText = Localization.SizeText.Format(Bytes);
         ItemsText = Tr.Plural("Clean_Places", Targets.Count);
     }

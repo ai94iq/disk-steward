@@ -58,6 +58,11 @@ public sealed partial class CleanViewModel : PageViewModel
     // The button says how much it will move.
     [ObservableProperty] public partial string? RecycleText { get; set; }
 
+    // While ticked items move to the Recycle Bin: the footer says so and the button waits.
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RecycleSelectedCommand))]
+    public partial bool IsRecycling { get; set; }
+
     public ObservableCollection<CleanCategoryRow> Categories { get; } = [];
 
     public ActivityLog Activity { get; } = [];
@@ -116,14 +121,44 @@ public sealed partial class CleanViewModel : PageViewModel
         var confirmed = await _dialogs.ConfirmAsync(Tr.Format("Clean_Confirm", items.Count, SizeText.Format(items.Sum(i => i.Size))));
         if (!confirmed) return;
 
-        var results = await Task.Run(() => _remover.Recycle(items.Select(i => i.Path)));
+        IReadOnlyList<RemovalResult> results;
+        IsRecycling = true;
+        try
+        {
+            results = await Task.Run(() => _remover.Recycle(items.Select(i => i.Path)));
+        }
+        finally
+        {
+            IsRecycling = false;
+        }
         foreach (var result in results)
             _log.LogInformation("Clean recycle {Path}: {Outcome} {Error}", result.Path, result.Outcome, result.Error);
         Activity.AddRemovals(results);
-        await ReloadCommand.ExecuteAsync(null);
+
+        // What went leaves the list; a place that kept some items shows only those. No rescan.
+        foreach (var target in picked)
+        {
+            var category = Categories.First(c => c.Targets.Contains(target));
+            target.PropertyChanged -= OnRowChanged;
+            category.Remove(target);
+            var left = target.Finding.Items.Where(i => !SafeRemover.IsGone(results, i.Path)).ToList();
+            if (left.Count > 0)
+            {
+                var row = new CleanTargetRow(target.Finding with { Items = left }, target.Label);
+                row.PropertyChanged += OnRowChanged;
+                category.Add(row);
+            }
+            else if (category.Targets.Count == 0)
+            {
+                Categories.Remove(category);
+            }
+        }
+        UpdateTotals();
+        UpdateSelection();
+        MarkQuietLoadCompleted(Categories.Count > 0);
     }
 
-    private bool CanRecycle() => SelectedCount > 0;
+    private bool CanRecycle() => SelectedCount > 0 && !IsRecycling;
 
     private void Apply(ConcurrentQueue<CleanFinding> arrived)
     {
@@ -135,18 +170,22 @@ public sealed partial class CleanViewModel : PageViewModel
             var row = new CleanTargetRow(finding, Label(finding.Target.Id));
             row.PropertyChanged += OnRowChanged;
             CategoryFor(finding.Target.Category).Add(row);
-            TotalBytes += finding.Size;
             any = true;
         }
-        if (!any) return;
+        if (any) UpdateTotals();
+    }
 
+    // The summary and each group's bars, from what the list holds now.
+    private void UpdateTotals()
+    {
+        TotalBytes = Categories.Sum(c => c.Bytes);
         TotalText = SizeText.Format(TotalBytes);
         var review = Categories.Where(c => !c.IsSafe).Sum(c => c.Bytes);
         Headline = Tr.Format("Clean_Headline", TotalText, Categories.Sum(c => c.Targets.Count));
         SafeText = Tr.Format("Clean_SafeAmount", SizeText.Format(TotalBytes - review));
         ReviewText = review > 0 ? Tr.Format("Clean_ReviewAmount", SizeText.Format(review)) : null;
         // Bars compare places within their own group; one huge cache elsewhere would flatten them.
-        foreach (var category in Categories)
+        foreach (var category in Categories.Where(c => c.Targets.Count > 0))
         {
             var largest = category.Targets.Max(t => t.Bytes);
             foreach (var target in category.Targets) target.Share = largest > 0 ? target.Bytes * 100.0 / largest : 0;

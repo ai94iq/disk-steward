@@ -152,4 +152,24 @@ public sealed class AnalyzeViewModelTests : IDisposable
         _bin.Received(1).MoveToRecycleBin(cache);
         _bin.DidNotReceive().MoveToRecycleBin(other);
     }
+
+    [Fact]
+    public async Task Recycled_folder_leaves_the_tree_and_its_size_comes_off_without_a_rescan()
+    {
+        var cache = Child("cache");
+        var other = Child("other");
+        Children(Dir(cache, 10), Dir(other, 5));
+        _dialogs.ConfirmAsync(Arg.Any<string>()).Returns(true);
+        var vm = Create();
+        var drive = await OpenDrive(vm);
+        var before = drive.Size;
+        drive.Children.Single(c => c.Name == "cache").IsSelected = true;
+
+        await vm.RecycleSelectedCommand.ExecuteAsync(null);
+
+        Assert.Equal(["other"], drive.Children.Select(c => c.Name));
+        Assert.Equal(Math.Max(0, before - 10), drive.Size);
+        Assert.Equal(0, vm.SelectedCount);
+        _scanner.Received(1).ListChildren(_root);
+    }
 }

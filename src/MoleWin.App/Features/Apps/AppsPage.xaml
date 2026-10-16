@@ -64,21 +64,6 @@
       </common:PageHeader.Actions>
     </common:PageHeader>
 
-    <!-- What the uninstall is doing right now -->
-    <Border Grid.Row="1" Style="{StaticResource Surface}" Visibility="{Binding IsBusy, Converter={StaticResource BoolVisible}}">
-      <DockPanel>
-        <ui:Button DockPanel.Dock="Right" VerticalAlignment="Center" Command="{Binding StopWaitingCommand}" Content="{l:Tr Analyze_Stop}">
-          <ui:Button.Icon>
-            <common:AppIconElement Kind="Stop" />
-          </ui:Button.Icon>
-        </ui:Button>
-        <StackPanel Margin="{StaticResource CardGap}">
-          <ProgressBar Margin="{StaticResource LabelSpacing}" IsIndeterminate="True" />
-          <TextBlock Text="{Binding StatusText}" />
-        </StackPanel>
-      </DockPanel>
-    </Border>
-
     <!-- Leftovers beside the list when there is room, below it when there is not -->
     <common:SplitPanel Grid.Row="2" Margin="{StaticResource FieldSpacing}" Breakpoint="900" SideWidth="380" SideHeight="220">
 
@@ -164,7 +149,20 @@
           <common:AppIconElement Kind="Delete" />
         </ui:Button.Icon>
       </ui:Button>
-      <TextBlock VerticalAlignment="Center" Style="{StaticResource TertiaryText}" TextWrapping="Wrap" Text="{l:Tr Apps_Hint}" />
+      <!-- The hint, or while and after an uninstall, what happened -->
+      <TextBlock Margin="{StaticResource CardGap}" VerticalAlignment="Center" TextWrapping="Wrap">
+        <TextBlock.Style>
+          <Style TargetType="TextBlock" BasedOn="{StaticResource SecondaryText}">
+            <Setter Property="Text" Value="{Binding StatusText}" />
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding StatusText}" Value="{x:Null}">
+                <Setter Property="Text" Value="{l:Tr Apps_Hint}" />
+                <Setter Property="Foreground" Value="{DynamicResource TextFillColorTertiaryBrush}" />
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </TextBlock.Style>
+      </TextBlock>
     </DockPanel>
   </Grid>
 </Page>

@@ -192,6 +192,7 @@
   <data name="Common_LogRecycled" xml:space="preserve"><value>Moved {0:N0} items to the Recycle Bin</value></data>
   <data name="Common_No" xml:space="preserve"><value>No</value></data>
   <data name="Common_Ok" xml:space="preserve"><value>OK</value></data>
+  <data name="Common_Recycling" xml:space="preserve"><value>Moving to the Recycle Bin...</value></data>
   <data name="Common_Retry" xml:space="preserve"><value>Retry</value></data>
   <data name="Common_Save" xml:space="preserve"><value>Save</value></data>
   <data name="Common_Details" xml:space="preserve"><value>Details</value></data>
