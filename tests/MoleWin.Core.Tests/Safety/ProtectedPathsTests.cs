@@ -34,6 +34,19 @@ public sealed class ProtectedPathsTests
         Assert.True(Rules.IsProtected(path));
 
     [Theory]
+    [InlineData(@"C:\Users\me\Desktop\old.zip", ProtectionReason.None)]
+    [InlineData(@"C:\", ProtectionReason.DriveRoot)]
+    [InlineData(@"C:\pagefile.sys", ProtectionReason.VolumeSystem)]
+    [InlineData(@"C:\Windows\System32", ProtectionReason.Windows)]
+    [InlineData(@"C:\Program Files (x86)\Steam", ProtectionReason.Programs)]
+    [InlineData(@"C:\ProgramData\Microsoft", ProtectionReason.ProgramData)]
+    [InlineData(@"C:\Users\me\AppData\Local\MoleWin\logs", ProtectionReason.AppOwnData)]
+    [InlineData(@"C:\Users\me\Documents", ProtectionReason.PersonalFolder)]
+    [InlineData(@"relative\path", ProtectionReason.NotAFullPath)]
+    public void Each_protected_path_says_why(string path, ProtectionReason expected) =>
+        Assert.Equal(expected, Rules.ReasonFor(path));
+
+    [Theory]
     [InlineData(@"C:\Users\me\Desktop\old.zip")]
     [InlineData(@"C:\Users\me\AppData\Local\Temp")]
     [InlineData(@"C:\Users\me\AppData\Local\NVIDIA\DXCache")]
