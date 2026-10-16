@@ -1,0 +1,15 @@
+global using System.Globalization;
+global using System.IO;
+global using System.Windows;
+global using CommunityToolkit.Mvvm.ComponentModel;
+global using CommunityToolkit.Mvvm.Input;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Logging;
+global using DiskSteward.App.Common;
+global using DiskSteward.App.Hosting;
+global using DiskSteward.App.Localization;
+global using DiskSteward.App.Services;
+global using DiskSteward.Core.Abstractions;
+global using DiskSteward.Core.Models;
+global using DiskSteward.Core.Text;
+global using DiskSteward.Data;

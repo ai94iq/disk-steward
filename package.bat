@@ -11,7 +11,7 @@ call test.bat --no-pause
 if %ERRORLEVEL% neq 0 goto :fail
 call build.bat --no-pause
 if %ERRORLEVEL% neq 0 goto :fail
-dotnet build "installer\MoleWin.Installer.wixproj" -c Release -o "artifacts\installer" -v q -nologo > "artifacts\logs\package.log" 2>&1
+dotnet build "installer\DiskSteward.Installer.wixproj" -c Release -o "artifacts\installer" -v q -nologo > "artifacts\logs\package.log" 2>&1
 if %ERRORLEVEL% neq 0 goto :fail
 
 echo [package] OK: artifacts\installer

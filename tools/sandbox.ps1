@@ -1,4 +1,4 @@
-# Builds fake data for a Debug run with MOLEWIN_SANDBOX=<Root>, shaped like a real Windows
+# Builds fake data for a Debug run with DISKSTEWARD_SANDBOX=<Root>, shaped like a real Windows
 # machine: about 330,000 files in 40,000 folders and 10 GB, close to the file and folder
 # counts a real C:\ scan reads (the byte total is scaled down). Recreates <Root> from scratch.
 # Run exactly: pwsh tools/sandbox.ps1 -Root <folder>

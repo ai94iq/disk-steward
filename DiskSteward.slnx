@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/DiskSteward.App/DiskSteward.App.csproj" />
+    <Project Path="src/DiskSteward.Core/DiskSteward.Core.csproj" />
+    <Project Path="src/DiskSteward.Data/DiskSteward.Data.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DiskSteward.App.Tests/DiskSteward.App.Tests.csproj" />
+    <Project Path="tests/DiskSteward.Core.Tests/DiskSteward.Core.Tests.csproj" />
+    <Project Path="tests/DiskSteward.Data.Tests/DiskSteward.Data.Tests.csproj" />
+  </Folder>
+</Solution>

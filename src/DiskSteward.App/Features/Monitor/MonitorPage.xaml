@@ -1,0 +1,197 @@
+<Page x:Class="DiskSteward.App.Features.Monitor.MonitorPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:l="clr-namespace:DiskSteward.App.Localization"
+      xmlns:common="clr-namespace:DiskSteward.App.Common"
+      xmlns:monitor="clr-namespace:DiskSteward.App.Features.Monitor"
+      Style="{StaticResource {x:Type Page}}"
+      ScrollViewer.CanContentScroll="False">
+  <!-- CanContentScroll="False" makes WPF-UI's NavigationView skip its own wrapping scroll
+       viewer (it wraps when true, the Page default), so the page's ScrollViewer gets a real
+       height and the mouse wheel. -->
+  <Page.Resources>
+    <BooleanToVisibilityConverter x:Key="BoolVisible" />
+    <!-- Tiles: small label, big number, one supporting line, then the chart -->
+    <Style x:Key="TileTitle" TargetType="TextBlock" BasedOn="{StaticResource SecondaryText}">
+      <Setter Property="Margin" Value="{StaticResource LabelSpacing}" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style x:Key="TileValue" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="24" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <!-- Up to two lines (a long CPU name wraps instead of being cut), then trimmed. -->
+    <Style x:Key="TileDetail" TargetType="TextBlock" BasedOn="{StaticResource TertiaryText}">
+      <Setter Property="Margin" Value="{StaticResource FieldSpacing}" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+      <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+      <Setter Property="MaxHeight" Value="40" />
+    </Style>
+
+  </Page.Resources>
+
+  <Grid Margin="{StaticResource PagePadding}">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <!-- Title, the live badge beside it, and keep awake on the right -->
+    <common:PageHeader Grid.Row="0" Title="{l:Tr Nav_Monitor}" Summary="{Binding UptimeText}">
+      <common:PageHeader.Actions>
+        <StackPanel Orientation="Horizontal">
+          <Border Margin="{StaticResource CardGap}" Padding="{StaticResource BadgePadding}" VerticalAlignment="Center"
+                  CornerRadius="12" Background="{DynamicResource SubtleFillColorSecondaryBrush}"
+                  Visibility="{Binding IsLive, Converter={StaticResource BoolVisible}}">
+            <StackPanel Orientation="Horizontal">
+              <Ellipse Width="8" Height="8" Margin="{StaticResource InlineGap}" VerticalAlignment="Center"
+                       Fill="{DynamicResource SystemFillColorSuccessBrush}" common:Motion.PulseOn="{Binding Pulse}" />
+              <TextBlock VerticalAlignment="Center" Style="{StaticResource SecondaryText}" Text="{l:Tr Monitor_Live}" />
+            </StackPanel>
+          </Border>
+          <TextBlock Margin="{StaticResource InlineGap}" VerticalAlignment="Center" Style="{StaticResource SecondaryText}" Text="{l:Tr Monitor_KeepAwake}" />
+          <ComboBox MinWidth="180" VerticalAlignment="Center"
+                    ItemsSource="{Binding KeepAwakeOptions}" SelectedItem="{Binding KeepAwake}" DisplayMemberPath="Label" />
+        </StackPanel>
+      </common:PageHeader.Actions>
+    </common:PageHeader>
+
+    <ScrollViewer Grid.Row="1" Padding="{StaticResource PageScrollGap}" VerticalScrollBarVisibility="Auto"
+                  Visibility="{Binding State, Converter={StaticResource LoadStateVisible}, ConverterParameter='Idle,Loaded'}">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="{StaticResource GutterWidth}" />
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="{StaticResource GutterWidth}" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Health: a status line, the machine, and the score as plain text -->
+        <Border Grid.ColumnSpan="5" Style="{StaticResource Surface}">
+          <DockPanel>
+            <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center">
+              <TextBlock HorizontalAlignment="Right" FontSize="24" FontWeight="SemiBold" Text="{Binding HealthScore}" />
+              <TextBlock HorizontalAlignment="Right" Style="{StaticResource TertiaryText}" Text="{l:Tr Monitor_HealthScore}" />
+            </StackPanel>
+            <StackPanel VerticalAlignment="Center">
+              <StackPanel Orientation="Horizontal">
+                <Ellipse Width="8" Height="8" Margin="0,0,10,0" VerticalAlignment="Center"
+                         Fill="{Binding HealthLevel, Converter={StaticResource LoadLevelBrush}}" />
+                <ui:TextBlock FontTypography="BodyStrong" Text="{Binding HealthMessage}" />
+              </StackPanel>
+              <TextBlock Margin="18,4,0,0" FontSize="14" Style="{StaticResource SecondaryText}" TextTrimming="CharacterEllipsis">
+                <Run Text="{Binding Device, Mode=OneWay}" /><Run Text="  " /><Run Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="{Binding DeviceDetail, Mode=OneWay}" />
+              </TextBlock>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+
+        <!-- Three readings, one shape: the number now, what it means, the last minute -->
+        <Border Grid.Row="1" Style="{StaticResource Surface}">
+          <StackPanel>
+            <TextBlock Style="{StaticResource TileTitle}" Text="{l:Tr Monitor_Cpu}" />
+            <TextBlock Style="{StaticResource TileValue}" Text="{Binding CpuPercentText}" />
+            <TextBlock Style="{StaticResource TileDetail}" Text="{Binding CpuDetail}" ToolTip="{Binding CpuDetail}" />
+            <common:HistoryChart Height="56" Capacity="{x:Static monitor:MonitorViewModel.HistoryLength}"
+                                 Stroke="{Binding CpuLevel, Converter={StaticResource LoadLevelBrush}}"
+                                 GridBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
+                                 Values="{Binding CpuHistory}" />
+          </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource Surface}">
+          <StackPanel>
+            <TextBlock Style="{StaticResource TileTitle}" Text="{l:Tr Monitor_Memory}" />
+            <TextBlock Style="{StaticResource TileValue}" Text="{Binding MemoryPercentText}" />
+            <TextBlock Style="{StaticResource TileDetail}" Text="{Binding MemoryText}" />
+            <common:HistoryChart Height="56" Capacity="{x:Static monitor:MonitorViewModel.HistoryLength}"
+                                 Stroke="{Binding MemoryLevel, Converter={StaticResource LoadLevelBrush}}"
+                                 GridBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
+                                 Values="{Binding MemoryHistory}" />
+          </StackPanel>
+        </Border>
+
+        <!-- Download over the last minute; scales to its peak, flat below 100 KB/s -->
+        <Border Grid.Row="1" Grid.Column="4" Style="{StaticResource Surface}">
+          <StackPanel>
+            <TextBlock Style="{StaticResource TileTitle}" Text="{l:Tr Monitor_Network}" />
+            <TextBlock Style="{StaticResource TileValue}" Text="{Binding NetworkText}" />
+            <TextBlock Style="{StaticResource TileDetail}" Text="{Binding NetworkDetail}" />
+            <common:HistoryChart Height="56" Capacity="{x:Static monitor:MonitorViewModel.HistoryLength}"
+                                 Maximum="NaN" Floor="102400"
+                                 Stroke="{DynamicResource AccentFillColorDefaultBrush}"
+                                 GridBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
+                                 Values="{Binding DownHistory}" />
+          </StackPanel>
+        </Border>
+
+        <!-- Drives: used against capacity, colored as they fill -->
+        <Border Grid.Row="2" Style="{StaticResource Surface}">
+          <StackPanel>
+            <TextBlock Style="{StaticResource TileTitle}" Text="{l:Tr Monitor_Drives}" />
+            <ItemsControl ItemsSource="{Binding Drives}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <StackPanel Margin="{StaticResource RowSpacing}">
+                    <DockPanel Margin="{StaticResource LabelSpacing}">
+                      <common:AppIcon Width="16" Height="16" Margin="{StaticResource InlineGap}" VerticalAlignment="Center" Kind="HardDrive" />
+                      <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding Root}" />
+                      <TextBlock Margin="{StaticResource InlineStart}" VerticalAlignment="Center" Style="{StaticResource TertiaryText}" Text="{Binding Detail}" />
+                    </DockPanel>
+                    <ProgressBar Height="6" Margin="{StaticResource LabelSpacing}" Maximum="100"
+                                 Foreground="{Binding Level, Converter={StaticResource LoadLevelBrush}}"
+                                 common:Motion.Value="{Binding UsedPercent}" />
+                    <TextBlock Style="{StaticResource SecondaryText}" Text="{Binding FreeText}" />
+                  </StackPanel>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+
+        <!-- What is using the machine right now, grouped by name like Task Manager -->
+        <Border Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="3" Style="{StaticResource Surface}">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="{StaticResource SizeColumnWidth}" />
+              <ColumnDefinition Width="{StaticResource SizeColumnWidth}" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock Style="{StaticResource TileTitle}" Text="{l:Tr Monitor_Processes}" />
+            <TextBlock Grid.Column="1" HorizontalAlignment="Right" Style="{StaticResource TileTitle}" Text="{l:Tr Monitor_Cpu}" />
+            <TextBlock Grid.Column="2" HorizontalAlignment="Right" Style="{StaticResource TileTitle}" Text="{l:Tr Monitor_Memory}" />
+            <ItemsControl Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding Processes}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Grid Margin="{StaticResource RowSpacing}">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="{StaticResource SizeColumnWidth}" />
+                      <ColumnDefinition Width="{StaticResource SizeColumnWidth}" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Name}" />
+                    <TextBlock Grid.Column="1" HorizontalAlignment="Right" FontWeight="SemiBold" Text="{Binding CpuText}" />
+                    <TextBlock Grid.Column="2" HorizontalAlignment="Right" Style="{StaticResource SecondaryText}" Text="{Binding MemoryText}" />
+                  </Grid>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </Grid>
+        </Border>
+      </Grid>
+    </ScrollViewer>
+
+    <common:LoadStateOverlay Grid.Row="1" State="{Binding State}" ErrorMessage="{Binding ErrorMessage}" RetryCommand="{Binding ReloadCommand}" />
+  </Grid>
+</Page>

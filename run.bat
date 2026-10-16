@@ -3,7 +3,7 @@ setlocal EnableExtensions
 cd /d "%~dp0"
 set "RESULT=0"
 
-dotnet run --project "src\MoleWin.App\MoleWin.App.csproj" -c Debug -v q
+dotnet run --project "src\DiskSteward.App\DiskSteward.App.csproj" -c Debug -v q
 if %ERRORLEVEL% neq 0 set "RESULT=1"
 
 if "%RESULT%"=="1" echo [run] FAILED

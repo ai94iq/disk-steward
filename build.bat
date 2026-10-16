@@ -9,10 +9,10 @@ rem error lines plus the log path on failure.
 if not exist "artifacts\logs" mkdir "artifacts\logs"
 
 if exist "%OUT%" rmdir /s /q "%OUT%"
-dotnet publish "src\MoleWin.App\MoleWin.App.csproj" -c Release -r win-x64 --self-contained true -p:PublishReadyToRun=true -o "%OUT%" -v q -nologo > "artifacts\logs\build.log" 2>&1
+dotnet publish "src\DiskSteward.App\DiskSteward.App.csproj" -c Release -r win-x64 --self-contained true -p:PublishReadyToRun=true -o "%OUT%" -v q -nologo > "artifacts\logs\build.log" 2>&1
 if %ERRORLEVEL% neq 0 goto :fail
 
-echo [build] OK: %OUT%\MoleWin.exe
+echo [build] OK: %OUT%\DiskSteward.exe
 goto :end
 
 :fail

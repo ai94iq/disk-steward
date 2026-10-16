@@ -9,13 +9,13 @@
 param([Parameter(Mandatory)][string]$Sandbox, [switch]$WindowsBin)
 $ErrorActionPreference = "Stop"
 Add-Type -AssemblyName UIAutomationClient, UIAutomationTypes
-$exe = Join-Path $PSScriptRoot "..\src\MoleWin.App\bin\Debug\net10.0-windows\MoleWin.exe"
+$exe = Join-Path $PSScriptRoot "..\src\DiskSteward.App\bin\Debug\net10.0-windows\DiskSteward.exe"
 $A = [System.Windows.Automation.AutomationElement]
 $Scope = [System.Windows.Automation.TreeScope]
 
 function Start-Page([string]$Page) {
-    $env:MOLEWIN_SANDBOX = $Sandbox; $env:MOLEWIN_PAGE = $Page
-    $env:MOLEWIN_SANDBOX_BIN = if ($WindowsBin) { "windows" } else { "" }
+    $env:DISKSTEWARD_SANDBOX = $Sandbox; $env:DISKSTEWARD_PAGE = $Page
+    $env:DISKSTEWARD_SANDBOX_BIN = if ($WindowsBin) { "windows" } else { "" }
     $p = Start-Process $exe -PassThru
     for ($i = 0; $i -lt 100 -and $p.MainWindowHandle -eq 0; $i++) { Start-Sleep -Milliseconds 100; $p.Refresh() }
     return @{ Process = $p; Root = $A::FromHandle($p.MainWindowHandle) }

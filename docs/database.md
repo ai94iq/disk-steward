@@ -1,6 +1,6 @@
 # Database
 
-File: `%LOCALAPPDATA%\MoleWin\data.db`. WAL mode. Per-connection settings: synchronous=NORMAL, busy_timeout=5000, cache_size=-20000, foreign_keys=ON.
+File: `%LOCALAPPDATA%\DiskSteward\data.db`. WAL mode. Per-connection settings: synchronous=NORMAL, busy_timeout=5000, cache_size=-20000, foreign_keys=ON.
 
 ## Tables
 

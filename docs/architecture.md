@@ -4,9 +4,9 @@
 
 App → Core, Data. Data → Core. Core → nothing.
 
-- **MoleWin.Core** (net10.0): models, interfaces, text helpers, caching helper, layout logic. Never WPF or SQL.
-- **MoleWin.Data** (net10.0): SQLite + Dapper repositories, migrations, backups. Never WPF.
-- **MoleWin.App** (net10.0-windows): views, view models, app services, startup, resources.
+- **DiskSteward.Core** (net10.0): models, interfaces, text helpers, caching helper, layout logic. Never WPF or SQL.
+- **DiskSteward.Data** (net10.0): SQLite + Dapper repositories, migrations, backups. Never WPF.
+- **DiskSteward.App** (net10.0-windows): views, view models, app services, startup, resources.
 
 ## Startup flow
 

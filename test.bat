@@ -8,7 +8,7 @@ rem error lines plus the log path on failure. Humans (no --no-pause) get the ful
 if not exist "artifacts\logs" mkdir "artifacts\logs"
 
 rem MTP mode (global.json): extra flags are forwarded to the test host, so keep it minimal.
-dotnet test --solution "MoleWin.slnx" -c Release > "artifacts\logs\test.log" 2>&1
+dotnet test --solution "DiskSteward.slnx" -c Release > "artifacts\logs\test.log" 2>&1
 if %ERRORLEVEL% neq 0 goto :fail
 
 echo [test] OK

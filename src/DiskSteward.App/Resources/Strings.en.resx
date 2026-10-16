@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Accent_Blue" xml:space="preserve"><value>Blue</value></data>
+  <data name="Accent_Graphite" xml:space="preserve"><value>Graphite</value></data>
+  <data name="Accent_Green" xml:space="preserve"><value>Green</value></data>
+  <data name="Accent_Orange" xml:space="preserve"><value>Orange</value></data>
+  <data name="Accent_Purple" xml:space="preserve"><value>Purple</value></data>
+  <data name="Accent_Rose" xml:space="preserve"><value>Rose</value></data>
+  <data name="Accent_System" xml:space="preserve"><value>Windows accent</value></data>
+  <data name="Accent_Teal" xml:space="preserve"><value>Teal</value></data>
+  <data name="Analyze_Confirm" xml:space="preserve"><value>Move {0} items ({1}) to the Recycle Bin? Nothing is deleted permanently; you can restore them from the Recycle Bin.</value></data>
+  <data name="Analyze_Counters" xml:space="preserve"><value>{0:N0} files, {1:N0} folders, {2}</value></data>
+  <data name="Analyze_DriveFree" xml:space="preserve"><value>{0} free of {1}</value></data>
+  <data name="Analyze_Drives" xml:space="preserve"><value>This PC</value></data>
+  <data name="Analyze_Elapsed" xml:space="preserve"><value>{0:%m}:{0:ss}</value></data>
+  <data name="Analyze_Hint" xml:space="preserve"><value>Ticked items go to the Recycle Bin after you confirm.</value></data>
+  <data name="Analyze_Lock_AppOwnData" xml:space="preserve"><value>Disk Steward's own data</value></data>
+  <data name="Analyze_Lock_PersonalFolder" xml:space="preserve"><value>Your folder; open it to clean inside</value></data>
+  <data name="Analyze_Lock_ProgramData" xml:space="preserve"><value>Shared data of installed programs</value></data>
+  <data name="Analyze_Lock_Programs" xml:space="preserve"><value>Programs; uninstall them in Apps</value></data>
+  <data name="Analyze_Lock_VolumeSystem" xml:space="preserve"><value>Windows needs this</value></data>
+  <data name="Analyze_Lock_Windows" xml:space="preserve"><value>Part of Windows</value></data>
+  <data name="Analyze_LogDone" xml:space="preserve"><value>Finished {0} in {1:%m}:{1:ss}, {2:N0} files</value></data>
+  <data name="Analyze_LogFailed" xml:space="preserve"><value>Could not recycle {0}: {1}</value></data>
+  <data name="Analyze_LogNotRecyclable" xml:space="preserve"><value>Refused, this drive has no Recycle Bin: {0}</value></data>
+  <data name="Analyze_LogProtected" xml:space="preserve"><value>Refused, protected: {0}</value></data>
+  <data name="Analyze_LogRecycled" xml:space="preserve"><value>Moved to the Recycle Bin: {0}</value></data>
+  <data name="Analyze_LogScan" xml:space="preserve"><value>Scanning {0}</value></data>
+  <data name="Analyze_LogStopped" xml:space="preserve"><value>Stopped scanning {0}</value></data>
+  <data name="Analyze_Measuring" xml:space="preserve"><value>Measuring</value></data>
+  <data name="Analyze_Protected" xml:space="preserve"><value>Protected</value></data>
+  <data name="Analyze_Recycle" xml:space="preserve"><value>Move to Recycle Bin</value></data>
+  <data name="Analyze_Selected" xml:space="preserve"><value>{0} selected, {1}</value></data>
+  <data name="Analyze_Stop" xml:space="preserve"><value>Stop</value></data>
+  <data name="Analyze_Summary" xml:space="preserve"><value>Expand a drive to see what uses the space.</value></data>
+  <data name="Analyze_Up" xml:space="preserve"><value>Up</value></data>
+  <data name="App_AlreadyRunning" xml:space="preserve"><value>The app is already running.</value></data>
+  <data name="App_Name" xml:space="preserve"><value>Disk Steward</value></data>
+  <data name="Apps_Clean" xml:space="preserve"><value>{0} left nothing behind.</value></data>
+  <data name="Apps_Confirm" xml:space="preserve"><value>Run the uninstaller for {0}? Its own window will guide you, and Windows may ask for permission.</value></data>
+  <data name="Apps_Count" xml:space="preserve"><value>{0} of {1} apps</value></data>
+  <data name="Apps_Hint" xml:space="preserve"><value>Uninstall runs the app's own uninstaller. Leftovers are listed after, unticked.</value></data>
+  <data name="Apps_LeftoversFound" xml:space="preserve"><value>{0} left {1} items behind. Tick what to remove.</value></data>
+  <data name="Apps_LogLeftover" xml:space="preserve"><value>Leftover: {0} ({1})</value></data>
+  <data name="Apps_LogRemoved" xml:space="preserve"><value>{0} is no longer installed</value></data>
+  <data name="Apps_LogRunning" xml:space="preserve"><value>Uninstalling {0}</value></data>
+  <data name="Apps_NotReported" xml:space="preserve"><value>Not reported</value></data>
+  <data name="Apps_RunFailed" xml:space="preserve"><value>The uninstaller for {0} did not start.</value></data>
+  <data name="Apps_Running" xml:space="preserve"><value>Running the uninstaller for {0}</value></data>
+  <data name="Apps_ColName" xml:space="preserve"><value>Name</value></data>
+  <data name="Apps_Search" xml:space="preserve"><value>Search apps</value></data>
+  <data name="Apps_SortBy" xml:space="preserve"><value>Sort by</value></data>
+  <data name="Apps_SortDate" xml:space="preserve"><value>Install date</value></data>
+  <data name="Apps_SortName" xml:space="preserve"><value>Name (A to Z)</value></data>
+  <data name="Apps_SortSize" xml:space="preserve"><value>Size</value></data>
+  <data name="Apps_StillInstalled" xml:space="preserve"><value>{0} is still installed. The uninstaller was cancelled or did not finish.</value></data>
+  <data name="Apps_Uninstall" xml:space="preserve"><value>Uninstall</value></data>
+  <data name="Apps_Waiting" xml:space="preserve"><value>Waiting for {0} to finish uninstalling</value></data>
+  <data name="Clean_Category_AiTools" xml:space="preserve"><value>AI tools</value></data>
+  <data name="Clean_Category_Apps" xml:space="preserve"><value>Apps</value></data>
+  <data name="Clean_Category_Browsers" xml:space="preserve"><value>Browsers</value></data>
+  <data name="Clean_Category_Developer" xml:space="preserve"><value>Developer tools</value></data>
+  <data name="Clean_Category_Gpu" xml:space="preserve"><value>Graphics drivers</value></data>
+  <data name="Clean_Category_System" xml:space="preserve"><value>System</value></data>
+  <data name="Clean_Confirm" xml:space="preserve"><value>Move {0} items ({1}) to the Recycle Bin? Nothing is deleted permanently; the space comes back when you empty the Recycle Bin.</value></data>
+  <data name="Clean_Headline" xml:space="preserve"><value>{0} found in {1} places</value></data>
+  <data name="Clean_Hint" xml:space="preserve"><value>Ticked items go to the Recycle Bin after you confirm.</value></data>
+  <data name="Clean_ItemsIn" xml:space="preserve"><value>{0} in {1}</value></data>
+  <data name="Clean_Items_few" xml:space="preserve"><value>{0} items</value></data>
+  <data name="Clean_Items_many" xml:space="preserve"><value>{0} items</value></data>
+  <data name="Clean_Items_one" xml:space="preserve"><value>1 item</value></data>
+  <data name="Clean_Items_other" xml:space="preserve"><value>{0} items</value></data>
+  <data name="Clean_Items_two" xml:space="preserve"><value>{0} items</value></data>
+  <data name="Clean_Items_zero" xml:space="preserve"><value>No items</value></data>
+  <data name="Clean_LogDone" xml:space="preserve"><value>Scan finished in {0:%m}:{0:ss}: {1} in {2} places</value></data>
+  <data name="Clean_LogStarted" xml:space="preserve"><value>Scan started</value></data>
+  <data name="Clean_Note_AiTools" xml:space="preserve"><value>Chats over 30 days old, and editor caches</value></data>
+  <data name="Clean_Note_Apps" xml:space="preserve"><value>App caches; most rebuild on next launch</value></data>
+  <data name="Clean_Note_Browsers" xml:space="preserve"><value>Caches only; sign-ins, history and bookmarks stay</value></data>
+  <data name="Clean_Note_Developer" xml:space="preserve"><value>Package caches; tools download them again</value></data>
+  <data name="Clean_Note_Gpu" xml:space="preserve"><value>Shader caches; games may load slower once</value></data>
+  <data name="Clean_Note_System" xml:space="preserve"><value>Temp files, error reports and logs over a week old</value></data>
+  <data name="Clean_Nothing" xml:space="preserve"><value>Nothing to clean right now.</value></data>
+  <data name="Clean_Places_few" xml:space="preserve"><value>{0} places</value></data>
+  <data name="Clean_Places_many" xml:space="preserve"><value>{0} places</value></data>
+  <data name="Clean_Places_one" xml:space="preserve"><value>1 place</value></data>
+  <data name="Clean_Places_other" xml:space="preserve"><value>{0} places</value></data>
+  <data name="Clean_Places_two" xml:space="preserve"><value>{0} places</value></data>
+  <data name="Clean_Places_zero" xml:space="preserve"><value>No places</value></data>
+  <data name="Clean_Recycle" xml:space="preserve"><value>Move to Recycle Bin</value></data>
+  <data name="Clean_Rescan" xml:space="preserve"><value>Scan again</value></data>
+  <data name="Clean_Review" xml:space="preserve"><value>Review first</value></data>
+  <data name="Clean_ReviewAmount" xml:space="preserve"><value>{0} to review first</value></data>
+  <data name="Clean_Safe" xml:space="preserve"><value>Safe to remove</value></data>
+  <data name="Clean_SafeAmount" xml:space="preserve"><value>{0} safe to remove</value></data>
+  <data name="Clean_Scanned" xml:space="preserve"><value>Checked {0} places in {1:%m}:{1:ss}</value></data>
+  <data name="Clean_Scanning" xml:space="preserve"><value>Checking {0}</value></data>
+  <data name="Clean_SelectAll" xml:space="preserve"><value>Select all</value></data>
+  <data name="Clean_Selected" xml:space="preserve"><value>{0} selected, {1}</value></data>
+  <data name="Clean_Target_adobe-media-cache" xml:space="preserve"><value>Adobe media cache</value></data>
+  <data name="Clean_Target_amd-dx" xml:space="preserve"><value>AMD DirectX shader cache</value></data>
+  <data name="Clean_Target_amd-dxc" xml:space="preserve"><value>AMD DXC shader cache</value></data>
+  <data name="Clean_Target_amd-gl" xml:space="preserve"><value>AMD OpenGL shader cache</value></data>
+  <data name="Clean_Target_amd-vk" xml:space="preserve"><value>AMD Vulkan shader cache</value></data>
+  <data name="Clean_Target_brave-cache" xml:space="preserve"><value>Brave cache</value></data>
+  <data name="Clean_Target_brave-code" xml:space="preserve"><value>Brave code cache</value></data>
+  <data name="Clean_Target_brave-gpu" xml:space="preserve"><value>Brave GPU cache</value></data>
+  <data name="Clean_Target_bun-cache" xml:space="preserve"><value>Bun cache</value></data>
+  <data name="Clean_Target_cargo-crates" xml:space="preserve"><value>Cargo downloaded crates</value></data>
+  <data name="Clean_Target_chrome-cache" xml:space="preserve"><value>Chrome cache</value></data>
+  <data name="Clean_Target_chrome-code" xml:space="preserve"><value>Chrome code cache</value></data>
+  <data name="Clean_Target_chrome-gpu" xml:space="preserve"><value>Chrome GPU cache</value></data>
+  <data name="Clean_Target_chrome-grshader" xml:space="preserve"><value>Chrome graphics shader cache</value></data>
+  <data name="Clean_Target_chrome-shader" xml:space="preserve"><value>Chrome shader cache</value></data>
+  <data name="Clean_Target_chrome-sw" xml:space="preserve"><value>Chrome site storage cache</value></data>
+  <data name="Clean_Target_claude-chats" xml:space="preserve"><value>Claude Code chats older than 30 days</value></data>
+  <data name="Clean_Target_codex-sessions" xml:space="preserve"><value>Codex sessions older than 30 days</value></data>
+  <data name="Clean_Target_crash-dumps" xml:space="preserve"><value>Crash dumps</value></data>
+  <data name="Clean_Target_cursor-cache" xml:space="preserve"><value>Cursor cache</value></data>
+  <data name="Clean_Target_cursor-cached-data" xml:space="preserve"><value>Cursor compiled extension cache</value></data>
+  <data name="Clean_Target_cursor-code" xml:space="preserve"><value>Cursor code cache</value></data>
+  <data name="Clean_Target_cursor-gpu" xml:space="preserve"><value>Cursor GPU cache</value></data>
+  <data name="Clean_Target_cursor-workspaces" xml:space="preserve"><value>Cursor workspace data older than 30 days</value></data>
+  <data name="Clean_Target_d3d-cache" xml:space="preserve"><value>DirectX shader cache</value></data>
+  <data name="Clean_Target_discord-cache" xml:space="preserve"><value>Discord cache</value></data>
+  <data name="Clean_Target_discord-code" xml:space="preserve"><value>Discord code cache</value></data>
+  <data name="Clean_Target_discord-gpu" xml:space="preserve"><value>Discord GPU cache</value></data>
+  <data name="Clean_Target_edge-cache" xml:space="preserve"><value>Edge cache</value></data>
+  <data name="Clean_Target_edge-code" xml:space="preserve"><value>Edge code cache</value></data>
+  <data name="Clean_Target_edge-gpu" xml:space="preserve"><value>Edge GPU cache</value></data>
+  <data name="Clean_Target_edge-grshader" xml:space="preserve"><value>Edge graphics shader cache</value></data>
+  <data name="Clean_Target_edge-shader" xml:space="preserve"><value>Edge shader cache</value></data>
+  <data name="Clean_Target_edge-sw" xml:space="preserve"><value>Edge site storage cache</value></data>
+  <data name="Clean_Target_epic-webcache" xml:space="preserve"><value>Epic Games web cache</value></data>
+  <data name="Clean_Target_firefox-cache" xml:space="preserve"><value>Firefox cache</value></data>
+  <data name="Clean_Target_firefox-startup" xml:space="preserve"><value>Firefox startup cache</value></data>
+  <data name="Clean_Target_go-build" xml:space="preserve"><value>Go build cache</value></data>
+  <data name="Clean_Target_intel-shader" xml:space="preserve"><value>Intel shader cache</value></data>
+  <data name="Clean_Target_jetbrains-caches" xml:space="preserve"><value>JetBrains IDE caches</value></data>
+  <data name="Clean_Target_notion-cache" xml:space="preserve"><value>Notion cache</value></data>
+  <data name="Clean_Target_notion-code" xml:space="preserve"><value>Notion code cache</value></data>
+  <data name="Clean_Target_npm-cache" xml:space="preserve"><value>npm cache</value></data>
+  <data name="Clean_Target_nuget-http" xml:space="preserve"><value>NuGet HTTP cache</value></data>
+  <data name="Clean_Target_nuget-plugins" xml:space="preserve"><value>NuGet plugins cache</value></data>
+  <data name="Clean_Target_nvidia-dx" xml:space="preserve"><value>NVIDIA DirectX shader cache</value></data>
+  <data name="Clean_Target_nvidia-gl" xml:space="preserve"><value>NVIDIA OpenGL shader cache</value></data>
+  <data name="Clean_Target_obsidian-cache" xml:space="preserve"><value>Obsidian cache</value></data>
+  <data name="Clean_Target_obsidian-code" xml:space="preserve"><value>Obsidian code cache</value></data>
+  <data name="Clean_Target_opera-cache" xml:space="preserve"><value>Opera cache</value></data>
+  <data name="Clean_Target_pip-cache" xml:space="preserve"><value>pip cache</value></data>
+  <data name="Clean_Target_postman-cache" xml:space="preserve"><value>Postman cache</value></data>
+  <data name="Clean_Target_postman-code" xml:space="preserve"><value>Postman code cache</value></data>
+  <data name="Clean_Target_slack-cache" xml:space="preserve"><value>Slack cache</value></data>
+  <data name="Clean_Target_slack-code" xml:space="preserve"><value>Slack code cache</value></data>
+  <data name="Clean_Target_slack-gpu" xml:space="preserve"><value>Slack GPU cache</value></data>
+  <data name="Clean_Target_slack-sw" xml:space="preserve"><value>Slack site storage cache</value></data>
+  <data name="Clean_Target_spotify-data" xml:space="preserve"><value>Spotify streaming cache</value></data>
+  <data name="Clean_Target_steam-htmlcache" xml:space="preserve"><value>Steam web cache</value></data>
+  <data name="Clean_Target_teams-cache" xml:space="preserve"><value>Teams (classic) cache</value></data>
+  <data name="Clean_Target_teams-code" xml:space="preserve"><value>Teams (classic) code cache</value></data>
+  <data name="Clean_Target_teams-gpu" xml:space="preserve"><value>Teams (classic) GPU cache</value></data>
+  <data name="Clean_Target_temp" xml:space="preserve"><value>Temporary files</value></data>
+  <data name="Clean_Target_typescript-cache" xml:space="preserve"><value>TypeScript typings cache</value></data>
+  <data name="Clean_Target_vivaldi-cache" xml:space="preserve"><value>Vivaldi cache</value></data>
+  <data name="Clean_Target_vivaldi-code" xml:space="preserve"><value>Vivaldi code cache</value></data>
+  <data name="Clean_Target_vivaldi-gpu" xml:space="preserve"><value>Vivaldi GPU cache</value></data>
+  <data name="Clean_Target_vs-component-cache" xml:space="preserve"><value>Visual Studio component cache</value></data>
+  <data name="Clean_Target_vscode-cache" xml:space="preserve"><value>VS Code cache</value></data>
+  <data name="Clean_Target_vscode-cached-data" xml:space="preserve"><value>VS Code compiled extension cache</value></data>
+  <data name="Clean_Target_vscode-code" xml:space="preserve"><value>VS Code code cache</value></data>
+  <data name="Clean_Target_vscode-gpu" xml:space="preserve"><value>VS Code GPU cache</value></data>
+  <data name="Clean_Target_vscode-vsix" xml:space="preserve"><value>VS Code extension downloads</value></data>
+  <data name="Clean_Target_wer-archive" xml:space="preserve"><value>Archived error reports</value></data>
+  <data name="Clean_Target_wer-queue" xml:space="preserve"><value>Queued error reports</value></data>
+  <data name="Clean_Target_yarn-cache" xml:space="preserve"><value>Yarn cache</value></data>
+  <data name="Common_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Common_LogRecycled" xml:space="preserve"><value>Moved {0:N0} items to the Recycle Bin</value></data>
+  <data name="Common_No" xml:space="preserve"><value>No</value></data>
+  <data name="Common_Ok" xml:space="preserve"><value>OK</value></data>
+  <data name="Common_Recycling" xml:space="preserve"><value>Moving to the Recycle Bin...</value></data>
+  <data name="Common_Retry" xml:space="preserve"><value>Retry</value></data>
+  <data name="Common_Save" xml:space="preserve"><value>Save</value></data>
+  <data name="Common_Details" xml:space="preserve"><value>Details</value></data>
+  <data name="Common_Yes" xml:space="preserve"><value>Yes</value></data>
+  <data name="Date_Approx" xml:space="preserve"><value>c. {0}</value></data>
+  <data name="Error_LoadFailed" xml:space="preserve"><value>Couldn't load the data.</value></data>
+  <data name="Error_Startup" xml:space="preserve"><value>The app couldn't start. Check the log files.</value></data>
+  <data name="Error_Unexpected" xml:space="preserve"><value>An unexpected error occurred.</value></data>
+  <data name="Monitor_Awake_1h" xml:space="preserve"><value>1 hour</value></data>
+  <data name="Monitor_Awake_2h" xml:space="preserve"><value>2 hours</value></data>
+  <data name="Monitor_Awake_30m" xml:space="preserve"><value>30 minutes</value></data>
+  <data name="Monitor_Awake_4h" xml:space="preserve"><value>4 hours</value></data>
+  <data name="Monitor_Awake_Off" xml:space="preserve"><value>Off</value></data>
+  <data name="Monitor_Awake_On" xml:space="preserve"><value>Until turned off</value></data>
+  <data name="Monitor_Cpu" xml:space="preserve"><value>CPU</value></data>
+  <data name="Monitor_CpuDetail" xml:space="preserve"><value>{0}, {1} threads</value></data>
+  <data name="Monitor_DeviceDetail" xml:space="preserve"><value>{0}, {1:N0} GB RAM</value></data>
+  <data name="Monitor_DriveFree" xml:space="preserve"><value>{0:N0} GB free of {1:N0} GB</value></data>
+  <data name="Monitor_DriveRemovable" xml:space="preserve"><value>{0}, removable</value></data>
+  <data name="Monitor_Drives" xml:space="preserve"><value>Drives</value></data>
+  <data name="Monitor_HealthScore" xml:space="preserve"><value>Health score</value></data>
+  <data name="Monitor_Issue_Cpu" xml:space="preserve"><value>High CPU load</value></data>
+  <data name="Monitor_Issue_Disk" xml:space="preserve"><value>A drive is almost full</value></data>
+  <data name="Monitor_Issue_Memory" xml:space="preserve"><value>Memory almost full</value></data>
+  <data name="Monitor_Issue_None" xml:space="preserve"><value>Running smoothly</value></data>
+  <data name="Monitor_KeepAwake" xml:space="preserve"><value>Keep awake</value></data>
+  <data name="Monitor_Live" xml:space="preserve"><value>Live</value></data>
+  <data name="Monitor_Memory" xml:space="preserve"><value>Memory</value></data>
+  <data name="Monitor_MemoryValue" xml:space="preserve"><value>{0:N1} of {1:N1} GB used</value></data>
+  <data name="Monitor_Network" xml:space="preserve"><value>Network</value></data>
+  <data name="Monitor_Percent" xml:space="preserve"><value>{0:N0}%</value></data>
+  <data name="Monitor_ProcessCpu" xml:space="preserve"><value>{0:N1}%</value></data>
+  <data name="Monitor_ProcessGroup" xml:space="preserve"><value>{0} ({1})</value></data>
+  <data name="Monitor_Processes" xml:space="preserve"><value>Top processes</value></data>
+  <data name="Monitor_Rate" xml:space="preserve"><value>{0}/s</value></data>
+  <data name="Monitor_Upload" xml:space="preserve"><value>Download, {0}/s upload</value></data>
+  <data name="Monitor_Uptime" xml:space="preserve"><value>Up {0:%h}h {0:%m}m, {1:N0} processes</value></data>
+  <data name="Monitor_UptimeDays" xml:space="preserve"><value>Up {0:%d}d {0:%h}h, {1:N0} processes</value></data>
+  <data name="Monitor_WithBattery" xml:space="preserve"><value>{0}, battery {1}%</value></data>
+  <data name="Nav_Analyze" xml:space="preserve"><value>Analyze</value></data>
+  <data name="Nav_Apps" xml:space="preserve"><value>Apps</value></data>
+  <data name="Nav_Clean" xml:space="preserve"><value>Clean</value></data>
+  <data name="Nav_Monitor" xml:space="preserve"><value>Monitor</value></data>
+  <data name="Size_B" xml:space="preserve"><value>{0:N0} B</value></data>
+  <data name="Size_GB" xml:space="preserve"><value>{0:N2} GB</value></data>
+  <data name="Size_KB" xml:space="preserve"><value>{0:N0} KB</value></data>
+  <data name="Size_MB" xml:space="preserve"><value>{0:N1} MB</value></data>
+  <data name="Size_TB" xml:space="preserve"><value>{0:N2} TB</value></data>
+  <data name="Theme_Dark" xml:space="preserve"><value>Dark</value></data>
+  <data name="Theme_Light" xml:space="preserve"><value>Light</value></data>
+  <data name="Theme_System" xml:space="preserve"><value>Use system setting</value></data>
+</root>
