@@ -12,7 +12,11 @@ public sealed partial class MainWindow : FluentWindow
         DataContext = viewModel;
         InitializeComponent();
         RootNavigation.SetServiceProvider(services);
+#if DEBUG
+        Loaded += (_, _) => RootNavigation.Navigate(Sandbox.StartPage ?? typeof(MonitorPage));
+#else
         Loaded += (_, _) => RootNavigation.Navigate(typeof(MonitorPage));
+#endif
         this.ApplyCultureDirection();
 
         // Below this width the nav pane shows icons only, so pages keep their room.

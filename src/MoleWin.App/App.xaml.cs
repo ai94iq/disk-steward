@@ -31,6 +31,9 @@ public partial class App : Application
             var builder = Host.CreateApplicationBuilder(e.Args);
             builder.Services.AddSerilog();        // uses the static Log.Logger
             builder.Services.AddAppServices(settings);
+#if DEBUG
+            Sandbox.Apply(builder.Services);
+#endif
             _host = builder.Build();
             await _host.StartAsync();
 
