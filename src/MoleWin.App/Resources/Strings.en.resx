@@ -154,6 +154,12 @@
   <data name="Error_LoadFailed" xml:space="preserve"><value>Couldn't load the data.</value></data>
   <data name="Error_Startup" xml:space="preserve"><value>The app couldn't start. Check the log files.</value></data>
   <data name="Error_Unexpected" xml:space="preserve"><value>An unexpected error occurred.</value></data>
+  <data name="Monitor_Awake_1h" xml:space="preserve"><value>1 hour</value></data>
+  <data name="Monitor_Awake_2h" xml:space="preserve"><value>2 hours</value></data>
+  <data name="Monitor_Awake_30m" xml:space="preserve"><value>30 minutes</value></data>
+  <data name="Monitor_Awake_4h" xml:space="preserve"><value>4 hours</value></data>
+  <data name="Monitor_Awake_Off" xml:space="preserve"><value>Off</value></data>
+  <data name="Monitor_Awake_On" xml:space="preserve"><value>Until turned off</value></data>
   <data name="Monitor_Cpu" xml:space="preserve"><value>CPU</value></data>
   <data name="Monitor_CpuDetail" xml:space="preserve"><value>{0}, {1} threads</value></data>
   <data name="Monitor_DeviceDetail" xml:space="preserve"><value>{0}, {1:N0} GB RAM</value></data>
@@ -164,6 +170,7 @@
   <data name="Monitor_Issue_Disk" xml:space="preserve"><value>A drive is almost full</value></data>
   <data name="Monitor_Issue_Memory" xml:space="preserve"><value>Memory almost full</value></data>
   <data name="Monitor_Issue_None" xml:space="preserve"><value>Running smoothly</value></data>
+  <data name="Monitor_KeepAwake" xml:space="preserve"><value>Keep awake</value></data>
   <data name="Monitor_Live" xml:space="preserve"><value>Live</value></data>
   <data name="Monitor_Memory" xml:space="preserve"><value>Memory</value></data>
   <data name="Monitor_MemoryValue" xml:space="preserve"><value>{0:N1} of {1:N1} GB used</value></data>

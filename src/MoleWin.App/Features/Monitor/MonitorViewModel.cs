@@ -12,14 +12,17 @@ public sealed partial class MonitorViewModel : PageViewModel
     private const double Gb = 1L << 30;
     private const double Mb = 1L << 20;
     private readonly IMonitorService _monitor;
+    private readonly IKeepAwake _awake;
     private readonly ILogger _log;
     private readonly Queue<double> _cpuHistory = new();
     private readonly Queue<double> _downHistory = new();
     private CancellationTokenSource? _live;
 
-    public MonitorViewModel(IMonitorService monitor, ILogger<MonitorViewModel> log) : base(log)
+    public MonitorViewModel(IMonitorService monitor, IKeepAwake awake, ILogger<MonitorViewModel> log) : base(log)
     {
         _monitor = monitor;
+        _awake = awake;
+        KeepAwake = KeepAwakeOption.All[0];
         _log = log;
         CpuHistory = [];
         DownHistory = [];
@@ -47,6 +50,19 @@ public sealed partial class MonitorViewModel : PageViewModel
     // Bumps once per sample; the view pulses the live dot on each change.
     [ObservableProperty] public partial int Pulse { get; set; }
     [ObservableProperty] public partial bool IsLive { get; set; }
+
+    public IReadOnlyList<KeepAwakeOption> KeepAwakeOptions => KeepAwakeOption.All;
+
+    // Stops the PC and display from sleeping; the app keeps one setting for all pages.
+    [ObservableProperty] public partial KeepAwakeOption KeepAwake { get; set; }
+
+    partial void OnKeepAwakeChanged(KeepAwakeOption oldValue, KeepAwakeOption newValue)
+    {
+        // The constructor's first assignment (from no value) is not a user choice.
+        if (oldValue is null) return;
+        if (newValue.IsOn) _awake.Start(newValue.Duration);
+        else _awake.Stop();
+    }
 
     public ObservableCollection<DriveRow> Drives { get; } = [];
     public ObservableCollection<ProcessRow> Processes { get; } = [];

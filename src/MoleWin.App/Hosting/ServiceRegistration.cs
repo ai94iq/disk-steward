@@ -49,7 +49,9 @@ public static class ServiceRegistration
         // Singleton so the scan result survives switching pages.
         services.AddSingleton<CleanViewModel>();
         services.AddTransient<MonitorPage>();
-        services.AddTransient<MonitorViewModel>();
+        // Singleton so the keep-awake choice it shows matches what is in effect.
+        services.AddSingleton<MonitorViewModel>();
+        services.AddSingleton<IKeepAwake, KeepAwake>();
         return services;
     }
 

@@ -1,4 +1,5 @@
 using MoleWin.App.Features.Monitor;
+using MoleWin.App.Services;
 using MoleWin.Core.Monitor;
 using NSubstitute;
 
@@ -20,8 +21,25 @@ public sealed class MonitorViewModelTests
         [new ProcessUsage("a", 50, 100L << 20), new ProcessUsage("b", 10, 50L << 20)],
         new HealthReport(health, HealthIssue.None));
 
-    private static MonitorViewModel Create(IMonitorService monitor) =>
-        new(monitor, NullLogger<MonitorViewModel>.Instance) { Interval = TimeSpan.FromMilliseconds(1) };
+    private static MonitorViewModel Create(IMonitorService monitor, IKeepAwake? awake = null) =>
+        new(monitor, awake ?? Substitute.For<IKeepAwake>(), NullLogger<MonitorViewModel>.Instance) { Interval = TimeSpan.FromMilliseconds(1) };
+
+    [Fact]
+    public void Keep_awake_starts_off_and_follows_the_choice()
+    {
+        var awake = Substitute.For<IKeepAwake>();
+        var vm = Create(Monitor(Snapshot()), awake);
+        Assert.False(vm.KeepAwake.IsOn);
+
+        vm.KeepAwake = KeepAwakeOption.All.Single(o => o.Duration == TimeSpan.FromHours(1));
+        awake.Received(1).Start(TimeSpan.FromHours(1));
+
+        vm.KeepAwake = KeepAwakeOption.All.Single(o => o.IsOn && o.Duration is null);
+        awake.Received(1).Start(null);
+
+        vm.KeepAwake = KeepAwakeOption.All[0];
+        awake.Received(1).Stop();
+    }
 
     private static IMonitorService Monitor(params SystemSnapshot[] samples)
     {

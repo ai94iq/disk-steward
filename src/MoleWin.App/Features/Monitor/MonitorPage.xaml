@@ -27,6 +27,9 @@
     <!-- Title and the live heartbeat -->
     <DockPanel Grid.Row="0" Margin="{StaticResource FieldSpacing}">
       <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center" Orientation="Horizontal">
+        <TextBlock Margin="{StaticResource InlineGap}" VerticalAlignment="Center" Style="{StaticResource SecondaryText}" Text="{l:Tr Monitor_KeepAwake}" />
+        <ComboBox MinWidth="180" Margin="{StaticResource CardGap}" VerticalAlignment="Center"
+                  ItemsSource="{Binding KeepAwakeOptions}" SelectedItem="{Binding KeepAwake}" DisplayMemberPath="Label" />
         <StackPanel Orientation="Horizontal" Visibility="{Binding IsLive, Converter={StaticResource BoolVisible}}">
           <Ellipse Width="8" Height="8" Margin="{StaticResource InlineGap}" VerticalAlignment="Center"
                    Fill="{DynamicResource SystemFillColorSuccessBrush}"
