@@ -4,36 +4,84 @@
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       xmlns:l="clr-namespace:MoleWin.App.Localization"
       xmlns:common="clr-namespace:MoleWin.App.Common"
+      xmlns:analyze="clr-namespace:MoleWin.App.Features.Analyze"
       Style="{StaticResource {x:Type Page}}"
       ScrollViewer.CanContentScroll="False">
   <!-- CanContentScroll="False": WPF-UI's NavigationView then skips its own scroll viewer and
-       the list below gets a real height (it wraps the page when this is true, the Page default). -->
+       the tree below gets a real height (it wraps the page when this is true, the Page default). -->
   <Page.Resources>
     <BooleanToVisibilityConverter x:Key="BoolVisible" />
+
+    <!-- The tree drives IsExpanded both ways so opening a node can list it. -->
+    <Style x:Key="NodeContainer" TargetType="TreeViewItem" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+      <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+    </Style>
+
+    <!-- Shows a row only for one kind of node. -->
+    <Style x:Key="DriveRow" TargetType="Grid">
+      <Setter Property="Visibility" Value="Collapsed" />
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding Kind}" Value="{x:Static analyze:FolderKind.Drive}">
+          <Setter Property="Visibility" Value="Visible" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+    <Style x:Key="ItemRow" TargetType="Grid">
+      <Setter Property="Visibility" Value="Visible" />
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding Kind}" Value="{x:Static analyze:FolderKind.Drive}">
+          <Setter Property="Visibility" Value="Collapsed" />
+        </DataTrigger>
+        <DataTrigger Binding="{Binding Kind}" Value="{x:Static analyze:FolderKind.Placeholder}">
+          <Setter Property="Visibility" Value="Collapsed" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+    <Style x:Key="FileIcon" TargetType="common:AppIcon">
+      <Setter Property="Kind" Value="Folder" />
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding Kind}" Value="{x:Static analyze:FolderKind.File}">
+          <Setter Property="Kind" Value="Document" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+    <Style x:Key="LockedTag" TargetType="StackPanel">
+      <Setter Property="Visibility" Value="Collapsed" />
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding IsSystem}" Value="True">
+          <Setter Property="Visibility" Value="Visible" />
+        </DataTrigger>
+        <DataTrigger Binding="{Binding IsProtected}" Value="True">
+          <Setter Property="Visibility" Value="Visible" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+    <!-- System items: Windows uses them. Protected items: MoleWin's own safety rules. -->
+    <Style x:Key="LockedText" TargetType="TextBlock" BasedOn="{StaticResource TertiaryText}">
+      <Setter Property="Text" Value="{l:Tr Analyze_Protected}" />
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding IsSystem}" Value="True">
+          <Setter Property="Text" Value="{l:Tr Analyze_SystemItem}" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
   </Page.Resources>
 
   <Grid Margin="{StaticResource PagePadding}">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
 
-    <!-- Title, where we are, and the way back up -->
-    <DockPanel Grid.Row="0" Margin="{StaticResource FieldSpacing}">
-      <ui:Button DockPanel.Dock="Right" VerticalAlignment="Center" Command="{Binding UpCommand}" Content="{l:Tr Analyze_Up}">
-        <ui:Button.Icon>
-          <common:AppIconElement Kind="ArrowUp" />
-        </ui:Button.Icon>
-      </ui:Button>
-      <StackPanel>
-        <ui:TextBlock FontTypography="Title" Text="{l:Tr Nav_Analyze}" />
-        <TextBlock Style="{StaticResource SecondaryText}" TextTrimming="CharacterEllipsis" Text="{Binding Location, TargetNullValue={l:Tr Analyze_Drives}}" />
-      </StackPanel>
-    </DockPanel>
+    <StackPanel Grid.Row="0" Margin="{StaticResource FieldSpacing}">
+      <ui:TextBlock FontTypography="Title" Text="{l:Tr Nav_Analyze}" />
+      <TextBlock Style="{StaticResource SecondaryText}" TextWrapping="Wrap" Text="{l:Tr Analyze_Hint}" />
+    </StackPanel>
 
-    <!-- Live scan: what it is reading now, how long, how much -->
+    <!-- Live measuring: what it is reading now, how long, how much -->
     <Border Grid.Row="1" Style="{StaticResource Surface}" Visibility="{Binding IsScanning, Converter={StaticResource BoolVisible}}">
       <DockPanel>
         <ui:Button DockPanel.Dock="Right" VerticalAlignment="Center" Command="{Binding StopCommand}" Content="{l:Tr Analyze_Stop}">
@@ -52,105 +100,87 @@
       </DockPanel>
     </Border>
 
-    <Grid Grid.Row="2" Margin="{StaticResource FieldSpacing}">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="2*" />
-        <ColumnDefinition Width="{StaticResource GutterWidth}" />
-        <ColumnDefinition Width="*" />
-      </Grid.ColumnDefinitions>
+    <!-- The full log, only when asked for -->
+    <Expander Grid.Row="2" Margin="{StaticResource FieldSpacing}" Header="{l:Tr Common_ShowDetails}">
+      <ListBox Height="160" ItemsSource="{Binding Activity}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <TextBlock Style="{StaticResource TertiaryText}" TextWrapping="Wrap" Text="{Binding}" />
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Expander>
 
-      <!-- Folder contents, largest first -->
-      <Border Style="{StaticResource Surface}" Padding="{StaticResource ListPadding}" Margin="0">
-        <Grid>
-          <!-- A plain virtualized ItemsControl: WPF-UI's ListView dropped the row's data context
-               after the first value (measured with binding traces), so rows render without it. -->
-          <ItemsControl ItemsSource="{Binding Rows}"
-                        VirtualizingPanel.IsVirtualizing="True"
-                        ScrollViewer.CanContentScroll="True"
-                        Visibility="{Binding State, Converter={StaticResource LoadStateVisible}, ConverterParameter='Idle,Loaded'}">
-            <ItemsControl.Template>
-              <ControlTemplate TargetType="ItemsControl">
-                <ScrollViewer CanContentScroll="True" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                  <ItemsPresenter />
-                </ScrollViewer>
-              </ControlTemplate>
-            </ItemsControl.Template>
-            <ItemsControl.ItemsPanel>
-              <ItemsPanelTemplate>
-                <VirtualizingStackPanel />
-              </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-              <DataTemplate>
-                <Grid Margin="{StaticResource RowSpacing}" Background="Transparent" ToolTip="{Binding Path}">
-                  <Grid.InputBindings>
-                    <MouseBinding Gesture="LeftDoubleClick"
-                                  Command="{Binding DataContext.OpenCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                  CommandParameter="{Binding Path}" />
-                  </Grid.InputBindings>
+    <Border Grid.Row="3" Margin="{StaticResource FieldSpacing}" Padding="{StaticResource ListPadding}" Style="{StaticResource Surface}">
+      <Grid>
+        <TreeView ItemsSource="{Binding Roots}" ItemContainerStyle="{StaticResource NodeContainer}"
+                  VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Standard"
+                  Visibility="{Binding State, Converter={StaticResource LoadStateVisible}, ConverterParameter='Idle,Loaded'}">
+          <TreeView.ItemTemplate>
+            <HierarchicalDataTemplate ItemsSource="{Binding Children}" ItemContainerStyle="{StaticResource NodeContainer}">
+              <Grid>
+                <!-- A drive: what it holds against what it can hold -->
+                <Grid Style="{StaticResource DriveRow}" Margin="{StaticResource RowSpacing}">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="{StaticResource NameColumnWidth}" />
+                    <ColumnDefinition Width="{StaticResource BarColumnWidth}" />
+                    <ColumnDefinition Width="Auto" />
+                  </Grid.ColumnDefinitions>
+                  <common:AppIcon Width="24" Height="24" Margin="{StaticResource InlineGap}" Kind="HardDrive" />
+                  <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock FontWeight="SemiBold" Text="{Binding Name}" />
+                    <TextBlock Style="{StaticResource TertiaryText}" Text="{Binding FreeText}" />
+                  </StackPanel>
+                  <ProgressBar Grid.Column="2" Height="8" VerticalAlignment="Center" Maximum="100"
+                               Foreground="{Binding Level, Converter={StaticResource LoadLevelBrush}}"
+                               common:Motion.Value="{Binding UsedPercent}" />
+                  <TextBlock Grid.Column="3" Margin="{StaticResource InlineStart}" VerticalAlignment="Center"
+                             FontWeight="SemiBold" Text="{Binding SizeText}" />
+                </Grid>
+
+                <!-- A folder or file: tick it to remove, unless Windows needs it -->
+                <Grid Style="{StaticResource ItemRow}" Margin="{StaticResource RowSpacing}">
                   <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="{StaticResource NameColumnWidth}" />
+                    <ColumnDefinition Width="{StaticResource BarColumnWidth}" />
                     <ColumnDefinition Width="{StaticResource SizeColumnWidth}" />
-                    <ColumnDefinition Width="Auto" />
                   </Grid.ColumnDefinitions>
                   <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsSelected}" IsEnabled="{Binding CanSelect}" />
-                  <common:AppIcon Grid.Column="1" Width="20" Height="20" Margin="{StaticResource InlineGap}" Kind="Folder"
-                                  Visibility="{Binding IsDirectory, Converter={StaticResource BoolVisible}}" />
+                  <common:AppIcon Grid.Column="1" Width="18" Height="18" Margin="{StaticResource InlineGap}" Style="{StaticResource FileIcon}" />
                   <StackPanel Grid.Column="2" VerticalAlignment="Center">
                     <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Name}" />
-                    <TextBlock Style="{StaticResource TertiaryText}" Text="{l:Tr Analyze_Protected}"
-                               Visibility="{Binding IsProtected, Converter={StaticResource BoolVisible}}" />
+                    <StackPanel Orientation="Horizontal" Style="{StaticResource LockedTag}" ToolTip="{l:Tr Analyze_SystemTip}">
+                      <common:AppIcon Width="14" Height="14" Margin="{StaticResource InlineGap}" Kind="Shield"
+                                      Foreground="{DynamicResource SystemFillColorCautionBrush}" />
+                      <TextBlock Style="{StaticResource LockedText}" />
+                    </StackPanel>
                   </StackPanel>
-                  <ProgressBar Grid.Column="3" Height="6" Margin="{StaticResource CardGap}" VerticalAlignment="Center"
-                               Maximum="100" common:Motion.Value="{Binding Share}" />
+                  <ProgressBar Grid.Column="3" Height="6" VerticalAlignment="Center" Maximum="100" common:Motion.Value="{Binding Share}" />
                   <Grid Grid.Column="4" VerticalAlignment="Center">
                     <TextBlock HorizontalAlignment="Right" FontWeight="SemiBold" Text="{Binding SizeText}" />
                     <TextBlock HorizontalAlignment="Right" Style="{StaticResource TertiaryText}" Text="{l:Tr Analyze_Measuring}"
                                Visibility="{Binding IsMeasuring, Converter={StaticResource BoolVisible}}" />
                   </Grid>
-                  <ui:Button Grid.Column="5" Margin="{StaticResource InlineStart}" Padding="6" Appearance="Transparent"
-                             Command="{Binding DataContext.OpenCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                             CommandParameter="{Binding Path}"
-                             Visibility="{Binding IsDirectory, Converter={StaticResource BoolVisible}}">
-                    <common:AppIcon Width="16" Height="16" Kind="ChevronRight" IsDirectional="True" />
-                  </ui:Button>
                 </Grid>
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-          </ItemsControl>
-          <common:LoadStateOverlay State="{Binding State}" ErrorMessage="{Binding ErrorMessage}" RetryCommand="{Binding ReloadCommand}" />
-        </Grid>
-      </Border>
-
-      <!-- What the scan and removals did, newest first -->
-      <Border Grid.Column="2" Style="{StaticResource Surface}" Margin="0">
-        <DockPanel>
-          <TextBlock DockPanel.Dock="Top" Margin="{StaticResource FieldSpacing}" Style="{StaticResource SecondaryText}" Text="{l:Tr Analyze_Activity}" />
-          <ListBox ItemsSource="{Binding Activity}" VirtualizingPanel.IsVirtualizing="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-            <ListBox.ItemTemplate>
-              <DataTemplate>
-                <TextBlock Style="{StaticResource TertiaryText}" TextWrapping="Wrap" Text="{Binding}" />
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>
-        </DockPanel>
-      </Border>
-    </Grid>
+              </Grid>
+            </HierarchicalDataTemplate>
+          </TreeView.ItemTemplate>
+        </TreeView>
+        <common:LoadStateOverlay State="{Binding State}" ErrorMessage="{Binding ErrorMessage}" RetryCommand="{Binding ReloadCommand}" />
+      </Grid>
+    </Border>
 
     <!-- The only way anything is removed: ticked rows, this button, then a confirmation -->
-    <DockPanel Grid.Row="3">
+    <DockPanel Grid.Row="4">
       <ui:Button DockPanel.Dock="Right" Appearance="Danger" Command="{Binding RecycleSelectedCommand}" Content="{l:Tr Analyze_Recycle}">
         <ui:Button.Icon>
           <common:AppIconElement Kind="Delete" />
         </ui:Button.Icon>
       </ui:Button>
-      <StackPanel VerticalAlignment="Center">
-        <TextBlock FontWeight="SemiBold" Text="{Binding SelectedText}" />
-        <TextBlock Style="{StaticResource TertiaryText}" Text="{l:Tr Analyze_Hint}" />
-      </StackPanel>
+      <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding SelectedText}" />
     </DockPanel>
   </Grid>
 </Page>

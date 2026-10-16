@@ -15,9 +15,10 @@
   <data name="Analyze_Activity" xml:space="preserve"><value>النشاط</value></data>
   <data name="Analyze_Confirm" xml:space="preserve"><value>نقل {0} عنصر ({1}) إلى سلة المحذوفات؟ لا يُحذف شيء نهائيًا، ويمكنك استعادتها من سلة المحذوفات.</value></data>
   <data name="Analyze_Counters" xml:space="preserve"><value>{0:N0} ملف، {1:N0} مجلد، {2}</value></data>
+  <data name="Analyze_DriveFree" xml:space="preserve"><value>{0} متاحة من {1}</value></data>
   <data name="Analyze_Drives" xml:space="preserve"><value>هذا الحاسوب</value></data>
   <data name="Analyze_Elapsed" xml:space="preserve"><value>{0:%m}:{0:ss}</value></data>
-  <data name="Analyze_Hint" xml:space="preserve"><value>حدد ما تريد إزالته. لا يُزال شيء قبل تأكيدك، ويذهب إلى سلة المحذوفات.</value></data>
+  <data name="Analyze_Hint" xml:space="preserve"><value>وسّع قرصًا لترى ما يشغل المساحة. حدد ما تريد إزالته؛ لا يُزال شيء قبل تأكيدك، ويذهب إلى سلة المحذوفات.</value></data>
   <data name="Analyze_LogDone" xml:space="preserve"><value>انتهى فحص {0} في {1:%m}:{1:ss}، {2:N0} ملف</value></data>
   <data name="Analyze_LogFailed" xml:space="preserve"><value>تعذر نقل {0}: {1}</value></data>
   <data name="Analyze_LogMeasured" xml:space="preserve"><value>{0}: {1}</value></data>
@@ -32,6 +33,8 @@
   <data name="Analyze_Recycle" xml:space="preserve"><value>نقل إلى سلة المحذوفات</value></data>
   <data name="Analyze_Selected" xml:space="preserve"><value>{0} محدد، {1}</value></data>
   <data name="Analyze_Stop" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="Analyze_SystemItem" xml:space="preserve"><value>يحتاجه Windows</value></data>
+  <data name="Analyze_SystemTip" xml:space="preserve"><value>يستخدم Windows هذا الملف أو المجلد. لن يزيله MoleWin.</value></data>
   <data name="Analyze_Up" xml:space="preserve"><value>للأعلى</value></data>
   <data name="App_AlreadyRunning" xml:space="preserve"><value>التطبيق يعمل بالفعل.</value></data>
   <data name="App_Name" xml:space="preserve"><value>MoleWin</value></data>

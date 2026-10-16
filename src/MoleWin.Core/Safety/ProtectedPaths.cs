@@ -6,6 +6,10 @@ public sealed class ProtectedPaths(ProtectedRoots roots)
 {
     private static readonly string[] VolumeSystemFolders = ["$Recycle.Bin", "System Volume Information"];
 
+    // Files Windows keeps at a drive root to page, hibernate, swap and boot. Removing them
+    // breaks the system or frees nothing until reboot; never offered.
+    private static readonly string[] VolumeSystemFiles = ["pagefile.sys", "hiberfil.sys", "swapfile.sys", "bootmgr", "BOOTNXT"];
+
     private readonly string[] _withContents =
         [Normalize(roots.Windows), Normalize(roots.ProgramData), Normalize(roots.AppOwnData), .. roots.ProgramFiles.Select(Normalize)];
 
@@ -25,8 +29,12 @@ public sealed class ProtectedPaths(ProtectedRoots roots)
         var root = Normalize(Path.GetPathRoot(full) ?? "");
         if (full.Equals(root, StringComparison.OrdinalIgnoreCase)) return true;
 
-        var firstSegment = full[root.Length..].TrimStart(Path.DirectorySeparatorChar).Split(Path.DirectorySeparatorChar)[0];
-        if (VolumeSystemFolders.Contains(firstSegment, StringComparer.OrdinalIgnoreCase)) return true;
+        var segments = full[root.Length..].TrimStart(Path.DirectorySeparatorChar).Split(Path.DirectorySeparatorChar);
+        if (VolumeSystemFolders.Contains(segments[0], StringComparer.OrdinalIgnoreCase)) return true;
+        if (segments.Length == 1
+            && (VolumeSystemFiles.Contains(segments[0], StringComparer.OrdinalIgnoreCase)
+                || segments[0].StartsWith("DumpStack.log", StringComparison.OrdinalIgnoreCase)))
+            return true;
 
         return _exactOnly.Any(p => full.Equals(p, StringComparison.OrdinalIgnoreCase))
             || _withContents.Any(p => p.Length > 0 && IsSameOrInside(full, p));

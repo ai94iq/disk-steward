@@ -31,6 +31,20 @@ public sealed class FolderScannerTests : IDisposable
     }
 
     [Fact]
+    public void List_children_marks_the_system_attribute()
+    {
+        File("normal.bin", 1);
+        File("flagged.bin", 1);
+        System.IO.File.SetAttributes(Path.Combine(_root, "flagged.bin"), FileAttributes.System);
+
+        var children = _scanner.ListChildren(_root);
+        System.IO.File.SetAttributes(Path.Combine(_root, "flagged.bin"), FileAttributes.Normal);
+
+        Assert.True(children.Single(c => c.Name == "flagged.bin").IsSystem);
+        Assert.False(children.Single(c => c.Name == "normal.bin").IsSystem);
+    }
+
+    [Fact]
     public void Measure_sums_every_file_below_and_counts_progress()
     {
         File(Path.Combine("x", "1.bin"), 100);

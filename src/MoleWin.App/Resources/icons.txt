@@ -27,6 +27,7 @@ eye_off
 filter
 folder
 globe
+hard_drive
 heart_pulse
 home
 image

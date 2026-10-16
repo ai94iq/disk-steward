@@ -7,9 +7,9 @@ using MoleWin.Core.Safety;
 
 namespace MoleWin.App.Features.Analyze;
 
-// Browse folders by size, tick what to remove, confirm, and it goes to the Recycle Bin.
-// Opening a folder lists it at once; folder sizes then arrive as background measuring
-// finishes. Nothing is ever removed without the tick and the confirmation.
+// A tree of drives and folders by size. Expanding a node lists it at once; folder sizes then
+// arrive from background measuring. Ticked items go to the Recycle Bin after a confirmation;
+// drives, protected folders and system files can never be ticked.
 public sealed partial class AnalyzeViewModel : PageViewModel
 {
     private const int MaxActivity = 400;
@@ -19,7 +19,9 @@ public sealed partial class AnalyzeViewModel : PageViewModel
     private readonly SafeRemover _remover;
     private readonly IDialogService _dialogs;
     private readonly ILogger _log;
-    private CancellationTokenSource? _scan;
+    private readonly HashSet<FolderNode> _selected = [];
+    private CancellationTokenSource _stop = new();
+    private int _measuring;
 
     public AnalyzeViewModel(IFolderScanner scanner, ProtectedPaths rules, SafeRemover remover, IDialogService dialogs,
         ILogger<AnalyzeViewModel> log) : base(log)
@@ -29,13 +31,12 @@ public sealed partial class AnalyzeViewModel : PageViewModel
         _remover = remover;
         _dialogs = dialogs;
         _log = log;
+        SelectedText = Tr.Format("Analyze_Selected", 0, SizeText.Format(0));
     }
 
     // How often counters and arriving sizes are pushed to the screen.
     public TimeSpan RefreshInterval { get; init; } = TimeSpan.FromMilliseconds(200);
 
-    // Null is the drive list.
-    [ObservableProperty] public partial string? Location { get; set; }
     [ObservableProperty] public partial bool IsScanning { get; set; }
     [ObservableProperty] public partial string? CurrentFolder { get; set; }
     [ObservableProperty] public partial string? ElapsedText { get; set; }
@@ -48,40 +49,53 @@ public sealed partial class AnalyzeViewModel : PageViewModel
     [ObservableProperty] public partial long SelectedBytes { get; set; }
     [ObservableProperty] public partial string? SelectedText { get; set; }
 
-    public ObservableCollection<AnalyzeRow> Rows { get; } = [];
+    public ObservableCollection<FolderNode> Roots { get; } = [];
 
     // Newest first.
     public ObservableCollection<string> Activity { get; } = [];
 
     protected override async Task<bool> LoadCoreAsync(CancellationToken ct)
     {
-        await ShowAsync(Location);
-        return true;
+        var drives = await Task.Run(_scanner.ListRoots, ct);
+        Roots.Clear();
+        foreach (var drive in drives) Roots.Add(new FolderNode(drive, FolderKind.Drive, null, _rules.IsProtected(drive.Path), ExpandAsync));
+        return Roots.Count > 0;
     }
 
-    [RelayCommand]
-    private Task OpenAsync(string? path) =>
-        path is null || Directory.Exists(path) ? ShowAsync(path) : Task.CompletedTask;
-
-    [RelayCommand]
-    private Task UpAsync()
+    // Lists a drive or folder the first time it opens, then measures its subfolders.
+    public async Task ExpandAsync(FolderNode node)
     {
-        if (Location is null) return Task.CompletedTask;
-        // The parent of a drive root is null: the drive list.
-        return ShowAsync(Path.GetDirectoryName(Location));
+        if (node.IsLoaded) return;
+        node.IsLoaded = true;
+        var entries = await Task.Run(() => _scanner.ListChildren(node.Path));
+        node.Children.Clear();
+        foreach (var entry in entries)
+        {
+            var child = new FolderNode(entry, entry.IsDirectory ? FolderKind.Folder : FolderKind.File, node,
+                _rules.IsProtected(entry.Path), ExpandAsync);
+            child.PropertyChanged += OnNodeChanged;
+            if (entry.IsDirectory) child.IsMeasuring = true;
+            node.Children.Add(child);
+        }
+        Resort(node);
+        await MeasureAsync(node);
     }
 
     [RelayCommand]
-    private void Stop() => _scan?.Cancel();
+    private void Stop()
+    {
+        _stop.Cancel();
+        _stop = new CancellationTokenSource();
+    }
 
     [RelayCommand(CanExecute = nameof(CanRecycle))]
     private async Task RecycleSelectedAsync()
     {
-        var picked = Rows.Where(r => r.IsSelected).ToList();
-        var confirmed = await _dialogs.ConfirmAsync(Tr.Format("Analyze_Confirm", picked.Count, SizeText.Format(picked.Sum(r => r.Size))));
+        var picked = TopSelected();
+        var confirmed = await _dialogs.ConfirmAsync(Tr.Format("Analyze_Confirm", picked.Count, SizeText.Format(picked.Sum(n => n.Size))));
         if (!confirmed) return;
 
-        var results = await Task.Run(() => _remover.Recycle(picked.Select(r => r.Path)));
+        var results = await Task.Run(() => _remover.Recycle(picked.Select(n => n.Path)));
         foreach (var result in results)
         {
             _log.LogInformation("Recycle {Path}: {Outcome} {Error}", result.Path, result.Outcome, result.Error);
@@ -94,129 +108,120 @@ public sealed partial class AnalyzeViewModel : PageViewModel
                 _ => Tr.Format("Analyze_LogFailed", result.Path, result.Error),
             });
         }
-        await ShowAsync(Location);
+
+        foreach (var node in picked) Forget(node);
+        foreach (var parent in picked.Select(n => n.Parent).OfType<FolderNode>().Distinct())
+        {
+            parent.IsLoaded = false;
+            await ExpandAsync(parent);
+        }
     }
 
     private bool CanRecycle() => SelectedCount > 0;
 
-    private async Task ShowAsync(string? path)
+    // Folders are measured in parallel off the UI thread; sizes and counters are applied
+    // here, on one thread, every RefreshInterval.
+    private async Task MeasureAsync(FolderNode node)
     {
-        // A new folder supersedes the scan in progress. The sources hold no timers, so they
-        // are left to the GC rather than disposed while a cancelled scan may still read them.
-        _scan?.Cancel();
-        _scan = new CancellationTokenSource();
-        var ct = _scan.Token;
-        Location = path;
-        ClearRows();
-
-        var entries = await Task.Run(() => path is null ? _scanner.ListRoots() : _scanner.ListChildren(path));
-        if (ct.IsCancellationRequested) return;
-        foreach (var entry in entries)
-        {
-            var row = new AnalyzeRow(entry.Name, entry.Path, entry.IsDirectory, _rules.IsProtected(entry.Path));
-            row.PropertyChanged += OnRowChanged;
-            if (entry.Size is { } size) SetSize(row, size);
-            else row.IsMeasuring = true;
-            Rows.Add(row);
-        }
-        Resort();
-        if (path is not null) await MeasureAsync(path, ct);
-    }
-
-    // Folders are measured in parallel off the UI thread; their sizes and the counters are
-    // applied here, on one thread, every RefreshInterval.
-    private async Task MeasureAsync(string path, CancellationToken ct)
-    {
-        var pending = Rows.Where(r => r.IsMeasuring).ToList();
+        var pending = node.Children.Where(c => c.IsMeasuring).ToList();
+        if (pending.Count == 0) return;
+        var ct = _stop.Token;
         var progress = new ScanProgress();
-        var arrived = new ConcurrentQueue<(AnalyzeRow Row, long Size)>();
+        var arrived = new ConcurrentQueue<(FolderNode Node, long Size)>();
         var clock = Stopwatch.StartNew();
+        _measuring++;
         IsScanning = true;
-        Log(Tr.Format("Analyze_LogScan", path));
+        Log(Tr.Format("Analyze_LogScan", node.Path));
 
         var work = Task.Run(() => Parallel.ForEach(pending, new ParallelOptions { MaxDegreeOfParallelism = Parallelism, CancellationToken = ct },
-            row => arrived.Enqueue((row, _scanner.Measure(row.Path, progress, ct)))), ct);
+            child => arrived.Enqueue((child, _scanner.Measure(child.Path, progress, ct)))), ct);
         try
         {
             while (true)
             {
                 var finished = work.IsCompleted;
-                Apply(arrived);
-                Report(progress, clock.Elapsed);
+                Apply(node, arrived);
+                CurrentFolder = progress.CurrentFolder;
+                ElapsedText = Tr.Format("Analyze_Elapsed", clock.Elapsed);
+                CountersText = Tr.Format("Analyze_Counters", progress.Files, progress.Folders, SizeText.Format(progress.Bytes));
                 if (finished) break;
                 await Task.Delay(RefreshInterval, ct);
             }
             await work;
-            Log(Tr.Format("Analyze_LogDone", path, clock.Elapsed, progress.Files));
+            Log(Tr.Format("Analyze_LogDone", node.Path, clock.Elapsed, progress.Files));
         }
         catch (OperationCanceledException)
         {
-            Log(Tr.Format("Analyze_LogStopped", path));
+            Log(Tr.Format("Analyze_LogStopped", node.Path));
         }
         finally
         {
-            IsScanning = false;
-            CurrentFolder = null;
-            foreach (var row in pending) row.IsMeasuring = false;
+            foreach (var child in pending) child.IsMeasuring = false;
+            if (--_measuring == 0)
+            {
+                IsScanning = false;
+                CurrentFolder = null;
+            }
         }
     }
 
-    private void Apply(ConcurrentQueue<(AnalyzeRow Row, long Size)> arrived)
+    private void Apply(FolderNode node, ConcurrentQueue<(FolderNode Node, long Size)> arrived)
     {
         var any = false;
         while (arrived.TryDequeue(out var item))
         {
-            item.Row.IsMeasuring = false;
-            SetSize(item.Row, item.Size);
-            Log(Tr.Format("Analyze_LogMeasured", item.Row.Name, item.Row.SizeText));
+            item.Node.IsMeasuring = false;
+            item.Node.SetSize(item.Size);
+            Log(Tr.Format("Analyze_LogMeasured", item.Node.Name, item.Node.SizeText));
             any = true;
         }
-        if (any) Resort();
+        if (any) Resort(node);
     }
 
-    private void Report(ScanProgress progress, TimeSpan elapsed)
+    // Largest first, and bars relative to the largest sibling.
+    private static void Resort(FolderNode node)
     {
-        CurrentFolder = progress.CurrentFolder;
-        ElapsedText = Tr.Format("Analyze_Elapsed", elapsed);
-        CountersText = Tr.Format("Analyze_Counters", progress.Files, progress.Folders, SizeText.Format(progress.Bytes));
-    }
-
-    private static void SetSize(AnalyzeRow row, long size)
-    {
-        row.Size = size;
-        row.SizeText = SizeText.Format(size);
-    }
-
-    // Largest first, and bars relative to the largest.
-    private void Resort()
-    {
-        var sorted = Rows.OrderByDescending(r => r.Size).ThenBy(r => r.Name, StringComparer.CurrentCultureIgnoreCase).ToList();
+        var children = node.Children;
+        var sorted = children.OrderByDescending(c => c.Size).ThenBy(c => c.Name, StringComparer.CurrentCultureIgnoreCase).ToList();
         for (var i = 0; i < sorted.Count; i++)
         {
-            var at = Rows.IndexOf(sorted[i]);
-            if (at != i) Rows.Move(at, i);
+            var at = children.IndexOf(sorted[i]);
+            if (at != i) children.Move(at, i);
         }
-        var largest = Rows.Count > 0 ? Rows.Max(r => r.Size) : 0;
-        foreach (var row in Rows) row.Share = largest > 0 ? row.Size * 100.0 / largest : 0;
+        var largest = children.Count > 0 ? children.Max(c => c.Size) : 0;
+        foreach (var child in children) child.Share = largest > 0 ? child.Size * 100.0 / largest : 0;
     }
 
-    private void ClearRows()
+    private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
     {
-        foreach (var row in Rows) row.PropertyChanged -= OnRowChanged;
-        Rows.Clear();
+        if (sender is not FolderNode node || e.PropertyName is not (nameof(FolderNode.IsSelected) or nameof(FolderNode.Size))) return;
+        if (node.IsSelected) _selected.Add(node);
+        else _selected.Remove(node);
         UpdateSelection();
     }
 
-    private void OnRowChanged(object? sender, PropertyChangedEventArgs e)
+    private void Forget(FolderNode node)
     {
-        if (e.PropertyName is nameof(AnalyzeRow.IsSelected) or nameof(AnalyzeRow.Size)) UpdateSelection();
+        node.PropertyChanged -= OnNodeChanged;
+        _selected.Remove(node);
+        foreach (var child in node.Children) Forget(child);
+        UpdateSelection();
+    }
+
+    // A ticked folder covers anything ticked inside it.
+    private List<FolderNode> TopSelected() =>
+        [.. _selected.Where(n => !Ancestors(n).Any(_selected.Contains))];
+
+    private static IEnumerable<FolderNode> Ancestors(FolderNode node)
+    {
+        for (var parent = node.Parent; parent is not null; parent = parent.Parent) yield return parent;
     }
 
     private void UpdateSelection()
     {
-        var picked = Rows.Where(r => r.IsSelected).ToList();
+        var picked = TopSelected();
         SelectedCount = picked.Count;
-        SelectedBytes = picked.Sum(r => r.Size);
+        SelectedBytes = picked.Sum(n => n.Size);
         SelectedText = Tr.Format("Analyze_Selected", SelectedCount, SizeText.Format(SelectedBytes));
     }
 

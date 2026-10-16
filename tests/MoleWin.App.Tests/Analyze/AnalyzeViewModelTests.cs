@@ -15,7 +15,8 @@ public sealed class AnalyzeViewModelTests : IDisposable
 
     public AnalyzeViewModelTests()
     {
-        _scanner.ListRoots().Returns([new FolderEntry(@"C:\", @"C:\", true, 500L << 30)]);
+        // One "drive": the temp folder, 400 of 1000 bytes used.
+        _scanner.ListRoots().Returns([new FolderEntry("T:", _root, true, 400, 1000)]);
     }
 
     public void Dispose() => Directory.Delete(_root, recursive: true);
@@ -34,63 +35,101 @@ public sealed class AnalyzeViewModelTests : IDisposable
             NullLogger<AnalyzeViewModel>.Instance) { RefreshInterval = TimeSpan.FromMilliseconds(1) };
     }
 
-    private void Folder(params (string Path, long Size)[] dirs)
+    private void Children(params FolderEntry[] entries)
     {
-        _scanner.ListChildren(_root).Returns([.. dirs.Select(d => new FolderEntry(Path.GetFileName(d.Path), d.Path, true, null))]);
-        foreach (var (path, size) in dirs)
-            _scanner.Measure(path, Arg.Any<ScanProgress>(), Arg.Any<CancellationToken>()).Returns(size);
+        _scanner.ListChildren(_root).Returns(entries);
+        foreach (var e in entries.Where(e => e.IsDirectory))
+            _scanner.Measure(e.Path, Arg.Any<ScanProgress>(), Arg.Any<CancellationToken>()).Returns(e.Size ?? 0);
+    }
+
+    private static FolderEntry Dir(string path, long measured) => new(Path.GetFileName(path), path, true, measured);
+
+    private async Task<FolderNode> OpenDrive(AnalyzeViewModel vm)
+    {
+        await vm.EnsureLoadedAsync();
+        var drive = Assert.Single(vm.Roots);
+        await vm.ExpandAsync(drive);
+        return drive;
     }
 
     [Fact]
-    public async Task Opening_shows_the_drives_without_measuring_anything()
+    public async Task Drives_have_no_tick_box_and_show_used_share_of_capacity()
     {
         var vm = Create();
 
         await vm.EnsureLoadedAsync();
 
-        Assert.Equal(@"C:\", Assert.Single(vm.Rows).Path);
+        var drive = Assert.Single(vm.Roots);
+        Assert.Equal(FolderKind.Drive, drive.Kind);
+        Assert.False(drive.CanSelect);
+        Assert.Equal(40, drive.UsedPercent);
         _scanner.DidNotReceiveWithAnyArgs().Measure(default!, default!, TestContext.Current.CancellationToken);
     }
 
     [Fact]
-    public async Task A_folder_lists_children_then_sorts_them_by_measured_size()
+    public async Task Expanding_a_folder_lists_children_once_and_measures_them_largest_first()
     {
-        var small = Child("small");
-        var big = Child("big");
-        Folder((small, 10), (big, 1000));
+        Children(Dir(Child("small"), 10), Dir(Child("big"), 1000));
         var vm = Create();
+        var drive = await OpenDrive(vm);
 
-        await vm.OpenCommand.ExecuteAsync(_root);
+        await vm.ExpandAsync(drive);
 
-        Assert.Equal(["big", "small"], vm.Rows.Select(r => r.Name));
-        Assert.Equal(100, vm.Rows[0].Share);
+        _scanner.Received(1).ListChildren(_root);
+        Assert.Equal(["big", "small"], drive.Children.Select(c => c.Name));
+        Assert.Equal(100, drive.Children[0].Share);
         Assert.False(vm.IsScanning);
-        Assert.NotEmpty(vm.Activity);
     }
 
     [Fact]
-    public async Task Protected_rows_cannot_be_selected()
+    public async Task System_items_cannot_be_ticked()
+    {
+        Children(new FolderEntry("pagefile.sys", Path.Combine(_root, "pagefile.sys"), false, 5, IsSystem: true));
+        var vm = Create();
+        var drive = await OpenDrive(vm);
+
+        var file = Assert.Single(drive.Children);
+        file.IsSelected = true;
+
+        Assert.False(file.CanSelect);
+        Assert.False(file.IsSelected);
+    }
+
+    [Fact]
+    public async Task Protected_folders_cannot_be_ticked()
     {
         var keep = Child("keep");
-        Folder((keep, 10));
+        Children(Dir(keep, 10));
         var vm = Create(keep);
-        await vm.OpenCommand.ExecuteAsync(_root);
+        var drive = await OpenDrive(vm);
 
-        vm.Rows[0].IsSelected = true;
+        drive.Children[0].IsSelected = true;
 
-        Assert.False(vm.Rows[0].IsSelected);
+        Assert.False(drive.Children[0].IsSelected);
         Assert.False(vm.RecycleSelectedCommand.CanExecute(null));
+    }
+
+    [Fact]
+    public async Task Ticks_anywhere_in_the_tree_add_up()
+    {
+        Children(Dir(Child("a"), 10), Dir(Child("b"), 30));
+        var vm = Create();
+        var drive = await OpenDrive(vm);
+
+        foreach (var node in drive.Children) node.IsSelected = true;
+
+        Assert.Equal(2, vm.SelectedCount);
+        Assert.Equal(40, vm.SelectedBytes);
     }
 
     [Fact]
     public async Task Nothing_is_recycled_when_the_user_declines()
     {
-        var cache = Child("cache");
-        Folder((cache, 10));
+        Children(Dir(Child("cache"), 10));
         _dialogs.ConfirmAsync(Arg.Any<string>()).Returns(false);
         var vm = Create();
-        await vm.OpenCommand.ExecuteAsync(_root);
-        vm.Rows[0].IsSelected = true;
+        var drive = await OpenDrive(vm);
+        drive.Children[0].IsSelected = true;
 
         await vm.RecycleSelectedCommand.ExecuteAsync(null);
 
@@ -101,45 +140,16 @@ public sealed class AnalyzeViewModelTests : IDisposable
     public async Task Confirmed_selection_goes_to_the_recycle_bin_and_only_that()
     {
         var cache = Child("cache");
-        var keep = Child("other");
-        Folder((cache, 10), (keep, 5));
+        var other = Child("other");
+        Children(Dir(cache, 10), Dir(other, 5));
         _dialogs.ConfirmAsync(Arg.Any<string>()).Returns(true);
         var vm = Create();
-        await vm.OpenCommand.ExecuteAsync(_root);
-        vm.Rows.Single(r => r.Name == "cache").IsSelected = true;
+        var drive = await OpenDrive(vm);
+        drive.Children.Single(c => c.Name == "cache").IsSelected = true;
 
         await vm.RecycleSelectedCommand.ExecuteAsync(null);
 
         _bin.Received(1).MoveToRecycleBin(cache);
-        _bin.DidNotReceive().MoveToRecycleBin(keep);
-    }
-
-    [Fact]
-    public async Task Selection_totals_follow_the_ticks()
-    {
-        var a = Child("a");
-        var b = Child("b");
-        Folder((a, 10), (b, 30));
-        var vm = Create();
-        await vm.OpenCommand.ExecuteAsync(_root);
-
-        foreach (var row in vm.Rows) row.IsSelected = true;
-
-        Assert.Equal(2, vm.SelectedCount);
-        Assert.Equal(40, vm.SelectedBytes);
-        Assert.True(vm.RecycleSelectedCommand.CanExecute(null));
-    }
-
-    [Fact]
-    public async Task Up_from_a_drive_root_returns_to_the_drive_list()
-    {
-        _scanner.ListChildren(@"C:\").Returns([]);
-        var vm = Create();
-        await vm.OpenCommand.ExecuteAsync(@"C:\");
-
-        await vm.UpCommand.ExecuteAsync(null);
-
-        Assert.Null(vm.Location);
-        Assert.Equal(@"C:\", Assert.Single(vm.Rows).Path);
+        _bin.DidNotReceive().MoveToRecycleBin(other);
     }
 }

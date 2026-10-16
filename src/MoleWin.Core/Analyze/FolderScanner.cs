@@ -30,7 +30,7 @@ public sealed class FolderScanner : IFolderScanner
     public IReadOnlyList<FolderEntry> ListRoots() =>
         DriveInfo.GetDrives()
             .Where(d => d.IsReady && d.DriveType == DriveType.Fixed)
-            .Select(d => new FolderEntry(d.Name, d.RootDirectory.FullName, true, d.TotalSize - d.TotalFreeSpace))
+            .Select(d => new FolderEntry(d.Name, d.RootDirectory.FullName, true, d.TotalSize - d.TotalFreeSpace, d.TotalSize))
             .ToList();
 
     public IReadOnlyList<FolderEntry> ListChildren(string folder)
@@ -38,7 +38,8 @@ public sealed class FolderScanner : IFolderScanner
         var entries = new FileSystemEnumerable<FolderEntry>(
             folder,
             (ref FileSystemEntry e) => new FolderEntry(
-                e.FileName.ToString(), e.ToFullPath(), e.IsDirectory, e.IsDirectory ? null : SizeOnDisk(ref e)),
+                e.FileName.ToString(), e.ToFullPath(), e.IsDirectory, e.IsDirectory ? null : SizeOnDisk(ref e),
+                IsSystem: (e.Attributes & FileAttributes.System) != 0),
             Options);
         return entries.ToList();
     }

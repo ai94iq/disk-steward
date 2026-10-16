@@ -43,6 +43,20 @@ public sealed class ProtectedPathsTests
     public void Ordinary_content_is_not_protected(string path) =>
         Assert.False(Rules.IsProtected(path));
 
+    [Theory]
+    [InlineData(@"C:\pagefile.sys")]
+    [InlineData(@"C:\hiberfil.sys")]
+    [InlineData(@"C:\swapfile.sys")]
+    [InlineData(@"C:\DumpStack.log.tmp")]
+    [InlineData(@"C:\bootmgr")]
+    [InlineData(@"D:\pagefile.sys")]
+    public void Root_system_files_are_protected(string path) =>
+        Assert.True(Rules.IsProtected(path));
+
+    [Fact]
+    public void A_file_named_like_a_system_file_away_from_the_root_is_not() =>
+        Assert.False(Rules.IsProtected(@"D:\Backups\pagefile.sys"));
+
     [Fact]
     public void Dot_segments_cannot_escape_into_a_protected_root() =>
         Assert.True(Rules.IsProtected(@"C:\Users\me\Desktop\..\..\..\Windows\System32"));
