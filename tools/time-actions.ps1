@@ -3,8 +3,10 @@
 # Each timing runs from the confirm click to the moment the screen shows the result. "UI max"
 # is the slowest UI Automation reply during the wait; the app answers on its UI thread, so a
 # high value means the window was frozen.
-# Run exactly: pwsh tools/time-actions.ps1 -Sandbox <folder>
-param([Parameter(Mandatory)][string]$Sandbox)
+# -WindowsBin sends recycled sandbox items to the real Recycle Bin (sandbox files only), so
+# the time includes Windows' own recycling; without it they go to <Sandbox>\RecycleBin.
+# Run exactly: pwsh tools/time-actions.ps1 -Sandbox <folder> [-WindowsBin]
+param([Parameter(Mandatory)][string]$Sandbox, [switch]$WindowsBin)
 $ErrorActionPreference = "Stop"
 Add-Type -AssemblyName UIAutomationClient, UIAutomationTypes
 $exe = Join-Path $PSScriptRoot "..\src\MoleWin.App\bin\Debug\net10.0-windows\MoleWin.exe"
@@ -13,6 +15,7 @@ $Scope = [System.Windows.Automation.TreeScope]
 
 function Start-Page([string]$Page) {
     $env:MOLEWIN_SANDBOX = $Sandbox; $env:MOLEWIN_PAGE = $Page
+    $env:MOLEWIN_SANDBOX_BIN = if ($WindowsBin) { "windows" } else { "" }
     $p = Start-Process $exe -PassThru
     for ($i = 0; $i -lt 100 -and $p.MainWindowHandle -eq 0; $i++) { Start-Sleep -Milliseconds 100; $p.Refresh() }
     return @{ Process = $p; Root = $A::FromHandle($p.MainWindowHandle) }
@@ -70,36 +73,36 @@ Find-Named $app.Root { $args[0] -eq "System" } | Where-Object { $_.Current.Contr
     Select-Object -First 1 | ForEach-Object { $_.GetCurrentPattern([System.Windows.Automation.TogglePattern]::Pattern).Toggle() }
 Invoke-Element (Find-Button $app.Root { $args[0] -like "Move * to the Recycle Bin" })
 Confirm-Dialog $app.Root
-Report "Clean: recycle System (2000 files)" (Wait-Until { (Find-Named $app.Root { $args[0] -eq "System" }).Count -eq 0 })
+Report "Clean: recycle System group" (Wait-Until { (Find-Named $app.Root { $args[0] -eq "System" }).Count -eq 0 })
 Stop-Process -Id $app.Process.Id
 
-# Analyze: open the drive (lists and measures it), then recycle the widest folder.
+# Analyze: open the drive (lists and measures it), then recycle a wide, deep folder.
 $app = Start-Page "Analyze"
 $drive = Wait-Until { $script:d = $app.Root.FindFirst($Scope::Descendants, (New-Object System.Windows.Automation.PropertyCondition ($A::IsExpandCollapsePatternAvailableProperty), $true)); $null -ne $script:d }
 $script:d.GetCurrentPattern([System.Windows.Automation.ExpandCollapsePattern]::Pattern).Expand()
-Report "Analyze: open drive, measure 4 folders" (Wait-Until { (Find-Named $app.Root { $args[0] -like "Finished*" }).Count -gt 0 })
-(Find-Named $app.Root { $args[0] -eq "Games" } | Where-Object { $_.Current.ControlType -eq [System.Windows.Automation.ControlType]::CheckBox })[0].
+Report "Analyze: open drive and measure it" (Wait-Until { (Find-Named $app.Root { $args[0] -like "Finished*" }).Count -gt 0 })
+(Find-Named $app.Root { $args[0] -eq "ProgramData" } | Where-Object { $_.Current.ControlType -eq [System.Windows.Automation.ControlType]::CheckBox })[0].
     GetCurrentPattern([System.Windows.Automation.TogglePattern]::Pattern).Toggle()
 Invoke-Element (Find-Button $app.Root { $args[0] -eq "Move to Recycle Bin" })
 Confirm-Dialog $app.Root
-Report "Analyze: recycle Games (20000 files)" (Wait-Until { (Find-Named $app.Root { $args[0] -eq "Games" }).Count -eq 0 })
+Report "Analyze: recycle ProgramData (19,200 files)" (Wait-Until { (Find-Named $app.Root { $args[0] -eq "ProgramData" }).Count -eq 0 })
 Stop-Process -Id $app.Process.Id
 
 # Apps: uninstall (the fake uninstaller takes 3 s), then recycle what it left.
 $app = Start-Page "Apps"
-Wait-Until { (Find-Named $app.Root { $args[0] -eq "Sandbox Notes" }).Count -gt 0 } | Out-Null
+Wait-Until { (Find-Named $app.Root { $args[0] -eq "Sandbox App 000" }).Count -gt 0 } | Out-Null
 $walker = [System.Windows.Automation.TreeWalker]::ControlViewWalker
-$item = (Find-Named $app.Root { $args[0] -eq "Sandbox Notes" })[0]
+$item = (Find-Named $app.Root { $args[0] -eq "Sandbox App 000" })[0]
 while ($item.Current.ControlType -ne [System.Windows.Automation.ControlType]::ListItem) { $item = $walker.GetParent($item) }
 $item.GetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern).Select()
 Invoke-Element (Find-Button $app.Root { $args[0] -eq "Uninstall" })
 Confirm-Dialog $app.Root
-Report "Apps: uninstall to leftovers shown (3 s fake)" (Wait-Until { (Find-Named $app.Root { $args[0] -like "*appdata\Sandbox Notes" }).Count -gt 0 })
-Find-Named $app.Root { $args[0] -like "*Sandbox Notes" } | Where-Object { $_.Current.ControlType -eq [System.Windows.Automation.ControlType]::CheckBox } |
+Report "Apps: uninstall to leftovers shown (3 s fake)" (Wait-Until { (Find-Named $app.Root { $args[0] -like "*appdata\Sandbox App 000" }).Count -gt 0 })
+Find-Named $app.Root { $args[0] -like "*Sandbox App 000" } | Where-Object { $_.Current.ControlType -eq [System.Windows.Automation.ControlType]::CheckBox } |
     ForEach-Object { $_.GetCurrentPattern([System.Windows.Automation.TogglePattern]::Pattern).Toggle() }
 Invoke-Element (Find-Button $app.Root { $args[0] -eq "Move to Recycle Bin" })
 Confirm-Dialog $app.Root
-Report "Apps: recycle leftovers" (Wait-Until { (Find-Named $app.Root { $args[0] -like "*appdata\Sandbox Notes" }).Count -eq 0 })
+Report "Apps: recycle leftovers" (Wait-Until { (Find-Named $app.Root { $args[0] -like "*appdata\Sandbox App 000" }).Count -eq 0 })
 Stop-Process -Id $app.Process.Id
 
-"recycled into the sandbox bin: $(@(Get-ChildItem (Join-Path $Sandbox 'RecycleBin')).Count) items"
+if (-not $WindowsBin) { "recycled into the sandbox bin: $(@(Get-ChildItem (Join-Path $Sandbox 'RecycleBin')).Count) items" }

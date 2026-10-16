@@ -9,10 +9,11 @@ namespace MoleWin.App.Hosting;
 
 // Debug builds only: MOLEWIN_SANDBOX=<folder> points every page at fake data under that folder
 // so actions can be tried and timed without touching the real machine.
-//   <folder>\clean\<rule id>   fake caches for Clean, one per category
+//   <folder>\clean\<rule id>   fake caches for Clean; each folder stands in for that real rule
 //   <folder>\drive             the one "drive" Analyze shows
 //   <folder>\apps, \appdata    fake installs and their leftovers for Apps
-//   <folder>\RecycleBin        where "recycled" items go; the Windows Recycle Bin is never used
+//   <folder>\RecycleBin        where "recycled" items go, unless MOLEWIN_SANDBOX_BIN=windows
+//                              sends them (sandbox files only) to the real Recycle Bin
 // MOLEWIN_PAGE=Clean|Apps|Analyze|Monitor picks the start page. The folder must already hold
 // the fake data (tools/sandbox.ps1 makes it).
 public static class Sandbox
@@ -27,15 +28,17 @@ public static class Sandbox
     {
         if (Root is not { } root) return;
 
-        services.AddSingleton<IRecycleBin>(new FolderBin(Path.Combine(root, "RecycleBin")));
+        IRecycleBin bin = Environment.GetEnvironmentVariable("MOLEWIN_SANDBOX_BIN") == "windows"
+            ? new WindowsRecycleBin()
+            : new FolderBin(Path.Combine(root, "RecycleBin"));
+        services.AddSingleton(bin);
+        // The real rules, each pointed at its sandbox folder when one exists, with no age or
+        // name filter so every fake file counts.
         services.AddSingleton<IReadOnlyList<CleanTarget>>(
         [
-            new("temp", CleanCategory.System, Path.Combine(root, "clean", "temp")),
-            new("chrome-cache", CleanCategory.Browsers, Path.Combine(root, "clean", "chrome-cache")),
-            new("spotify-data", CleanCategory.Apps, Path.Combine(root, "clean", "spotify-data")),
-            new("nvidia-dx", CleanCategory.Gpu, Path.Combine(root, "clean", "nvidia-dx")),
-            new("npm-cache", CleanCategory.Developer, Path.Combine(root, "clean", "npm-cache")),
-            new("cursor-cache", CleanCategory.AiTools, Path.Combine(root, "clean", "cursor-cache")),
+            .. CleanRules.Defaults
+                .Select(rule => rule with { Path = Path.Combine(root, "clean", rule.Id), Mode = CleanMode.Contents, Filter = "*", OlderThanDays = 0 })
+                .Where(rule => Directory.Exists(rule.Path)),
         ]);
         services.AddSingleton<IFolderScanner>(new OneDriveScanner(Path.Combine(root, "drive")));
         var apps = new FakeApps(root);
@@ -47,12 +50,15 @@ public static class Sandbox
     // "Recycles" by moving into a folder inside the sandbox.
     private sealed class FolderBin(string bin) : IRecycleBin
     {
-        public void MoveToRecycleBin(string path)
+        public void MoveToRecycleBin(IReadOnlyList<string> paths)
         {
-            var target = Path.Combine(bin, Guid.NewGuid().ToString("N"), Path.GetFileName(path));
-            Directory.CreateDirectory(Path.GetDirectoryName(target)!);
-            if (Directory.Exists(path)) Directory.Move(path, target);
-            else File.Move(path, target);
+            foreach (var path in paths)
+            {
+                var target = Path.Combine(bin, Guid.NewGuid().ToString("N"), Path.GetFileName(path));
+                Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+                if (Directory.Exists(path)) Directory.Move(path, target);
+                else File.Move(path, target);
+            }
         }
     }
 

@@ -11,6 +11,10 @@ public sealed class CleanViewModelTests : IDisposable
 {
     private readonly string _root = Directory.CreateTempSubdirectory("molewin-cleanvm-").FullName;
     private readonly IRecycleBin _bin = Substitute.For<IRecycleBin>();
+
+    // Every path handed to the Recycle Bin, across batched calls.
+    private string[] Binned() =>
+        [.. _bin.ReceivedCalls().SelectMany(c => (IReadOnlyList<string>)c.GetArguments()[0]!)];
     private readonly IDialogService _dialogs = Substitute.For<IDialogService>();
 
     public void Dispose() => Directory.Delete(_root, recursive: true);
@@ -134,7 +138,7 @@ public sealed class CleanViewModelTests : IDisposable
 
         await vm.RecycleSelectedCommand.ExecuteAsync(null);
 
-        _bin.DidNotReceiveWithAnyArgs().MoveToRecycleBin(default!);
+        Assert.Empty(Binned());
     }
 
     [Fact]
@@ -151,8 +155,8 @@ public sealed class CleanViewModelTests : IDisposable
 
         await vm.RecycleSelectedCommand.ExecuteAsync(null);
 
-        _bin.Received(1).MoveToRecycleBin(Path.Combine(chrome, "a"));
-        _bin.DidNotReceive().MoveToRecycleBin(Path.Combine(nvidia, "b"));
+        Assert.Contains(Path.Combine(chrome, "a"), Binned());
+        Assert.DoesNotContain(Path.Combine(nvidia, "b"), Binned());
     }
 
     [Fact]

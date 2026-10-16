@@ -8,6 +8,10 @@ public sealed class SafeRemoverTests : IDisposable
     private readonly string _root = Directory.CreateTempSubdirectory("molewin-test-").FullName;
     private readonly IRecycleBin _bin = Substitute.For<IRecycleBin>();
 
+    // Every path handed to the Recycle Bin, across batched calls.
+    private string[] Binned() =>
+        [.. _bin.ReceivedCalls().SelectMany(c => (IReadOnlyList<string>)c.GetArguments()[0]!)];
+
     public void Dispose() => Directory.Delete(_root, recursive: true);
 
     [Fact]
@@ -20,10 +24,12 @@ public sealed class SafeRemoverTests : IDisposable
             new(@"C:\c", RemovalOutcome.Missing),
         ];
 
-        Assert.True(SafeRemover.IsGone(results, @"C:\a\x.tmp"));
-        Assert.True(SafeRemover.IsGone(results, @"C:\c"));
-        Assert.False(SafeRemover.IsGone(results, @"C:\b\x.tmp"));
-        Assert.False(SafeRemover.IsGone(results, @"C:\ab"));
+        var gone = SafeRemover.GoneCheck(results);
+
+        Assert.True(gone(@"C:\a\x.tmp"));
+        Assert.True(gone(@"C:\c"));
+        Assert.False(gone(@"C:\b\x.tmp"));
+        Assert.False(gone(@"C:\ab"));
     }
 
     private SafeRemover Remover(params string[] protectedRoots) => new(
@@ -45,7 +51,7 @@ public sealed class SafeRemoverTests : IDisposable
 
         var results = Remover().Recycle([cache]);
 
-        _bin.Received(1).MoveToRecycleBin(cache);
+        Assert.Contains(cache, Binned());
         Assert.Equal(RemovalOutcome.Recycled, Assert.Single(results).Outcome);
     }
 
@@ -56,7 +62,7 @@ public sealed class SafeRemoverTests : IDisposable
 
         var results = Remover(keep).Recycle([keep]);
 
-        _bin.DidNotReceiveWithAnyArgs().MoveToRecycleBin(default!);
+        Assert.Empty(Binned());
         Assert.Equal(RemovalOutcome.Protected, Assert.Single(results).Outcome);
     }
 
@@ -68,7 +74,7 @@ public sealed class SafeRemoverTests : IDisposable
 
         var results = remover.Recycle([cache]);
 
-        _bin.DidNotReceiveWithAnyArgs().MoveToRecycleBin(default!);
+        Assert.Empty(Binned());
         Assert.Equal(RemovalOutcome.NotRecyclable, Assert.Single(results).Outcome);
     }
 
@@ -80,9 +86,20 @@ public sealed class SafeRemoverTests : IDisposable
 
         var results = Remover().Recycle([child, parent]);
 
-        _bin.Received(1).MoveToRecycleBin(parent);
-        _bin.DidNotReceive().MoveToRecycleBin(child);
+        Assert.Contains(parent, Binned());
+        Assert.DoesNotContain(child, Binned());
         Assert.Single(results);
+    }
+
+    [Fact]
+    public void Many_paths_go_to_the_recycle_bin_in_one_operation()
+    {
+        var paths = Enumerable.Range(0, 50).Select(i => Make($"cache{i}")).ToArray();
+
+        var results = Remover().Recycle(paths);
+
+        Assert.Single(_bin.ReceivedCalls());
+        Assert.All(results, r => Assert.Equal(RemovalOutcome.Recycled, r.Outcome));
     }
 
     [Fact]
@@ -98,7 +115,7 @@ public sealed class SafeRemoverTests : IDisposable
     {
         var bad = Make("bad");
         var good = Make("good");
-        _bin.When(b => b.MoveToRecycleBin(bad)).Do(_ => throw new IOException("in use"));
+        _bin.When(b => b.MoveToRecycleBin(Arg.Is<IReadOnlyList<string>>(l => l.Contains(bad)))).Do(_ => throw new IOException("in use"));
 
         var results = Remover().Recycle([bad, good]);
 

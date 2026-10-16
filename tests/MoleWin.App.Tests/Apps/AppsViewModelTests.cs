@@ -13,6 +13,10 @@ public sealed class AppsViewModelTests : IDisposable
     private readonly IInstalledApps _installed = Substitute.For<IInstalledApps>();
     private readonly IUninstallerRunner _runner = Substitute.For<IUninstallerRunner>();
     private readonly IRecycleBin _bin = Substitute.For<IRecycleBin>();
+
+    // Every path handed to the Recycle Bin, across batched calls.
+    private string[] Binned() =>
+        [.. _bin.ReceivedCalls().SelectMany(c => (IReadOnlyList<string>)c.GetArguments()[0]!)];
     private readonly IDialogService _dialogs = Substitute.For<IDialogService>();
     private readonly InstalledApp _tool;
     private readonly InstalledApp _big;
@@ -113,7 +117,7 @@ public sealed class AppsViewModelTests : IDisposable
         var leftover = Assert.Single(vm.Leftovers);
         Assert.Equal(42, leftover.Size);
         Assert.False(leftover.IsSelected);
-        _bin.DidNotReceiveWithAnyArgs().MoveToRecycleBin(default!);
+        Assert.Empty(Binned());
     }
 
     [Fact]
@@ -146,6 +150,6 @@ public sealed class AppsViewModelTests : IDisposable
         vm.Leftovers[0].IsSelected = true;
         await vm.RecycleLeftoversCommand.ExecuteAsync(null);
 
-        _bin.Received(1).MoveToRecycleBin(folder);
+        Assert.Contains(folder, Binned());
     }
 }

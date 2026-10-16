@@ -114,7 +114,8 @@ public sealed partial class AnalyzeViewModel : PageViewModel
 
         // What went leaves the tree and its size comes off every folder above it; nothing is
         // listed or measured again, so the tree updates at once.
-        foreach (var node in picked.Where(n => SafeRemover.IsGone(results, n.Path)))
+        var gone = SafeRemover.GoneCheck(results);
+        foreach (var node in picked.Where(n => gone(n.Path)))
         {
             Forget(node);
             node.IsSelected = false;

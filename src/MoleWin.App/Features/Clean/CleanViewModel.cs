@@ -136,12 +136,13 @@ public sealed partial class CleanViewModel : PageViewModel
         Activity.AddRemovals(results);
 
         // What went leaves the list; a place that kept some items shows only those. No rescan.
+        var gone = SafeRemover.GoneCheck(results);
         foreach (var target in picked)
         {
             var category = Categories.First(c => c.Targets.Contains(target));
             target.PropertyChanged -= OnRowChanged;
             category.Remove(target);
-            var left = target.Finding.Items.Where(i => !SafeRemover.IsGone(results, i.Path)).ToList();
+            var left = target.Finding.Items.Where(i => !gone(i.Path)).ToList();
             if (left.Count > 0)
             {
                 var row = new CleanTargetRow(target.Finding with { Items = left }, target.Label);

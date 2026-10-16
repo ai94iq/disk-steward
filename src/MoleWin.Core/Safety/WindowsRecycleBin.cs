@@ -16,12 +16,13 @@ public sealed class WindowsRecycleBin : IRecycleBin
     private const ushort FofNoErrorUi = 0x0400;
     private const ushort FofWantNukeWarning = 0x4000;
 
-    public void MoveToRecycleBin(string path)
+    public void MoveToRecycleBin(IReadOnlyList<string> paths)
     {
+        if (paths.Count == 0) return;
         var operation = new ShFileOpStruct
         {
             Func = FoDelete,
-            From = path + "\0\0", // the API takes a double-null-terminated list
+            From = string.Join('\0', paths) + "\0\0", // the API takes a double-null-terminated list
             Flags = FofAllowUndo | FofNoConfirmation | FofSilent | FofNoErrorUi | FofWantNukeWarning,
         };
         var code = SHFileOperationW(ref operation);

@@ -11,6 +11,10 @@ public sealed class AnalyzeViewModelTests : IDisposable
     private readonly string _root = Directory.CreateTempSubdirectory("molewin-analyze-").FullName;
     private readonly IFolderScanner _scanner = Substitute.For<IFolderScanner>();
     private readonly IRecycleBin _bin = Substitute.For<IRecycleBin>();
+
+    // Every path handed to the Recycle Bin, across batched calls.
+    private string[] Binned() =>
+        [.. _bin.ReceivedCalls().SelectMany(c => (IReadOnlyList<string>)c.GetArguments()[0]!)];
     private readonly IDialogService _dialogs = Substitute.For<IDialogService>();
 
     public AnalyzeViewModelTests()
@@ -133,7 +137,7 @@ public sealed class AnalyzeViewModelTests : IDisposable
 
         await vm.RecycleSelectedCommand.ExecuteAsync(null);
 
-        _bin.DidNotReceiveWithAnyArgs().MoveToRecycleBin(default!);
+        Assert.Empty(Binned());
     }
 
     [Fact]
@@ -149,8 +153,8 @@ public sealed class AnalyzeViewModelTests : IDisposable
 
         await vm.RecycleSelectedCommand.ExecuteAsync(null);
 
-        _bin.Received(1).MoveToRecycleBin(cache);
-        _bin.DidNotReceive().MoveToRecycleBin(other);
+        Assert.Contains(cache, Binned());
+        Assert.DoesNotContain(other, Binned());
     }
 
     [Fact]
