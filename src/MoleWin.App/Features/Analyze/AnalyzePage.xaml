@@ -166,7 +166,7 @@
     <!-- The only way anything is removed: ticked rows, this button, then a confirmation.
          The user picked these, not Mole, so the button is the accent, not the safe color. -->
     <DockPanel Grid.Row="3">
-      <ui:Button DockPanel.Dock="Right" Appearance="Primary" Command="{Binding RecycleSelectedCommand}" Content="{l:Tr Analyze_Recycle}" ToolTip="Del">
+      <ui:Button DockPanel.Dock="Right" Appearance="Danger" Command="{Binding RecycleSelectedCommand}" Content="{l:Tr Analyze_Recycle}" ToolTip="Del">
         <ui:Button.Icon>
           <common:AppIconElement Kind="Delete" />
         </ui:Button.Icon>

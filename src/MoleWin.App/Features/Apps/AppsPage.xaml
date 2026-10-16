@@ -133,7 +133,7 @@
                 </DataTemplate>
               </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <ui:Button HorizontalAlignment="Right" Appearance="Primary" Command="{Binding RecycleLeftoversCommand}" Content="{l:Tr Analyze_Recycle}">
+            <ui:Button HorizontalAlignment="Right" Appearance="Danger" Command="{Binding RecycleLeftoversCommand}" Content="{l:Tr Analyze_Recycle}">
               <ui:Button.Icon>
                 <common:AppIconElement Kind="Delete" />
               </ui:Button.Icon>

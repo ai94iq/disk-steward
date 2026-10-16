@@ -28,7 +28,6 @@ public sealed partial class CleanViewModel : PageViewModel
         _dialogs = dialogs;
         _log = log;
         EmptyText = Tr.Get("Clean_Nothing");
-        RecycleText = Tr.Get("Clean_Recycle");
     }
 
     public TimeSpan RefreshInterval { get; init; } = TimeSpan.FromMilliseconds(200);
@@ -54,9 +53,6 @@ public sealed partial class CleanViewModel : PageViewModel
 
     [ObservableProperty] public partial long SelectedBytes { get; set; }
     [ObservableProperty] public partial string? SelectedText { get; set; }
-
-    // The button says how much it will move.
-    [ObservableProperty] public partial string? RecycleText { get; set; }
 
     // While ticked items move to the Recycle Bin: the footer says so and the button waits.
     [ObservableProperty]
@@ -227,7 +223,6 @@ public sealed partial class CleanViewModel : PageViewModel
         SelectedCount = picked.Count;
         SelectedBytes = picked.Sum(t => t.Bytes);
         SelectedText = Tr.Format("Clean_Selected", SelectedCount, SizeText.Format(SelectedBytes));
-        RecycleText = SelectedCount > 0 ? Tr.Format("Clean_RecycleAmount", SizeText.Format(SelectedBytes)) : Tr.Get("Clean_Recycle");
     }
 
     private static string Label(string id) => Tr.Get($"Clean_Target_{id}");

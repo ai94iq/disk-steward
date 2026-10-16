@@ -178,7 +178,7 @@
 
     <!-- The only way anything is removed: ticked rows, this button, then a confirmation -->
     <DockPanel Grid.Row="4">
-      <ui:Button DockPanel.Dock="Right" Appearance="Primary" Command="{Binding RecycleSelectedCommand}" Content="{Binding RecycleText}" ToolTip="Del">
+      <ui:Button DockPanel.Dock="Right" Appearance="Danger" Command="{Binding RecycleSelectedCommand}" Content="{l:Tr Clean_Recycle}" ToolTip="Del">
         <ui:Button.Icon>
           <common:AppIconElement Kind="Delete" />
         </ui:Button.Icon>

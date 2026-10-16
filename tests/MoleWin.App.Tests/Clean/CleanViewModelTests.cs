@@ -83,17 +83,6 @@ public sealed class CleanViewModelTests : IDisposable
     }
 
     [Fact]
-    public async Task Recycle_button_names_the_ticked_size()
-    {
-        var vm = Create(new CleanTarget("chrome-cache", CleanCategory.Browsers, Folder("r1", ("a", 300))));
-        await vm.EnsureLoadedAsync();
-
-        vm.Categories[0].Targets[0].IsSelected = true;
-
-        Assert.Contains(MoleWin.App.Localization.SizeText.Format(300), vm.RecycleText, StringComparison.Ordinal);
-    }
-
-    [Fact]
     public async Task Categories_start_collapsed_with_their_totals_visible()
     {
         var vm = Create(

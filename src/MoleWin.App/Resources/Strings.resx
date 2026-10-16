@@ -92,7 +92,6 @@
   <data name="Clean_Places_two" xml:space="preserve"><value>موضعان</value></data>
   <data name="Clean_Places_zero" xml:space="preserve"><value>لا مواضع</value></data>
   <data name="Clean_Recycle" xml:space="preserve"><value>نقل إلى سلة المحذوفات</value></data>
-  <data name="Clean_RecycleAmount" xml:space="preserve"><value>انقل {0} إلى سلة المحذوفات</value></data>
   <data name="Clean_Rescan" xml:space="preserve"><value>فحص من جديد</value></data>
   <data name="Clean_Review" xml:space="preserve"><value>راجِع أولًا</value></data>
   <data name="Clean_ReviewAmount" xml:space="preserve"><value>{0} للمراجعة أولًا</value></data>
