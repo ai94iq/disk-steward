@@ -85,7 +85,7 @@
       <TextBlock FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap">
         <Run Foreground="{DynamicResource SystemFillColorSuccessBrush}" Text="{Binding SafeText, Mode=OneWay}" /><Run Text="{l:Tr Clean_HeadlineRest}" />
       </TextBlock>
-      <TextBlock Style="{StaticResource SecondaryText}" TextWrapping="Wrap" Text="{Binding HeadlineDetail}" />
+      <TextBlock Margin="0,4,0,0" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" Text="{Binding HeadlineDetail}" />
     </StackPanel>
 
     <!-- Details on the right when there is room, below the groups when there is not -->

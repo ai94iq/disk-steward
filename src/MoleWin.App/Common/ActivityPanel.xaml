@@ -13,7 +13,7 @@
         <ItemsControl Margin="8,0,12,0" ItemsSource="{Binding ItemsSource, ElementName=Root}">
           <ItemsControl.ItemTemplate>
             <DataTemplate DataType="{x:Type common:ActivityEntry}">
-              <Grid Margin="0,4">
+              <Grid Margin="{StaticResource RowSpacing}">
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="Auto" />
                   <ColumnDefinition Width="*" />
