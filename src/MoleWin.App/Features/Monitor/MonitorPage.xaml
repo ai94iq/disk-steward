@@ -43,7 +43,7 @@
     <ScrollViewer Grid.Row="1"
                   VerticalScrollBarVisibility="Auto"
                   Visibility="{Binding State, Converter={StaticResource LoadStateVisible}, ConverterParameter='Idle,Loaded'}">
-      <Grid Margin="{StaticResource ScrollGutter}">
+      <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*" />
           <ColumnDefinition Width="{StaticResource GutterWidth}" />

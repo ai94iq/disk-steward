@@ -55,7 +55,7 @@
       <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto"
                       Visibility="{Binding State, Converter={StaticResource LoadStateVisible}, ConverterParameter='Idle,Loading,Loaded'}">
-          <ItemsControl Margin="{StaticResource ScrollGutter}" ItemsSource="{Binding Categories}">
+          <ItemsControl ItemsSource="{Binding Categories}">
             <ItemsControl.ItemTemplate>
               <DataTemplate>
                 <Border Style="{StaticResource Surface}" common:Motion.FadeIn="True">
