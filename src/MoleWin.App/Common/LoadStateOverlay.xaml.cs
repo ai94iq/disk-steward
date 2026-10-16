@@ -17,7 +17,17 @@ public sealed partial class LoadStateOverlay : UserControl
     public static readonly DependencyProperty RetryCommandProperty = DependencyProperty.Register(
         nameof(RetryCommand), typeof(ICommand), typeof(LoadStateOverlay), new PropertyMetadata(null));
 
+    // False on pages that show their own scan card, so the first load has one indicator, not two.
+    public static readonly DependencyProperty ShowSpinnerProperty = DependencyProperty.Register(
+        nameof(ShowSpinner), typeof(bool), typeof(LoadStateOverlay), new PropertyMetadata(true));
+
     public LoadStateOverlay() => InitializeComponent();
+
+    public bool ShowSpinner
+    {
+        get => (bool)GetValue(ShowSpinnerProperty);
+        set => SetValue(ShowSpinnerProperty, value);
+    }
 
     public LoadState State
     {

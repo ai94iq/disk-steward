@@ -6,10 +6,20 @@
              x:Name="Root">
   <!-- Put this on top of the page content in the same Grid cell. Usage: see PageViewModel. -->
   <Grid>
-    <ui:ProgressRing IsIndeterminate="True"
-                     HorizontalAlignment="Center"
-                     VerticalAlignment="Center"
-                     Visibility="{Binding State, ElementName=Root, Converter={StaticResource LoadStateVisible}, ConverterParameter=Loading}" />
+    <!-- The spinner is off where the page shows its own scan card (Clean, Analyze), so a first
+         load does not show two indicators at once. -->
+    <ui:ProgressRing IsIndeterminate="True" HorizontalAlignment="Center" VerticalAlignment="Center">
+      <ui:ProgressRing.Style>
+        <Style TargetType="ui:ProgressRing">
+          <Setter Property="Visibility" Value="{Binding State, ElementName=Root, Converter={StaticResource LoadStateVisible}, ConverterParameter=Loading}" />
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding ShowSpinner, ElementName=Root}" Value="False">
+              <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </ui:ProgressRing.Style>
+    </ui:ProgressRing>
 
     <TextBlock Text="{Binding EmptyText, ElementName=Root}"
                HorizontalAlignment="Center"

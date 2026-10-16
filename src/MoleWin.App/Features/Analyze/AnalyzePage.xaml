@@ -156,7 +156,7 @@
               </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
           </TreeView>
-          <common:LoadStateOverlay State="{Binding State}" ErrorMessage="{Binding ErrorMessage}" RetryCommand="{Binding ReloadCommand}" />
+          <common:LoadStateOverlay State="{Binding State}" ShowSpinner="False" ErrorMessage="{Binding ErrorMessage}" RetryCommand="{Binding ReloadCommand}" />
         </Grid>
       </Border>
 

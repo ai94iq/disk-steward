@@ -169,7 +169,7 @@
             </ItemsControl.ItemTemplate>
           </ItemsControl>
         </ScrollViewer>
-        <common:LoadStateOverlay State="{Binding State}" ErrorMessage="{Binding ErrorMessage}"
+        <common:LoadStateOverlay State="{Binding State}" ShowSpinner="False" ErrorMessage="{Binding ErrorMessage}"
                                  EmptyText="{Binding EmptyText}" RetryCommand="{Binding RescanCommand}" />
       </Grid>
 
