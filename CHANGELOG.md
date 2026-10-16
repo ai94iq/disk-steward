@@ -4,6 +4,8 @@ All notable changes are documented here. Format: [Keep a Changelog](https://keep
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-16
+
 ### Added
 - Monitor page: health line, CPU, memory and network with one-minute charts,
   drive capacity, top processes grouped by name, and Keep awake.
