@@ -163,7 +163,8 @@
                     </ControlTemplate>
                   </ToggleButton.Template>
                 </ToggleButton>
-                <ContentPresenter Grid.Column="1" ContentSource="Header" HorizontalAlignment="Stretch" />
+                <!-- Right inset matches list rows, so sizes keep clear of the scroll bar. -->
+                <ContentPresenter Grid.Column="1" Margin="0,0,12,0" ContentSource="Header" HorizontalAlignment="Stretch" />
               </Grid>
             </Border>
             <ItemsPresenter x:Name="ItemsHost" Grid.Row="1" Grid.Column="1" Visibility="Collapsed" />
