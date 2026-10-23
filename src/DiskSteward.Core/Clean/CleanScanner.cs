@@ -73,7 +73,7 @@ public sealed class CleanScanner(IFolderScanner folders, ProtectedPaths rules, I
             return e.LastWriteTime >= cutoff;
         });
 
-    // The folder a rule starts from: its leading %VARIABLE% expanded ("%LOCALAPPDATA%\x" ->
+    // The folder a rule starts from: its leading %VARIABLE% expanded ("%LOCALAPPDATA%\x" starts at
     // C:\Users\me\AppData\Local). Links at or above it are the user's own layout and are
     // followed; null for a rule with no leading variable, so every folder is checked.
     private static string? BaseFolder(string rulePath)

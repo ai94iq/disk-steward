@@ -230,7 +230,7 @@ public sealed class SafeRemoverTests : IDisposable
     [Fact]
     public void Through_a_junction_neither_the_junction_nor_the_folders_it_leads_to_can_change_while_recycling()
     {
-        // <root>\link -> <root>\data\X. While Windows recycles link\f.txt, another process
+        // <root>\link is a junction to <root>\data\X. While Windows recycles link\f.txt, another process
         // tries to retarget the junction and to swap the folder above its target.
         Directory.CreateDirectory(Path.Combine(_root, "data", "X"));
         var item = Path.Combine(_root, "link", "f.txt");
