@@ -28,6 +28,9 @@ public sealed record ProtectedRoots(
             Path.Combine(profile, "AppData", "LocalLow"),
             Path.Combine(profile, "Downloads"),
             Environment.GetEnvironmentVariable("OneDrive") ?? "",
+            // Public and every other profile on the machine: other local users can write in
+            // them, and recycling one whole would take someone else's files.
+            .. OtherProfiles(profile),
         ];
         return new ProtectedRoots(
             Folder(Environment.SpecialFolder.Windows),
@@ -36,5 +39,19 @@ public sealed record ProtectedRoots(
             profile,
             appOwnData,
             [.. known.Where(k => k.Length > 0)]);
+    }
+
+    private static IEnumerable<string> OtherProfiles(string profile)
+    {
+        var profiles = Path.GetDirectoryName(profile);
+        if (string.IsNullOrEmpty(profiles) || !Directory.Exists(profiles)) return [];
+        try
+        {
+            return Directory.EnumerateDirectories(profiles, "*", new EnumerationOptions { IgnoreInaccessible = true, AttributesToSkip = 0 }).ToList();
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            return [];
+        }
     }
 }

@@ -72,6 +72,18 @@ public sealed class ProtectedPathsTests
     public void A_file_named_like_a_system_file_away_from_the_root_is_not() =>
         Assert.False(Rules.IsProtected(@"D:\Backups\pagefile.sys"));
 
+    [Theory]
+    [InlineData("Public")]
+    [InlineData("Default")]
+    public void Other_profile_roots_on_this_machine_are_protected_themselves(string profile)
+    {
+        var profiles = Path.GetDirectoryName(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile))!;
+        var rules = new ProtectedPaths(ProtectedRoots.ForCurrentUser(@"Z:\own"));
+
+        Assert.Equal(ProtectionReason.PersonalFolder, rules.ReasonFor(Path.Combine(profiles, profile)));
+        Assert.False(rules.IsProtected(Path.Combine(profiles, profile, "some-folder")));
+    }
+
     [Fact]
     public void Dot_segments_cannot_escape_into_a_protected_root() =>
         Assert.True(Rules.IsProtected(@"C:\Users\me\Desktop\..\..\..\Windows\System32"));

@@ -9,6 +9,8 @@ All notable changes are documented here. Format: [Keep a Changelog](https://keep
   recycles them, and checks each path again before its own attempt after a
   failed batch, so a folder swapped for a junction mid-removal cannot redirect
   it.
+- `C:\Users\Public` and every other profile folder on the machine are
+  protected themselves, like your own profile; their contents stay removable.
 
 ### Fixed
 - A recycle Windows reports as done but that left an item on disk now
