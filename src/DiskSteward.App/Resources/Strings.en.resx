@@ -208,7 +208,6 @@
   <data name="Monitor_Issue_Memory" xml:space="preserve"><value>Memory almost full</value></data>
   <data name="Monitor_Issue_None" xml:space="preserve"><value>Running smoothly</value></data>
   <data name="Monitor_KeepAwake" xml:space="preserve"><value>Keep awake</value></data>
-  <data name="Monitor_Live" xml:space="preserve"><value>Live</value></data>
   <data name="Monitor_Memory" xml:space="preserve"><value>Memory</value></data>
   <data name="Monitor_MemoryValue" xml:space="preserve"><value>{0:N1} of {1:N1} GB used</value></data>
   <data name="Monitor_Network" xml:space="preserve"><value>Network</value></data>

@@ -123,7 +123,7 @@
                                  Foreground="{Binding Level, Converter={StaticResource LoadLevelBrush}}"
                                  common:Motion.Value="{Binding UsedPercent}" />
                     <TextBlock Grid.Column="3" Margin="{StaticResource InlineStart}" VerticalAlignment="Center"
-                               FontWeight="SemiBold" Text="{Binding SizeText}" />
+                               Style="{StaticResource NumberStrong}" Text="{Binding SizeText}" />
                   </Grid>
 
                   <!-- A folder or file: tick it to remove, unless Windows needs it -->
@@ -147,7 +147,7 @@
                     </StackPanel>
                     <ProgressBar Grid.Column="3" Height="6" VerticalAlignment="Center" Maximum="100" Foreground="{DynamicResource AccentFillColorDefaultBrush}" common:Motion.Value="{Binding Share}" />
                     <Grid Grid.Column="4" VerticalAlignment="Center">
-                      <TextBlock HorizontalAlignment="Right" FontWeight="SemiBold" Text="{Binding SizeText}" />
+                      <TextBlock HorizontalAlignment="Right" Style="{StaticResource NumberStrong}" Text="{Binding SizeText}" />
                       <TextBlock HorizontalAlignment="Right" Style="{StaticResource TertiaryText}" Text="{l:Tr Analyze_Measuring}"
                                  Visibility="{Binding IsMeasuring, Converter={StaticResource BoolVisible}}" />
                     </Grid>

@@ -4,6 +4,12 @@ All notable changes are documented here. Format: [Keep a Changelog](https://keep
 
 ## [Unreleased]
 
+### Changed
+- Monitor reads bolder: the CPU, memory and health numbers are larger and
+  take their load color (calm, caution, heavy) instead of plain text. Numbers
+  across every page use tabular figures so columns line up as they update.
+- Removed the Monitor "Live" badge.
+
 ### Security
 - Apps reads an installed app's icon, and the leftover search probes a
   candidate folder, only when no part of the path is a junction or symlink,

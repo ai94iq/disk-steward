@@ -136,7 +136,7 @@
                         <TextBlock Margin="0,2,0,0" Style="{StaticResource TertiaryText}" TextTrimming="CharacterEllipsis" Text="{Binding Note}" ToolTip="{Binding Note}" />
                       </StackPanel>
                       <StackPanel Grid.Column="3" Margin="{StaticResource CardGap}" VerticalAlignment="Center">
-                        <TextBlock HorizontalAlignment="Right" FontWeight="SemiBold" Text="{Binding SizeText}" />
+                        <TextBlock HorizontalAlignment="Right" Style="{StaticResource NumberStrong}" Text="{Binding SizeText}" />
                         <TextBlock HorizontalAlignment="Right" Style="{StaticResource TertiaryText}" Text="{Binding ItemsText}" />
                       </StackPanel>
                     </Grid>

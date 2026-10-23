@@ -208,7 +208,6 @@
   <data name="Monitor_Issue_Memory" xml:space="preserve"><value>الذاكرة شبه ممتلئة</value></data>
   <data name="Monitor_Issue_None" xml:space="preserve"><value>يعمل بسلاسة</value></data>
   <data name="Monitor_KeepAwake" xml:space="preserve"><value>إبقاء الجهاز مستيقظًا</value></data>
-  <data name="Monitor_Live" xml:space="preserve"><value>مباشر</value></data>
   <data name="Monitor_Memory" xml:space="preserve"><value>الذاكرة</value></data>
   <data name="Monitor_MemoryValue" xml:space="preserve"><value>{0:N1} من {1:N1} GB مستخدمة</value></data>
   <data name="Monitor_Network" xml:space="preserve"><value>الشبكة</value></data>

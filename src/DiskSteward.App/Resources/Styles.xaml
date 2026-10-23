@@ -189,16 +189,25 @@
     </Setter>
   </Style>
 
-  <!-- Labels and supporting lines under a value -->
+  <!-- Labels and supporting lines under a value. Numerals are tabular everywhere, so a column of
+       sizes, dates or percentages lines up on equal-width digits and does not jitter as it updates;
+       on plain text the setting changes nothing. -->
   <Style x:Key="SecondaryText" TargetType="TextBlock">
     <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+    <Setter Property="Typography.NumeralAlignment" Value="Tabular" />
   </Style>
   <Style x:Key="TertiaryText" TargetType="TextBlock">
     <Setter Property="Foreground" Value="{DynamicResource TextFillColorTertiaryBrush}" />
+    <Setter Property="Typography.NumeralAlignment" Value="Tabular" />
   </Style>
   <Style x:Key="ColumnHeader" TargetType="TextBlock" BasedOn="{StaticResource TertiaryText}">
     <Setter Property="FontSize" Value="12" />
     <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+  <!-- A number that stands on its own line in a row (a size, a count), aligned on tabular digits. -->
+  <Style x:Key="NumberStrong" TargetType="TextBlock">
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Typography.NumeralAlignment" Value="Tabular" />
   </Style>
 
   <!-- One outlined surface per section; never nested -->
