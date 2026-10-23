@@ -4,6 +4,12 @@ All notable changes are documented here. Format: [Keep a Changelog](https://keep
 
 ## [Unreleased]
 
+### Security
+- `SafeRemover` holds the folders above every path while it checks and
+  recycles them, and checks each path again before its own attempt after a
+  failed batch, so a folder swapped for a junction mid-removal cannot redirect
+  it.
+
 ## [0.1.0] - 2026-10-16
 
 ### Added

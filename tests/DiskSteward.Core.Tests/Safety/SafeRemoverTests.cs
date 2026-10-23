@@ -145,6 +145,44 @@ public sealed class SafeRemoverTests : IDisposable
     }
 
     [Fact]
+    public void A_path_that_changes_after_a_failed_batch_is_checked_again_before_its_own_attempt()
+    {
+        // Harmless when the batch is built, protected by the time it gets its own attempt.
+        var cache = Make("cache");
+        var checks = 0;
+        var remover = new SafeRemover(
+            new ProtectedPaths(new ProtectedRoots(@"Z:\Windows", [@"Z:\prot"], @"Z:\P", @"Z:\U", @"Z:\own", [])),
+            _bin, _ => true, resolveRealPath: p => ++checks == 1 ? p : @"Z:\prot\inside");
+        _bin.When(b => b.MoveToRecycleBin(Arg.Any<IReadOnlyList<string>>())).Do(_ => throw new IOException("busy"));
+
+        var results = remover.Recycle([cache]);
+
+        Assert.Equal(RemovalOutcome.Protected, Assert.Single(results).Outcome);
+        Assert.Single(_bin.ReceivedCalls());
+    }
+
+    [Fact]
+    public void Folders_above_a_path_cannot_be_moved_while_it_is_checked_and_recycled()
+    {
+        // Another process tries to swap the folder above the item (for a junction, say) after
+        // the check; Windows would follow the new folder when it recycles the item.
+        var parent = Make("parent");
+        var item = Make(Path.Combine("parent", "item"));
+        Exception? moveError = null;
+        var remover = Remover(p =>
+        {
+            try { Directory.Move(parent, parent + "-moved"); }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { moveError = ex; }
+            return p;
+        }, []);
+
+        remover.Recycle([item]);
+
+        Assert.NotNull(moveError);
+        Assert.True(Directory.Exists(parent));
+    }
+
+    [Fact]
     public void A_path_whose_real_target_cannot_be_resolved_is_refused()
     {
         var cache = Make("cache");
