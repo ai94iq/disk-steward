@@ -57,6 +57,16 @@ public sealed class SafeRemover(ProtectedPaths rules, IRecycleBin bin, Func<stri
         if (real is null) return new RemovalResult(path, RemovalOutcome.Failed, "Could not resolve the real path.");
         if (rules.IsProtected(real)) return new RemovalResult(path, RemovalOutcome.Protected);
 
+        // A link on the way leads to folders the first hold did not reach: hold them too, then
+        // resolve again, so what was checked is still where the path leads.
+        if (!real.Equals(path, StringComparison.OrdinalIgnoreCase))
+        {
+            pins.Add(FoldersAbove(real));
+            if (!FoldersAbove(real).All(pins.IsHeld)
+                || !string.Equals(_resolveRealPath(path), real, StringComparison.OrdinalIgnoreCase))
+                return new RemovalResult(path, RemovalOutcome.Failed, "Could not hold the folders it leads to.");
+        }
+
         // Network shares and removable drives have no Recycle Bin: Windows would delete for good.
         if (!isRecyclableDrive(real)) return new RemovalResult(path, RemovalOutcome.NotRecyclable);
         return null;

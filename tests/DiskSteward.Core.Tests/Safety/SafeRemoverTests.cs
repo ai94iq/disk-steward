@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using DiskSteward.Core.Safety;
 using NSubstitute;
 
@@ -10,6 +11,7 @@ public sealed class SafeRemoverTests : IDisposable
     private readonly HashSet<string> _refusedByWindows = new(StringComparer.OrdinalIgnoreCase);
     private readonly HashSet<string> _leftByWindows = new(StringComparer.OrdinalIgnoreCase);
     private bool _windowsFails;
+    private Action? _whileRecycling;
 
     public SafeRemoverTests() =>
         _bin.When(b => b.MoveToRecycleBin(Arg.Any<IReadOnlyList<string>>())).Do(c => FakeRecycle((IReadOnlyList<string>)c[0]!));
@@ -18,6 +20,7 @@ public sealed class SafeRemoverTests : IDisposable
     // does when one item cannot go. _leftByWindows items are kept although the call succeeds.
     private void FakeRecycle(IReadOnlyList<string> paths)
     {
+        _whileRecycling?.Invoke();
         if (_windowsFails || paths.Any(_refusedByWindows.Contains)) throw new IOException("in use");
         foreach (var path in paths.Where(p => !_leftByWindows.Contains(p)))
         {
@@ -222,6 +225,45 @@ public sealed class SafeRemoverTests : IDisposable
 
         Assert.Equal(RemovalOutcome.Failed, Assert.Single(results).Outcome);
         Assert.Empty(Binned());
+    }
+
+    [Fact]
+    public void Through_a_junction_neither_the_junction_nor_the_folders_it_leads_to_can_change_while_recycling()
+    {
+        // <root>\link -> <root>\data\X. While Windows recycles link\f.txt, another process
+        // tries to retarget the junction and to swap the folder above its target.
+        Directory.CreateDirectory(Path.Combine(_root, "data", "X"));
+        var item = Path.Combine(_root, "link", "f.txt");
+        var link = Path.Combine(_root, "link");
+        if (!TestJunctions.TryCreate(link, Path.Combine(_root, "data", "X")))
+        {
+            Assert.Skip("Could not create a directory junction on this machine.");
+            return;
+        }
+        File.WriteAllText(item, "x");
+        var allowed = new List<string>();
+        _whileRecycling = () =>
+        {
+            try { Directory.Move(Path.Combine(_root, "data"), Path.Combine(_root, "data2")); allowed.Add("rename of the target's parent"); }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { }
+            using var fsutil = Process.Start(new ProcessStartInfo("fsutil.exe", $"reparsepoint delete \"{link}\"")
+                { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true })!;
+            fsutil.WaitForExit();
+            if (fsutil.ExitCode == 0) allowed.Add("retarget of the junction");
+        };
+        try
+        {
+            var remover = new SafeRemover(
+                new ProtectedPaths(new ProtectedRoots(@"Z:\W", [], @"Z:\P", @"Z:\U", @"Z:\O", [])), _bin, _ => true);
+
+            remover.Recycle([item]);
+
+            Assert.Empty(allowed);
+        }
+        finally
+        {
+            if (Directory.Exists(link)) Directory.Delete(link);
+        }
     }
 
     [Fact]
