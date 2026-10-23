@@ -23,6 +23,8 @@ public sealed partial class MonitorViewModel : PageViewModel
         _monitor = monitor;
         _awake = awake;
         KeepAwake = KeepAwakeOption.All[0];
+        // Both are singletons, so this subscription lives as long as the app.
+        _awake.Ended += (_, _) => KeepAwake = KeepAwakeOption.All[0];
         _log = log;
         CpuHistory = [];
         MemoryHistory = [];

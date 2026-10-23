@@ -6,4 +6,7 @@ public interface IKeepAwake
     void Start(TimeSpan? duration);
 
     void Stop();
+
+    // Raised when a timed request runs out, so the screen stops showing it as on.
+    event EventHandler? Ended;
 }

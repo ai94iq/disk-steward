@@ -41,6 +41,18 @@ public sealed class MonitorViewModelTests
         awake.Received(1).Stop();
     }
 
+    [Fact]
+    public void Keep_awake_shows_off_once_a_timed_request_runs_out()
+    {
+        var awake = Substitute.For<IKeepAwake>();
+        var vm = Create(Monitor(Snapshot()), awake);
+        vm.KeepAwake = KeepAwakeOption.All.Single(o => o.Duration == TimeSpan.FromHours(1));
+
+        awake.Ended += Raise.Event();
+
+        Assert.False(vm.KeepAwake.IsOn);
+    }
+
     private static IMonitorService Monitor(params SystemSnapshot[] samples)
     {
         var monitor = Substitute.For<IMonitorService>();

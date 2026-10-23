@@ -32,6 +32,8 @@ All notable changes are documented here. Format: [Keep a Changelog](https://keep
   language instead of stopping the app at launch.
 - A database file that cannot be opened is no longer left locked by the
   failed connection.
+- Keep awake goes back to Off on the Monitor page when a timed request runs
+  out.
 - A recycle Windows reports as done but that left an item on disk now
   reports that item as failed instead of recycled.
 

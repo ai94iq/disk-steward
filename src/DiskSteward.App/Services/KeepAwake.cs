@@ -15,8 +15,14 @@ public sealed class KeepAwake : IKeepAwake
 
     public KeepAwake()
     {
-        _timer.Tick += (_, _) => Stop();
+        _timer.Tick += (_, _) =>
+        {
+            Stop();
+            Ended?.Invoke(this, EventArgs.Empty);
+        };
     }
+
+    public event EventHandler? Ended;
 
     public void Start(TimeSpan? duration)
     {
