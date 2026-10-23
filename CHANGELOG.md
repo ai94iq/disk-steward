@@ -5,6 +5,10 @@ All notable changes are documented here. Format: [Keep a Changelog](https://keep
 ## [Unreleased]
 
 ### Security
+- Apps reads an installed app's icon, and the leftover search probes a
+  candidate folder, only when no part of the path is a junction or symlink,
+  so a link planted in a shared-writable folder cannot redirect the probe to
+  a network share.
 - `SafeRemover` holds the folders above every path while it checks and
   recycles them, and checks each path again before its own attempt after a
   failed batch, so a folder swapped for a junction mid-removal cannot redirect

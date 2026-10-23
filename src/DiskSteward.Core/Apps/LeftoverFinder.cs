@@ -23,6 +23,7 @@ public sealed class LeftoverFinder(ProtectedPaths rules)
         }
 
         return candidates
+            .Where(p => !LocalPath.CrossesLink(p)) // a link here could lead off the drive; checked before any stat
             .Where(p => Directory.Exists(p) || File.Exists(p))
             .Where(p => !rules.IsProtected(p))
             .Distinct(StringComparer.OrdinalIgnoreCase)

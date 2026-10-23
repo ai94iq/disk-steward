@@ -7,7 +7,7 @@ public sealed class AppsCoreTests : IDisposable
 {
     private readonly string _root = Directory.CreateTempSubdirectory("disksteward-apps-").FullName;
 
-    public void Dispose() => Directory.Delete(_root, recursive: true);
+    public void Dispose() => TestJunctions.DeleteTree(_root);
 
     private static Dictionary<string, object?> Values(string name = "Tool", string uninstall = @"""C:\Tools\unins000.exe""") => new()
     {
@@ -102,6 +102,41 @@ public sealed class AppsCoreTests : IDisposable
 
         string[] expected = [Path.Combine(roaming, "Tool"), Path.Combine(local, "Acme", "Tool")];
         Assert.Equal(expected.Order(StringComparer.Ordinal), found.Order(StringComparer.Ordinal));
+    }
+
+    [Fact]
+    public void A_leftover_candidate_that_is_a_link_is_not_offered()
+    {
+        // A name built from the registry resolves to a link another user left in the data folder.
+        var roaming = Path.Combine(_root, "Roaming");
+        Directory.CreateDirectory(roaming);
+        var realTarget = Path.Combine(_root, "elsewhere");
+        Directory.CreateDirectory(realTarget);
+        if (!TestJunctions.TryCreate(Path.Combine(roaming, "Tool"), realTarget))
+        {
+            Assert.Skip("Could not create a directory junction on this machine.");
+            return;
+        }
+        var app = InstalledAppParser.FromValues("k", Values())!;
+        var finder = new LeftoverFinder(new ProtectedPaths(new ProtectedRoots(@"Z:\W", [], @"Z:\P", @"Z:\U", @"Z:\O", [roaming])));
+
+        Assert.Empty(finder.Find(app, new LeftoverRoots([roaming], [])));
+    }
+
+    [Fact]
+    public void An_install_folder_reached_through_a_link_is_not_offered()
+    {
+        var realTarget = Path.Combine(_root, "elsewhere");
+        Directory.CreateDirectory(Path.Combine(realTarget, "Tool"));
+        if (!TestJunctions.TryCreate(Path.Combine(_root, "link"), realTarget))
+        {
+            Assert.Skip("Could not create a directory junction on this machine.");
+            return;
+        }
+        var app = InstalledAppParser.FromValues("k", Values())! with { InstallLocation = Path.Combine(_root, "link", "Tool") };
+        var finder = new LeftoverFinder(new ProtectedPaths(new ProtectedRoots(@"Z:\W", [], @"Z:\P", @"Z:\U", @"Z:\O", [])));
+
+        Assert.Empty(finder.Find(app, new LeftoverRoots([], [])));
     }
 
     [Fact]

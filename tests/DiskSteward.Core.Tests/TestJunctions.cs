@@ -24,4 +24,19 @@ public static class TestJunctions
             return false;
         }
     }
+
+    // Deletes a temp tree that may hold junctions, removing each junction as a link first so the
+    // recursive delete never walks into a junction's target.
+    public static void DeleteTree(string root)
+    {
+        RemoveLinks(root);
+        Directory.Delete(root, recursive: true);
+    }
+
+    private static void RemoveLinks(string dir)
+    {
+        foreach (var sub in Directory.GetDirectories(dir))
+            if ((File.GetAttributes(sub) & FileAttributes.ReparsePoint) != 0) Directory.Delete(sub);
+            else RemoveLinks(sub);
+    }
 }

@@ -21,7 +21,7 @@ public static class AppIcons
     private static ImageSource? Read(string iconPath)
     {
         var (file, index) = Split(iconPath);
-        if (!LocalPath.IsOnLocalDrive(file) || !File.Exists(file)) return null;
+        if (!LocalPath.IsOnLocalDrive(file) || LocalPath.CrossesLink(file) || !File.Exists(file)) return null;
 
         var large = new IntPtr[1];
         if (ExtractIconExW(file, index, large, null, 1) == 0 || large[0] == IntPtr.Zero) return null;
