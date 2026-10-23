@@ -10,7 +10,7 @@ public sealed class LeftoverFinder(ProtectedPaths rules)
     public IReadOnlyList<string> Find(InstalledApp app, LeftoverRoots roots)
     {
         var candidates = new List<string>();
-        if (app.InstallLocation is { Length: > 0 } install && Path.IsPathFullyQualified(install)) candidates.Add(install);
+        if (app.InstallLocation is { Length: > 0 } install && LocalPath.IsOnLocalDrive(install)) candidates.Add(install);
         foreach (var root in roots.DataFolders)
         {
             Add(candidates, Under(root, app.Name));

@@ -106,6 +106,32 @@ public sealed class AppsCoreTests : IDisposable
     }
 
     [Fact]
+    public void An_install_folder_that_is_not_a_plain_local_path_is_not_offered()
+    {
+        // InstallLocation comes from the registry; a share or device spelling is never probed.
+        // The device spelling names a real, unprotected local folder here.
+        var install = Path.Combine(_root, "Tool");
+        Directory.CreateDirectory(install);
+        var finder = new LeftoverFinder(new ProtectedPaths(new ProtectedRoots(@"Z:\W", [], @"Z:\P", @"Z:\U", @"Z:\O", [])));
+
+        var app = InstalledAppParser.FromValues("k", Values())! with { InstallLocation = @"\\?\" + install };
+
+        Assert.Empty(finder.Find(app, new LeftoverRoots([], [])));
+    }
+
+    [Fact]
+    public void A_crafted_publisher_cannot_point_leftovers_outside_the_search_root()
+    {
+        var search = Path.Combine(_root, "Roaming");
+        Directory.CreateDirectory(Path.Combine(_root, "Secrets", "Tool"));
+        var finder = new LeftoverFinder(new ProtectedPaths(new ProtectedRoots(@"Z:\W", [], @"Z:\P", @"Z:\U", @"Z:\O", [])));
+
+        var app = InstalledAppParser.FromValues("k", Values())! with { Publisher = @"..\Secrets", InstallLocation = null };
+
+        Assert.Empty(finder.Find(app, new LeftoverRoots([search], [])));
+    }
+
+    [Fact]
     public void A_crafted_app_name_cannot_point_leftovers_outside_the_search_root()
     {
         // DisplayName/Publisher come from the registry (user-writable). An absolute value, or

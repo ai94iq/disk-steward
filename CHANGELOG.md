@@ -13,6 +13,8 @@ All notable changes are documented here. Format: [Keep a Changelog](https://keep
   protected themselves, like your own profile; their contents stay removable.
 - Device-namespace paths with no drive after the prefix (`\\?\GLOBALROOT\...`,
   `\\?\Volume{...}\...`) are refused instead of passing the lexical check.
+- Apps only reads install folders and icons from plain local drive paths, so
+  a registry entry pointing at a network share is never opened.
 
 ### Fixed
 - A recycle Windows reports as done but that left an item on disk now
