@@ -32,7 +32,8 @@ public static class Culture
         if (string.IsNullOrWhiteSpace(language)) return CultureInfo.CurrentCulture;
         try
         {
-            return CultureInfo.GetCultureInfo(language);
+            // predefinedOnly: without it ICU makes up a culture for any well-formed name ("zz").
+            return CultureInfo.GetCultureInfo(language, predefinedOnly: true);
         }
         catch (CultureNotFoundException)
         {
