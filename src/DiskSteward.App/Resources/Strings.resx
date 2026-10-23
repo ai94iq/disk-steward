@@ -41,7 +41,7 @@
   <data name="App_AlreadyRunning" xml:space="preserve"><value>التطبيق يعمل بالفعل.</value></data>
   <data name="App_Name" xml:space="preserve"><value>Disk Steward</value></data>
   <data name="Apps_Clean" xml:space="preserve"><value>لم يترك {0} أي بقايا.</value></data>
-  <data name="Apps_Confirm" xml:space="preserve"><value>تشغيل أداة إلغاء تثبيت {0}؟ ستقودك نافذتها، وقد يطلب Windows الإذن.</value></data>
+  <data name="Apps_Confirm" xml:space="preserve"><value>تشغيل أداة إلغاء تثبيت {0}؟ البرنامج: {1}. ستقودك نافذتها، وقد يطلب Windows الإذن.</value></data>
   <data name="Apps_Count" xml:space="preserve"><value>{0} من {1} تطبيق</value></data>
   <data name="Apps_Hint" xml:space="preserve"><value>يشغّل إلغاء التثبيت أداة الإزالة الخاصة بالتطبيق. تُعرض البقايا بعدها دون تحديد.</value></data>
   <data name="Apps_LeftoversFound" xml:space="preserve"><value>ترك {0} عدد {1} من البقايا. حدد ما تريد إزالته.</value></data>

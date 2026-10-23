@@ -10,8 +10,9 @@ public sealed partial record UninstallCommand(string FileName, string Arguments)
     {
         var text = command.Trim();
         var msi = MsiProduct().Match(text);
+        // The system's own msiexec by full path, not whichever one the search order finds.
         if (text.StartsWith("msiexec", StringComparison.OrdinalIgnoreCase) && msi.Success)
-            return new UninstallCommand("msiexec.exe", $"/x {msi.Value}");
+            return new UninstallCommand(Path.Combine(Environment.SystemDirectory, "msiexec.exe"), $"/x {msi.Value}");
 
         if (text.StartsWith('"'))
         {
@@ -19,13 +20,17 @@ public sealed partial record UninstallCommand(string FileName, string Arguments)
             if (end > 0) return new UninstallCommand(text[1..end], text[(end + 1)..].Trim());
         }
 
-        // Unquoted: the program ends at the first ".exe".
-        var exe = text.IndexOf(".exe", StringComparison.OrdinalIgnoreCase);
-        return exe > 0
-            ? new UninstallCommand(text[..(exe + 4)], text[(exe + 4)..].Trim())
+        // Unquoted: the program ends at the first ".exe" that ends a word, so a folder named
+        // "v2.exe.d" stays part of the path.
+        var exe = ExeEnd().Match(text);
+        return exe.Success
+            ? new UninstallCommand(text[..exe.Length], text[exe.Length..].Trim())
             : new UninstallCommand(text, "");
     }
 
     [GeneratedRegex(@"\{[0-9A-Fa-f-]{36}\}")]
     private static partial Regex MsiProduct();
+
+    [GeneratedRegex(@"^.+?\.exe(?=\s|$)", RegexOptions.IgnoreCase)]
+    private static partial Regex ExeEnd();
 }

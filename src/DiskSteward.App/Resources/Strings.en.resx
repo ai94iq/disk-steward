@@ -41,7 +41,7 @@
   <data name="App_AlreadyRunning" xml:space="preserve"><value>The app is already running.</value></data>
   <data name="App_Name" xml:space="preserve"><value>Disk Steward</value></data>
   <data name="Apps_Clean" xml:space="preserve"><value>{0} left nothing behind.</value></data>
-  <data name="Apps_Confirm" xml:space="preserve"><value>Run the uninstaller for {0}? Its own window will guide you, and Windows may ask for permission.</value></data>
+  <data name="Apps_Confirm" xml:space="preserve"><value>Run the uninstaller for {0}? Program: {1}. Its own window will guide you, and Windows may ask for permission.</value></data>
   <data name="Apps_Count" xml:space="preserve"><value>{0} of {1} apps</value></data>
   <data name="Apps_Hint" xml:space="preserve"><value>Uninstall runs the app's own uninstaller. Leftovers are listed after, unticked.</value></data>
   <data name="Apps_LeftoversFound" xml:space="preserve"><value>{0} left {1} items behind. Tick what to remove.</value></data>

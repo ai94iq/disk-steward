@@ -15,6 +15,12 @@ All notable changes are documented here. Format: [Keep a Changelog](https://keep
   `\\?\Volume{...}\...`) are refused instead of passing the lexical check.
 - Apps only reads install folders and icons from plain local drive paths, so
   a registry entry pointing at a network share is never opened.
+- The uninstall confirmation names the program that will run, and MSI
+  entries run `msiexec.exe` from the System32 folder by full path.
+
+### Fixed
+- An unquoted uninstall command with `.exe` inside a folder name (such as
+  `v2.exe.d`) no longer splits at that folder.
 
 ### Fixed
 - A recycle Windows reports as done but that left an item on disk now

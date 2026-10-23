@@ -98,7 +98,9 @@ public sealed partial class AppsViewModel : PageViewModel
     private async Task UninstallAsync()
     {
         if (SelectedApp is not { } row) return;
-        if (!await _dialogs.ConfirmAsync(Tr.Format("Apps_Confirm", row.Name))) return;
+        // Name the program as well: the name and the command both come from the registry entry.
+        var program = Core.Apps.UninstallCommand.Parse(row.App.UninstallString).FileName;
+        if (!await _dialogs.ConfirmAsync(Tr.Format("Apps_Confirm", row.Name, program))) return;
 
         // The app's own uninstaller is the progress the user sees; this page only waits for it,
         // then lists leftovers. Nothing here can stop an uninstaller once it runs.

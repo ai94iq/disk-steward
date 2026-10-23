@@ -66,13 +66,22 @@ public sealed class AppsCoreTests : IDisposable
     [InlineData(@"""C:\Program Files\Tool\unins000.exe""", @"C:\Program Files\Tool\unins000.exe", "")]
     [InlineData(@"""C:\Program Files\Tool\uninstall.exe"" /x --keep", @"C:\Program Files\Tool\uninstall.exe", "/x --keep")]
     [InlineData(@"C:\Program Files\Tool\uninst.exe /S", @"C:\Program Files\Tool\uninst.exe", "/S")]
-    [InlineData("MsiExec.exe /I{12345678-1234-1234-1234-123456789ABC}", "msiexec.exe", "/x {12345678-1234-1234-1234-123456789ABC}")]
+    [InlineData(@"C:\Tools\v2.exe.d\uninst.exe /S", @"C:\Tools\v2.exe.d\uninst.exe", "/S")]
     public void Uninstall_commands_split_into_program_and_arguments(string command, string file, string arguments)
     {
         var parsed = UninstallCommand.Parse(command);
 
         Assert.Equal(file, parsed.FileName);
         Assert.Equal(arguments, parsed.Arguments);
+    }
+
+    [Fact]
+    public void Msi_entries_run_the_system_msiexec_by_its_full_path()
+    {
+        var parsed = UninstallCommand.Parse("MsiExec.exe /I{12345678-1234-1234-1234-123456789ABC}");
+
+        Assert.Equal(Path.Combine(Environment.SystemDirectory, "msiexec.exe"), parsed.FileName);
+        Assert.Equal("/x {12345678-1234-1234-1234-123456789ABC}", parsed.Arguments);
     }
 
     [Fact]

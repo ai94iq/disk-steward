@@ -101,6 +101,21 @@ public sealed class AppsViewModelTests : IDisposable
     }
 
     [Fact]
+    public async Task The_confirmation_names_the_program_that_will_run()
+    {
+        // The name comes from the registry entry; the program is what actually starts.
+        _installed.List().Returns([_tool with { UninstallString = @"""C:\Tools\Acme\unins000.exe"" /quiet" }]);
+        var vm = Create();
+        await vm.EnsureLoadedAsync();
+        vm.SelectedApp = vm.Apps.Single();
+        _dialogs.ConfirmAsync(Arg.Any<string>()).Returns(false);
+
+        await vm.UninstallCommand.ExecuteAsync(null);
+
+        await _dialogs.Received(1).ConfirmAsync(Arg.Is<string>(s => s.Contains(@"C:\Tools\Acme\unins000.exe") && s.Contains("Tool")));
+    }
+
+    [Fact]
     public async Task After_uninstall_leftovers_are_listed_unticked()
     {
         Directory.CreateDirectory(Path.Combine(_root, "Tool"));
