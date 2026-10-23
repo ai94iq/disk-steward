@@ -31,6 +31,31 @@ public sealed class FolderScannerTests : IDisposable
     }
 
     [Fact]
+    public void Junctions_are_neither_listed_nor_measured()
+    {
+        // A junction inside a folder points at 50 bytes elsewhere; sizes and rows must not include them.
+        File(Path.Combine("elsewhere", "big.bin"), 50);
+        File(Path.Combine("tree", "own.bin"), 5);
+        var link = Path.Combine(_root, "tree", "link");
+        if (!TestJunctions.TryCreate(link, Path.Combine(_root, "elsewhere")))
+        {
+            Assert.Skip("Could not create a directory junction on this machine.");
+            return;
+        }
+        try
+        {
+            var tree = Path.Combine(_root, "tree");
+
+            Assert.DoesNotContain(_scanner.ListChildren(tree), c => c.Name == "link");
+            Assert.Equal(5, _scanner.Measure(tree, new ScanProgress(), TestContext.Current.CancellationToken));
+        }
+        finally
+        {
+            Directory.Delete(link);
+        }
+    }
+
+    [Fact]
     public void List_children_marks_the_system_attribute()
     {
         File("normal.bin", 1);
