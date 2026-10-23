@@ -12,7 +12,7 @@ public sealed class AppsViewModelTests : IDisposable
     private readonly string _root = Directory.CreateTempSubdirectory("disksteward-appsvm-").FullName;
     private readonly IInstalledApps _installed = Substitute.For<IInstalledApps>();
     private readonly IUninstallerRunner _runner = Substitute.For<IUninstallerRunner>();
-    private readonly IRecycleBin _bin = Substitute.For<IRecycleBin>();
+    private readonly IRecycleBin _bin = TestBins.ThatRemoves();
 
     // Every path handed to the Recycle Bin, across batched calls.
     private string[] Binned() =>

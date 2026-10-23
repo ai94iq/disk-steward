@@ -10,6 +10,10 @@ All notable changes are documented here. Format: [Keep a Changelog](https://keep
   failed batch, so a folder swapped for a junction mid-removal cannot redirect
   it.
 
+### Fixed
+- A recycle Windows reports as done but that left an item on disk now
+  reports that item as failed instead of recycled.
+
 ## [0.1.0] - 2026-10-16
 
 ### Added

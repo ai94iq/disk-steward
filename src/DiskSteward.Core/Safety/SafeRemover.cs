@@ -29,7 +29,10 @@ public sealed class SafeRemover(ProtectedPaths rules, IRecycleBin bin, Func<stri
         try
         {
             bin.MoveToRecycleBin(eligible);
-            results.AddRange(eligible.Select(p => new RemovalResult(p, RemovalOutcome.Recycled)));
+            // Windows can report success for a list it did not finish; trust what is left on disk.
+            results.AddRange(eligible.Select(p => Exists(p)
+                ? new RemovalResult(p, RemovalOutcome.Failed, "Still there after recycling.")
+                : new RemovalResult(p, RemovalOutcome.Recycled)));
         }
         catch (Exception ex) when (IsRecycleError(ex))
         {

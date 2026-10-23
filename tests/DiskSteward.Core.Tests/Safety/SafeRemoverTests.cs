@@ -8,6 +8,24 @@ public sealed class SafeRemoverTests : IDisposable
 {
     private readonly string _root = Directory.CreateTempSubdirectory("disksteward-test-").FullName;
     private readonly IRecycleBin _bin = Substitute.For<IRecycleBin>();
+    private readonly HashSet<string> _refusedByWindows = new(StringComparer.OrdinalIgnoreCase);
+    private readonly HashSet<string> _leftByWindows = new(StringComparer.OrdinalIgnoreCase);
+    private bool _windowsFails;
+
+    public SafeRemoverTests() =>
+        _bin.When(b => b.MoveToRecycleBin(Arg.Any<IReadOnlyList<string>>())).Do(c => FakeRecycle((IReadOnlyList<string>)c[0]!));
+
+    // Stands in for Windows: removes what it is given, or fails the whole call as SHFileOperation
+    // does when one item cannot go. _leftByWindows items are kept although the call succeeds.
+    private void FakeRecycle(IReadOnlyList<string> paths)
+    {
+        if (_windowsFails || paths.Any(_refusedByWindows.Contains)) throw new IOException("in use");
+        foreach (var path in paths.Where(p => !_leftByWindows.Contains(p)))
+        {
+            if (Directory.Exists(path)) Directory.Delete(path, recursive: true);
+            else if (File.Exists(path)) File.Delete(path);
+        }
+    }
 
     // Every path handed to the Recycle Bin, across batched calls.
     private string[] Binned() =>
@@ -120,12 +138,25 @@ public sealed class SafeRemoverTests : IDisposable
     {
         var bad = Make("bad");
         var good = Make("good");
-        _bin.When(b => b.MoveToRecycleBin(Arg.Is<IReadOnlyList<string>>(l => l.Contains(bad)))).Do(_ => throw new IOException("in use"));
+        _refusedByWindows.Add(bad);
 
         var results = Remover().Recycle([bad, good]);
 
         Assert.Equal(RemovalOutcome.Failed, results.Single(r => r.Path == bad).Outcome);
         Assert.Equal(RemovalOutcome.Recycled, results.Single(r => r.Path == good).Outcome);
+    }
+
+    [Fact]
+    public void An_item_still_there_after_the_batch_is_reported_failed()
+    {
+        var gone = Make("gone");
+        var stuck = Make("stuck");
+        _leftByWindows.Add(stuck);
+
+        var results = Remover().Recycle([gone, stuck]);
+
+        Assert.Equal(RemovalOutcome.Recycled, results.Single(r => r.Path == gone).Outcome);
+        Assert.Equal(RemovalOutcome.Failed, results.Single(r => r.Path == stuck).Outcome);
     }
 
     [Fact]
@@ -153,7 +184,7 @@ public sealed class SafeRemoverTests : IDisposable
         var remover = new SafeRemover(
             new ProtectedPaths(new ProtectedRoots(@"Z:\Windows", [@"Z:\prot"], @"Z:\P", @"Z:\U", @"Z:\own", [])),
             _bin, _ => true, resolveRealPath: p => ++checks == 1 ? p : @"Z:\prot\inside");
-        _bin.When(b => b.MoveToRecycleBin(Arg.Any<IReadOnlyList<string>>())).Do(_ => throw new IOException("busy"));
+        _windowsFails = true;
 
         var results = remover.Recycle([cache]);
 

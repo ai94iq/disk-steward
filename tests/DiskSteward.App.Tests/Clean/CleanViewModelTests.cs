@@ -10,7 +10,7 @@ namespace DiskSteward.App.Tests.Clean;
 public sealed class CleanViewModelTests : IDisposable
 {
     private readonly string _root = Directory.CreateTempSubdirectory("disksteward-cleanvm-").FullName;
-    private readonly IRecycleBin _bin = Substitute.For<IRecycleBin>();
+    private readonly IRecycleBin _bin = TestBins.ThatRemoves();
 
     // Every path handed to the Recycle Bin, across batched calls.
     private string[] Binned() =>
