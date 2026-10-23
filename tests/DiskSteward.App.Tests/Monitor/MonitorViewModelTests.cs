@@ -51,6 +51,7 @@ public sealed class MonitorViewModelTests
         awake.Ended += Raise.Event();
 
         Assert.False(vm.KeepAwake.IsOn);
+        awake.DidNotReceive().Stop(); // the service already stopped itself
     }
 
     private static IMonitorService Monitor(params SystemSnapshot[] samples)

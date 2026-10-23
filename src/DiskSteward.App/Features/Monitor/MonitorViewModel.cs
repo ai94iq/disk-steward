@@ -17,14 +17,21 @@ public sealed partial class MonitorViewModel : PageViewModel
     private readonly Queue<double> _memoryHistory = new();
     private readonly Queue<double> _downHistory = new();
     private CancellationTokenSource? _live;
+    private bool _showingEnd;
 
     public MonitorViewModel(IMonitorService monitor, IKeepAwake awake, ILogger<MonitorViewModel> log) : base(log)
     {
         _monitor = monitor;
         _awake = awake;
         KeepAwake = KeepAwakeOption.All[0];
-        // Both are singletons, so this subscription lives as long as the app.
-        _awake.Ended += (_, _) => KeepAwake = KeepAwakeOption.All[0];
+        // Both are singletons, so this subscription lives as long as the app. The service has
+        // already stopped, so only the shown option changes.
+        _awake.Ended += (_, _) =>
+        {
+            _showingEnd = true;
+            try { KeepAwake = KeepAwakeOption.All[0]; }
+            finally { _showingEnd = false; }
+        };
         _log = log;
         CpuHistory = [];
         MemoryHistory = [];
@@ -62,8 +69,9 @@ public sealed partial class MonitorViewModel : PageViewModel
 
     partial void OnKeepAwakeChanged(KeepAwakeOption oldValue, KeepAwakeOption newValue)
     {
-        // The constructor's first assignment (from no value) is not a user choice.
-        if (oldValue is null) return;
+        // The constructor's first assignment (from no value) is not a user choice, and neither is
+        // a timed request running out.
+        if (oldValue is null || _showingEnd) return;
         if (newValue.IsOn) _awake.Start(newValue.Duration);
         else _awake.Stop();
     }
