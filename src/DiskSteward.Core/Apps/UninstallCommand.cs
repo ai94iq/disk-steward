@@ -20,8 +20,8 @@ public sealed partial record UninstallCommand(string FileName, string Arguments)
             if (end > 0) return new UninstallCommand(text[1..end], text[(end + 1)..].Trim());
         }
 
-        // Unquoted: the program ends at the first ".exe" that ends a word, so a folder named
-        // "v2.exe.d" stays part of the path.
+        // Unquoted: the program ends at the first ".exe" followed by a space, a switch ("/S"), a
+        // quote or the end, so a folder named "v2.exe.d" stays part of the path.
         var exe = ExeEnd().Match(text);
         return exe.Success
             ? new UninstallCommand(text[..exe.Length], text[exe.Length..].Trim())
@@ -31,6 +31,6 @@ public sealed partial record UninstallCommand(string FileName, string Arguments)
     [GeneratedRegex(@"\{[0-9A-Fa-f-]{36}\}")]
     private static partial Regex MsiProduct();
 
-    [GeneratedRegex(@"^.+?\.exe(?=\s|$)", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(@"^.+?\.exe(?=[\s/""]|$)", RegexOptions.IgnoreCase)]
     private static partial Regex ExeEnd();
 }

@@ -67,6 +67,8 @@ public sealed class AppsCoreTests : IDisposable
     [InlineData(@"""C:\Program Files\Tool\uninstall.exe"" /x --keep", @"C:\Program Files\Tool\uninstall.exe", "/x --keep")]
     [InlineData(@"C:\Program Files\Tool\uninst.exe /S", @"C:\Program Files\Tool\uninst.exe", "/S")]
     [InlineData(@"C:\Tools\v2.exe.d\uninst.exe /S", @"C:\Tools\v2.exe.d\uninst.exe", "/S")]
+    [InlineData(@"C:\Apps\Foo\uninst.exe/S", @"C:\Apps\Foo\uninst.exe", "/S")]
+    [InlineData(@"C:\Apps\Foo\uninst.exe""--quiet""", @"C:\Apps\Foo\uninst.exe", @"""--quiet""")]
     public void Uninstall_commands_split_into_program_and_arguments(string command, string file, string arguments)
     {
         var parsed = UninstallCommand.Parse(command);
