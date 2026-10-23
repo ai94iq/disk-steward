@@ -92,6 +92,23 @@ public sealed class ProtectedPathsTests
     }
 
     [Fact]
+    public void Profiles_beside_a_profile_on_a_share_are_not_listed()
+    {
+        // A roaming or redirected profile on a share: listing its parent would sign in to the
+        // server at startup. The loopback admin share stands in for that server here.
+        var profile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        var share = $@"\\localhost\{profile[0]}$\{profile[3..]}";
+        if (!Directory.Exists(Path.GetDirectoryName(share)))
+        {
+            Assert.Skip("The loopback admin share is not reachable on this machine.");
+            return;
+        }
+
+        Assert.Empty(ProtectedRoots.ProfilesBeside(share));
+        Assert.NotEmpty(ProtectedRoots.ProfilesBeside(profile));
+    }
+
+    [Fact]
     public void Dot_segments_cannot_escape_into_a_protected_root() =>
         Assert.True(Rules.IsProtected(@"C:\Users\me\Desktop\..\..\..\Windows\System32"));
 }

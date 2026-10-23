@@ -30,7 +30,7 @@ public sealed record ProtectedRoots(
             Environment.GetEnvironmentVariable("OneDrive") ?? "",
             // Public and every other profile on the machine: other local users can write in
             // them, and recycling one whole would take someone else's files.
-            .. OtherProfiles(profile),
+            .. ProfilesBeside(profile),
         ];
         return new ProtectedRoots(
             Folder(Environment.SpecialFolder.Windows),
@@ -41,10 +41,12 @@ public sealed record ProtectedRoots(
             [.. known.Where(k => k.Length > 0)]);
     }
 
-    private static IEnumerable<string> OtherProfiles(string profile)
+    // Every folder next to the profile (Public, Default, other users), or none when that would
+    // mean listing a folder that is not on a local drive.
+    public static IReadOnlyList<string> ProfilesBeside(string profile)
     {
         var profiles = Path.GetDirectoryName(profile);
-        if (string.IsNullOrEmpty(profiles) || !Directory.Exists(profiles)) return [];
+        if (string.IsNullOrEmpty(profiles) || !LocalPath.IsOnLocalDrive(profiles) || !Directory.Exists(profiles)) return [];
         try
         {
             return Directory.EnumerateDirectories(profiles, "*", new EnumerationOptions { IgnoreInaccessible = true, AttributesToSkip = 0 }).ToList();
