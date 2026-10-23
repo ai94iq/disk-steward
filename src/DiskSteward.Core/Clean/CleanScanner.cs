@@ -81,6 +81,7 @@ public sealed class CleanScanner(IFolderScanner folders, ProtectedPaths rules, I
     private static bool ThroughLink(string root, string? top)
     {
         if (IsReparsePoint(root)) return true;
+        if (top is not null && root.Equals(top, StringComparison.OrdinalIgnoreCase)) return false;
         for (var at = Path.GetDirectoryName(root); !string.IsNullOrEmpty(at); at = Path.GetDirectoryName(at))
         {
             if (top is not null && at.Equals(top, StringComparison.OrdinalIgnoreCase)) return false;

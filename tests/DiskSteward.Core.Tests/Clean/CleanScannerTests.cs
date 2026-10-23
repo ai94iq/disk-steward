@@ -68,6 +68,33 @@ public sealed class CleanScannerTests : IDisposable
     }
 
     [Fact]
+    public void A_rule_that_is_only_its_variable_still_follows_links_above_it()
+    {
+        // Like %TEMP% under a profile moved to another drive with a junction: the link sits
+        // above the rule's base folder, which is the user's own layout.
+        File(Path.Combine("moved", "Temp", "old.tmp"), 5);
+        var profile = Path.Combine(_root, "profile");
+        if (!TestJunctions.TryCreate(profile, Path.Combine(_root, "moved")))
+        {
+            Assert.Skip("Could not create a directory junction on this machine.");
+            return;
+        }
+        var variable = "DISKSTEWARD_TEST_" + Guid.NewGuid().ToString("N");
+        Environment.SetEnvironmentVariable(variable, Path.Combine(profile, "Temp"));
+        try
+        {
+            var finding = Scan(Scanner(), new CleanTarget("t", CleanCategory.System, $"%{variable}%"));
+
+            Assert.EndsWith("old.tmp", Assert.Single(finding.Items).Path, StringComparison.Ordinal);
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable(variable, null);
+            Directory.Delete(profile);
+        }
+    }
+
+    [Fact]
     public void A_rule_whose_folder_is_protected_lists_nothing()
     {
         // A personal folder is protected itself but not its contents, so a rule aimed at the
