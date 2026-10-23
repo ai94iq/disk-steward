@@ -18,16 +18,16 @@ public partial class App : Application
         AppLogging.Configure();
         HookGlobalExceptionHandlers();
 
-        _singleInstance = new Mutex(initiallyOwned: true, @"Local\DiskSteward.SingleInstance", out _ownsMutex);
-        if (!_ownsMutex)
-        {
-            await new DialogService().ShowInfoAsync(Tr.Get("App_AlreadyRunning"));
-            Shutdown();
-            return;
-        }
-
         try
         {
+            _singleInstance = new Mutex(initiallyOwned: true, @"Local\DiskSteward.SingleInstance", out _ownsMutex);
+            if (!_ownsMutex)
+            {
+                await new DialogService().ShowInfoAsync(Tr.Get("App_AlreadyRunning"));
+                Shutdown();
+                return;
+            }
+
             var builder = Host.CreateApplicationBuilder(e.Args);
             builder.Services.AddSerilog();        // uses the static Log.Logger
             builder.Services.AddAppServices(settings);

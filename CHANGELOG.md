@@ -28,6 +28,8 @@ All notable changes are documented here. Format: [Keep a Changelog](https://keep
   the whole location.
 - Age-limited Clean locations (Temp, Cursor workspaces) keep a folder when
   anything inside it was written recently, not only its direct children.
+- An unknown language name in `settings.json` falls back to the system
+  language instead of stopping the app at launch.
 - A recycle Windows reports as done but that left an item on disk now
   reports that item as failed instead of recycled.
 
