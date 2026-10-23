@@ -21,8 +21,15 @@ public static class Sandbox
     public static string? Root { get; } = Environment.GetEnvironmentVariable("DISKSTEWARD_SANDBOX") is { Length: > 0 } root
         && Directory.Exists(root) ? Path.GetFullPath(root) : null;
 
-    public static Type? StartPage => Environment.GetEnvironmentVariable("DISKSTEWARD_PAGE") is { Length: > 0 } page
-        ? Type.GetType($"DiskSteward.App.Features.{page}.{page}Page") : null;
+    // One of the four pages by name; anything else is ignored rather than loaded as a type name.
+    public static Type? StartPage => Environment.GetEnvironmentVariable("DISKSTEWARD_PAGE") switch
+    {
+        "Clean" => typeof(Features.Clean.CleanPage),
+        "Apps" => typeof(Features.Apps.AppsPage),
+        "Analyze" => typeof(Features.Analyze.AnalyzePage),
+        "Monitor" => typeof(Features.Monitor.MonitorPage),
+        _ => null,
+    };
 
     public static void Apply(IServiceCollection services)
     {
