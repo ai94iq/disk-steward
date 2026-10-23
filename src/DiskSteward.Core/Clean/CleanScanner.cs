@@ -20,24 +20,59 @@ public sealed class CleanScanner(IFolderScanner folders, ProtectedPaths rules, I
     {
         var items = new List<CleanItem>();
         var cutoff = target.OlderThanDays > 0 ? now.AddDays(-target.OlderThanDays) : DateTime.MaxValue;
+        var top = BaseFolder(target.Path);
         foreach (var root in Expand(Environment.ExpandEnvironmentVariables(target.Path)))
         {
-            // A cache root that is itself a junction/symlink would list the real target's
-            // contents under the cache's name; do not descend into it. (SafeRemover also
-            // refuses such paths, but this keeps them out of the list the user sees.)
-            if (IsWhitelisted(root) || !Directory.Exists(root) || IsReparsePoint(root)) continue;
+            // A cache root that is a junction/symlink, or sits under one, would list another
+            // folder's contents under the cache's name; do not descend into it. A protected
+            // root (a personal folder protects itself, not its contents) is not a cache.
+            if (IsWhitelisted(root) || !Directory.Exists(root) || rules.IsProtected(root) || ThroughLink(root, top)) continue;
             foreach (var path in Candidates(root, target))
             {
                 ct.ThrowIfCancellationRequested();
                 if (IsWhitelisted(path) || rules.IsProtected(path)) continue;
-                var isDirectory = Directory.Exists(path);
-                var written = isDirectory ? Directory.GetLastWriteTime(path) : File.GetLastWriteTime(path);
-                if (written >= cutoff) continue;
-                var size = isDirectory ? folders.Measure(path, progress, ct) : FileSize(path, progress);
-                items.Add(new CleanItem(path, size));
+                if (Measured(path, cutoff, progress, ct) is { } item) items.Add(item);
             }
         }
         return new CleanFinding(target, items);
+    }
+
+    // One item, or null when it is too recent or vanished or became unreadable since it was
+    // listed (one such item must not fail the whole target).
+    private CleanItem? Measured(string path, DateTime cutoff, ScanProgress progress, CancellationToken ct)
+    {
+        try
+        {
+            var isDirectory = Directory.Exists(path);
+            var written = isDirectory ? Directory.GetLastWriteTime(path) : File.GetLastWriteTime(path);
+            if (written >= cutoff) return null;
+            return new CleanItem(path, isDirectory ? folders.Measure(path, progress, ct) : FileSize(path, progress));
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            return null;
+        }
+    }
+
+    // The folder a rule starts from: its leading %VARIABLE% expanded ("%LOCALAPPDATA%\x" ->
+    // C:\Users\me\AppData\Local). Links at or above it are the user's own layout and are
+    // followed; null for a rule with no leading variable, so every folder is checked.
+    private static string? BaseFolder(string rulePath)
+    {
+        var end = rulePath.StartsWith('%') ? rulePath.IndexOf('%', 1) : -1;
+        return end > 0 ? Path.TrimEndingDirectorySeparator(Environment.ExpandEnvironmentVariables(rulePath[..(end + 1)])) : null;
+    }
+
+    // True when the root or any folder between it and the rule's base folder is a link.
+    private static bool ThroughLink(string root, string? top)
+    {
+        if (IsReparsePoint(root)) return true;
+        for (var at = Path.GetDirectoryName(root); !string.IsNullOrEmpty(at); at = Path.GetDirectoryName(at))
+        {
+            if (top is not null && at.Equals(top, StringComparison.OrdinalIgnoreCase)) return false;
+            if (IsReparsePoint(at)) return true;
+        }
+        return false;
     }
 
     public bool IsWhitelisted(string path) => _whitelist.Any(w => w.IsMatch(path.TrimEnd('\\')));

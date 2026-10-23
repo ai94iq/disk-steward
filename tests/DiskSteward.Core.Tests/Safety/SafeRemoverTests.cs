@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using DiskSteward.Core.Safety;
 using NSubstitute;
 
@@ -232,7 +231,7 @@ public sealed class SafeRemoverTests : IDisposable
         var protectedTarget = Make("protected-target");
         File.WriteAllText(Path.Combine(protectedTarget, "keep.txt"), "x");
         var cache = Path.Combine(_root, "cache"); // a junction that aims the cache at the protected dir
-        if (!TryCreateJunction(cache, protectedTarget))
+        if (!TestJunctions.TryCreate(cache, protectedTarget))
         {
             Assert.Skip("Could not create a directory junction on this machine.");
             return;
@@ -255,26 +254,6 @@ public sealed class SafeRemoverTests : IDisposable
             // Remove the junction link itself (not its target) before the recursive teardown
             // so Dispose does not walk into the real folder.
             Directory.Delete(cache);
-        }
-    }
-
-    private static bool TryCreateJunction(string link, string target)
-    {
-        try
-        {
-            using var process = Process.Start(new ProcessStartInfo("cmd.exe", $"/c mklink /J \"{link}\" \"{target}\"")
-            {
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-            });
-            process!.WaitForExit();
-            return process.ExitCode == 0 && Directory.Exists(link);
-        }
-        catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or IOException)
-        {
-            return false;
         }
     }
 }

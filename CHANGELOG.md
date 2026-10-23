@@ -17,12 +17,15 @@ All notable changes are documented here. Format: [Keep a Changelog](https://keep
   a registry entry pointing at a network share is never opened.
 - The uninstall confirmation names the program that will run, and MSI
   entries run `msiexec.exe` from the System32 folder by full path.
+- Clean skips a cache folder that sits under a junction or symlink below its
+  base folder (such as `%LOCALAPPDATA%`), and a rule aimed at a protected
+  folder lists nothing.
 
 ### Fixed
 - An unquoted uninstall command with `.exe` inside a folder name (such as
   `v2.exe.d`) no longer splits at that folder.
-
-### Fixed
+- A cache item that vanishes while Clean scans is skipped instead of failing
+  the whole location.
 - A recycle Windows reports as done but that left an item on disk now
   reports that item as failed instead of recycled.
 
