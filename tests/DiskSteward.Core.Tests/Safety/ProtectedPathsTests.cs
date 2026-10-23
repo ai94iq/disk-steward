@@ -73,6 +73,13 @@ public sealed class ProtectedPathsTests
         Assert.False(Rules.IsProtected(@"D:\Backups\pagefile.sys"));
 
     [Theory]
+    [InlineData(@"\\?\GLOBALROOT\Device\HarddiskVolume3\Windows")]
+    [InlineData(@"\\?\Volume{0a1b2c3d-0000-0000-0000-100000000000}\Windows")]
+    [InlineData(@"\\.\GLOBALROOT\Device\HarddiskVolume3\Users\me")]
+    public void Device_namespace_spellings_without_a_drive_are_protected(string path) =>
+        Assert.Equal(ProtectionReason.NotAFullPath, Rules.ReasonFor(path));
+
+    [Theory]
     [InlineData("Public")]
     [InlineData("Default")]
     public void Other_profile_roots_on_this_machine_are_protected_themselves(string profile)

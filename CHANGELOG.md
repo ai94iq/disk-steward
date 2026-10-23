@@ -11,6 +11,8 @@ All notable changes are documented here. Format: [Keep a Changelog](https://keep
   it.
 - `C:\Users\Public` and every other profile folder on the machine are
   protected themselves, like your own profile; their contents stay removable.
+- Device-namespace paths with no drive after the prefix (`\\?\GLOBALROOT\...`,
+  `\\?\Volume{...}\...`) are refused instead of passing the lexical check.
 
 ### Fixed
 - A recycle Windows reports as done but that left an item on disk now

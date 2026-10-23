@@ -32,7 +32,10 @@ public sealed class ProtectedPaths(ProtectedRoots roots)
     // None when the path may be removed; otherwise the first rule that protects it.
     public ProtectionReason ReasonFor(string path)
     {
-        if (string.IsNullOrWhiteSpace(path) || !Path.IsPathFullyQualified(path)) return ProtectionReason.NotAFullPath;
+        // A device-namespace path without a drive or share after its prefix (\\?\GLOBALROOT\...,
+        // \\?\Volume{...}\...) names a real folder this guard cannot compare; refuse it.
+        if (string.IsNullOrWhiteSpace(path) || !Path.IsPathFullyQualified(path)
+            || !Path.IsPathFullyQualified(StripDevicePrefix(path))) return ProtectionReason.NotAFullPath;
 
         var full = Normalize(path);
         var root = Normalize(Path.GetPathRoot(full) ?? "");
