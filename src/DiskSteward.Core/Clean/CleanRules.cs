@@ -4,7 +4,9 @@ namespace DiskSteward.Core.Clean;
 // profile. Kept to folders the owning app rebuilds on its own. Left out: anything that needs
 // admin (Windows Temp, Prefetch, Windows Update), permanent deletes (emptying the Recycle
 // Bin), user files (Downloads), and folders that hold settings, sign-ins or app state
-// (browser profiles beyond their caches, chat databases, offline media).
+// (browser profiles beyond their caches, chat databases, offline media). One exception on
+// purpose: AI tools' chat transcripts older than 30 days (claude-chats, codex-sessions), which
+// nothing rebuilds but which grow without bound; they are offered unticked like everything else.
 public static class CleanRules
 {
     private const string Local = "%LOCALAPPDATA%";

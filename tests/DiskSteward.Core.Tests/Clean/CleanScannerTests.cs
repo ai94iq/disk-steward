@@ -198,4 +198,18 @@ public sealed class CleanScannerTests : IDisposable
         Assert.True(scanner.IsWhitelisted(Path.Combine(project, "memory", "notes.md")));
         Assert.False(scanner.IsWhitelisted(Path.Combine(project, "chat.jsonl")));
     }
+
+    [Fact]
+    public void A_whitelisted_folder_is_never_listed_by_a_rule_that_reaches_it()
+    {
+        // The shipped claude-chats rule lists files only, so it never reaches memory; this pins
+        // the whitelist itself for any folder-level rule over the same tree.
+        File(Path.Combine("projects", "app", "memory", "notes.md"), 5, ageDays: 60);
+        File(Path.Combine("projects", "app", "old.jsonl"), 7, ageDays: 60);
+        var scanner = Scanner(Path.Combine(_root, "projects", "*", "memory"));
+
+        var finding = Scan(scanner, new CleanTarget("t", CleanCategory.AiTools, Path.Combine(_root, "projects", "*")));
+
+        Assert.EndsWith("old.jsonl", Assert.Single(finding.Items).Path, StringComparison.Ordinal);
+    }
 }
