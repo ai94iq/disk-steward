@@ -101,6 +101,20 @@ public sealed class CleanScannerTests : IDisposable
     }
 
     [Fact]
+    public void Age_limit_counts_a_recent_file_deep_inside_a_folder()
+    {
+        // A folder's own date changes only when its direct children do, so a file written
+        // yesterday two levels down leaves "job" looking a month old.
+        File(Path.Combine("tmp", "job", "deep", "in-use.log"), 5, ageDays: 1);
+        Directory.SetLastWriteTime(Path.Combine(_root, "tmp", "job", "deep"), Now.AddDays(-30));
+        Directory.SetLastWriteTime(Path.Combine(_root, "tmp", "job"), Now.AddDays(-30));
+
+        var finding = Scan(Scanner(), new CleanTarget("t", CleanCategory.System, Path.Combine(_root, "tmp"), OlderThanDays: 7));
+
+        Assert.Empty(finding.Items);
+    }
+
+    [Fact]
     public void Age_limit_leaves_recent_items_alone()
     {
         File(Path.Combine("tmp", "old.tmp"), 5, ageDays: 10);

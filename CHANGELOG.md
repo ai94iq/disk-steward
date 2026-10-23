@@ -26,6 +26,8 @@ All notable changes are documented here. Format: [Keep a Changelog](https://keep
   `v2.exe.d`) no longer splits at that folder.
 - A cache item that vanishes while Clean scans is skipped instead of failing
   the whole location.
+- Age-limited Clean locations (Temp, Cursor workspaces) keep a folder when
+  anything inside it was written recently, not only its direct children.
 - A recycle Windows reports as done but that left an item on disk now
   reports that item as failed instead of recycled.
 
