@@ -52,7 +52,7 @@ public sealed class CleanScanner(IFolderScanner folders, ProtectedPaths rules, I
         {
             var isDirectory = Directory.Exists(path);
             var written = isDirectory ? Directory.GetLastWriteTime(path) : File.GetLastWriteTime(path);
-            if (written >= cutoff || (isDirectory && HasEntryWrittenSince(path, cutoff))) return null;
+            if (written >= cutoff || (isDirectory && HasEntryWrittenSince(path, cutoff, ct))) return null;
             return new CleanItem(path, isDirectory ? folders.Measure(path, progress, ct) : FileSize(path, progress));
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
@@ -63,10 +63,15 @@ public sealed class CleanScanner(IFolderScanner folders, ProtectedPaths rules, I
 
     // A folder's own date moves only when its direct children change, so an age-limited folder
     // counts as recent when anything inside it is. Stops at the first recent entry; links are
-    // not followed. Rules without an age limit never get here (cutoff is MaxValue).
-    private static bool HasEntryWrittenSince(string folder, DateTime cutoff) =>
+    // not followed, and Cancel stops the walk. Rules without an age limit never get here
+    // (cutoff is MaxValue).
+    private static bool HasEntryWrittenSince(string folder, DateTime cutoff, CancellationToken ct) =>
         cutoff != DateTime.MaxValue
-        && new DirectoryInfo(folder).EnumerateFileSystemInfos("*", Recursive).Any(e => e.LastWriteTime >= cutoff);
+        && new DirectoryInfo(folder).EnumerateFileSystemInfos("*", Recursive).Any(e =>
+        {
+            ct.ThrowIfCancellationRequested();
+            return e.LastWriteTime >= cutoff;
+        });
 
     // The folder a rule starts from: its leading %VARIABLE% expanded ("%LOCALAPPDATA%\x" ->
     // C:\Users\me\AppData\Local). Links at or above it are the user's own layout and are
