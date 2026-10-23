@@ -101,6 +101,27 @@ public sealed class AppsViewModelTests : IDisposable
     }
 
     [Fact]
+    public async Task Leftover_recycle_cannot_start_again_while_its_confirmation_is_open()
+    {
+        Directory.CreateDirectory(Path.Combine(_root, "Tool"));
+        var vm = Create();
+        await vm.EnsureLoadedAsync();
+        vm.SelectedApp = vm.Apps.Single(a => a.Name == "Tool");
+        _dialogs.ConfirmAsync(Arg.Any<string>()).Returns(true);
+        _installed.IsInstalled(_tool).Returns(false);
+        await vm.UninstallCommand.ExecuteAsync(null);
+        Assert.Single(vm.Leftovers).IsSelected = true;
+        var answer = new TaskCompletionSource<bool>();
+        _dialogs.ConfirmAsync(Arg.Any<string>()).Returns(answer.Task);
+
+        var first = vm.RecycleLeftoversCommand.ExecuteAsync(null);
+
+        Assert.False(vm.RecycleLeftoversCommand.CanExecute(null));
+        answer.SetResult(false);
+        await first;
+    }
+
+    [Fact]
     public async Task The_confirmation_names_the_program_that_will_run()
     {
         // The name comes from the registry entry; the program is what actually starts.
