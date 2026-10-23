@@ -49,9 +49,21 @@ public sealed class SafeRemover(ProtectedPaths rules, IRecycleBin bin, Func<stri
     private RemovalResult? Refusal(string path, FolderPins pins)
     {
         if (rules.IsProtected(path)) return new RemovalResult(path, RemovalOutcome.Protected);
-        if (!Exists(path)) return new RemovalResult(path, RemovalOutcome.Missing);
+
+        // The leaf's own attributes, read without following it, so a leaf that was swapped for a
+        // link to a share is never opened over the network.
+        FileAttributes leaf;
+        try { leaf = File.GetAttributes(path); }
+        catch (Exception ex) when (ex is FileNotFoundException or DirectoryNotFoundException) { return new RemovalResult(path, RemovalOutcome.Missing); }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { return new RemovalResult(path, RemovalOutcome.Failed, "Could not read it."); }
+
         if (!FoldersAbove(path).All(pins.IsHeld))
             return new RemovalResult(path, RemovalOutcome.Failed, "Could not hold the folders above it.");
+
+        // A leaf that is itself a link is moved as a link, not followed: recycling it leaves its
+        // target untouched, so it needs no resolving (which would open it, maybe over a share).
+        if ((leaf & FileAttributes.ReparsePoint) != 0)
+            return isRecyclableDrive(path) ? null : new RemovalResult(path, RemovalOutcome.NotRecyclable);
 
         var real = _resolveRealPath(path);
         if (real is null) return new RemovalResult(path, RemovalOutcome.Failed, "Could not resolve the real path.");

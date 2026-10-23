@@ -24,7 +24,8 @@ public sealed class SafeRemoverTests : IDisposable
         if (_windowsFails || paths.Any(_refusedByWindows.Contains)) throw new IOException("in use");
         foreach (var path in paths.Where(p => !_leftByWindows.Contains(p)))
         {
-            if (Directory.Exists(path)) Directory.Delete(path, recursive: true);
+            // A reparse point is moved as a link, not followed, so its target is left alone.
+            if (Directory.Exists(path)) Directory.Delete(path, recursive: (File.GetAttributes(path) & FileAttributes.ReparsePoint) == 0);
             else if (File.Exists(path)) File.Delete(path);
         }
     }
@@ -33,7 +34,31 @@ public sealed class SafeRemoverTests : IDisposable
     private string[] Binned() =>
         [.. _bin.ReceivedCalls().SelectMany(c => (IReadOnlyList<string>)c.GetArguments()[0]!)];
 
-    public void Dispose() => Directory.Delete(_root, recursive: true);
+    public void Dispose() => TestJunctions.DeleteTree(_root);
+
+    [Fact]
+    public void A_leaf_that_is_a_link_is_recycled_as_a_link_without_being_followed()
+    {
+        // A ticked item that is swapped for a link (which could point off the drive) must be moved
+        // as a link, not opened to resolve it.
+        var target = Make("target");
+        File.WriteAllText(Path.Combine(target, "keep.txt"), "x");
+        var leaf = Path.Combine(_root, "leaf");
+        if (!TestJunctions.TryCreate(leaf, target))
+        {
+            Assert.Skip("Could not create a directory junction on this machine.");
+            return;
+        }
+        var resolved = false;
+        var remover = Remover(p => { resolved = true; return p; }, []);
+
+        var results = remover.Recycle([leaf]);
+
+        Assert.False(resolved);
+        Assert.Contains(leaf, Binned());
+        Assert.Equal(RemovalOutcome.Recycled, Assert.Single(results).Outcome);
+        Assert.True(File.Exists(Path.Combine(target, "keep.txt")));
+    }
 
     [Fact]
     public void A_path_is_gone_when_it_or_a_folder_above_it_went()

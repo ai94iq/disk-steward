@@ -12,7 +12,8 @@ All notable changes are documented here. Format: [Keep a Changelog](https://keep
 - `SafeRemover` holds the folders above every path while it checks and
   recycles them, and checks each path again before its own attempt after a
   failed batch, so a folder swapped for a junction mid-removal cannot redirect
-  it.
+  it. A ticked item that is itself a junction or symlink is moved as a link,
+  not opened to resolve it, so it cannot be followed to a network share.
 - `C:\Users\Public` and every other profile folder on the machine are
   protected themselves, like your own profile; their contents stay removable.
 - Device-namespace paths with no drive after the prefix (`\\?\GLOBALROOT\...`,
