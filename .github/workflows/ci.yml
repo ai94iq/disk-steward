@@ -9,12 +9,16 @@ on:
 permissions:
   contents: read
 
+# Actions are pinned to the commit of their latest release (comment = that release), so a
+# moved tag cannot change what runs with the release job's write token.
 jobs:
   test:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-dotnet@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           global-json-file: global.json
       - name: Test
@@ -22,20 +26,35 @@ jobs:
         run: test.bat --no-pause
 
   release:
-    # A v* tag builds the MSI and attaches it to a GitHub release (unsigned).
+    # A v* tag builds the MSI and attaches it to a GitHub release (unsigned), with a SHA-256
+    # file next to it.
     if: startsWith(github.ref, 'refs/tags/v')
     needs: test
     runs-on: windows-latest
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-dotnet@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false # the build never needs the token; only the upload step gets it
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           global-json-file: global.json
       - name: Package
         shell: cmd
         run: package.bat --no-pause
-      - uses: softprops/action-gh-release@v3
+      - name: Checksums
+        shell: pwsh
+        run: |
+          $msis = @(Get-ChildItem artifacts/installer -Recurse -Filter *.msi)
+          if ($msis.Count -eq 0) { throw "package.bat produced no MSI under artifacts/installer" }
+          foreach ($msi in $msis) {
+            $hash = (Get-FileHash $msi.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+            Set-Content -Path "$($msi.FullName).sha256" -Value "$hash  $($msi.Name)" -NoNewline
+          }
+      - uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
-          files: artifacts/installer/**/*.msi
+          fail_on_unmatched_files: true
+          files: |
+            artifacts/installer/**/*.msi
+            artifacts/installer/**/*.msi.sha256
