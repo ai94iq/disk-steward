@@ -5,7 +5,7 @@
   <Package Name="!(loc.ProductName)"
            Manufacturer="!(loc.Manufacturer)"
            Version="$(var.Version)"
-           Language="1025"
+           Language="1033"
            UpgradeCode="1A05491B-8E2B-4C9F-8A3E-8AE02379EE2F"
            Scope="perMachine">
 

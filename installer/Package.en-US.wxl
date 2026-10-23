@@ -1,0 +1,6 @@
+<!-- MSI databases aren't Unicode: en-US uses codepage 1252 -->
+<WixLocalization Culture="en-US" Codepage="1252" xmlns="http://wixtoolset.org/schemas/v4/wxl">
+  <String Id="ProductName" Value="Disk Steward" />
+  <String Id="Manufacturer" Value="ai94iq" />
+  <String Id="DowngradeError" Value="A newer version of this app is already installed." />
+</WixLocalization>
