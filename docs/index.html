@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Disk Steward: free disk space you can undo</title>
+<meta name="description" content="A native Windows app that frees disk space and shows what the machine is doing. Every removal goes to the Recycle Bin, and it never runs elevated.">
+<meta property="og:title" content="Disk Steward: free disk space you can undo">
+<meta property="og:description" content="Cache cleanup, app uninstall with leftovers, a disk usage tree and a live system monitor for Windows. Recycle Bin only, never elevated.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://raw.githubusercontent.com/ai94iq/disk-steward/main/docs/images/monitor.png">
+<meta name="color-scheme" content="dark light">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%230d1417'/%3E%3Ccircle cx='12' cy='12' r='6.5' fill='none' stroke='%2322323a' stroke-width='2.6'/%3E%3Cpath d='M12 5.5a6.5 6.5 0 0 1 6.2 8.5' fill='none' stroke='%2314b8a6' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preload" href="fonts/sans.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/mono.woff2" as="font" type="font/woff2" crossorigin>
+<script>document.documentElement.classList.add('js')</script>
+<style>
+@font-face { font-family: "Hanken Grotesk"; src: url(fonts/sans.woff2) format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Martian Mono"; src: url(fonts/mono.woff2) format("woff2"); font-weight: 100 800; font-display: swap; }
+
+:root {
+  color-scheme: dark light;
+  --page: #0d1417; --panel: #131c20; --raise: #18242a;
+  --ink: #e4eef0; --mute: #94a8ae; --line: #22323a; --quiet: #2c3e46;
+  --mark: #14b8a6; --on-mark: #04201c; --mark-ink: #2dd4bf;
+  --calm: #4ade80; --review: #facc15;
+  --sans: "Hanken Grotesk", system-ui, "Segoe UI", sans-serif;
+  --mono: "Martian Mono", ui-monospace, Consolas, monospace;
+  --swipe: cubic-bezier(.3, .7, .2, 1);
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --page: #f4f8f8; --panel: #ffffff; --raise: #eaf1f2;
+    --ink: #0f1d21; --mute: #4a5d63; --line: #d5e1e3; --quiet: #c3d3d6;
+    --mark: #0f766e; --on-mark: #ffffff; --mark-ink: #0f766e; --calm: #15803d; --review: #a16207;
+  }
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--page); color: var(--ink); font: 400 17px/1.6 var(--sans); }
+::selection { background: var(--mark); color: var(--on-mark); }
+a { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+:focus-visible { outline: 2px solid var(--mark-ink); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3, p, figure, ul, ol, dl, dd { margin: 0; }
+p, dd, li { text-wrap: pretty; }
+code { font-family: var(--mono); font-size: .86em; }
+img { display: block; max-width: 100%; height: auto; }
+.wrap { width: min(1200px, 100% - 48px); margin: 0 auto; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.skip { position: absolute; left: -9999px; top: 0; padding: 8px 12px; background: var(--mark); color: var(--on-mark); z-index: 100; font-weight: 700; }
+.skip:focus { left: 0; }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+/* header */
+header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 24px; padding: 20px 0; }
+.brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; text-decoration: none; }
+.brand svg { width: 26px; height: 26px; flex: none; }
+.navs { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 26px; font-size: 15px; }
+nav { display: flex; flex-wrap: wrap; gap: 0 22px; }
+nav a { padding: 6px 0; text-decoration: none; color: var(--mute); }
+nav a:hover { color: var(--ink); }
+.ext { display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 8px; text-decoration: none; }
+.ext:hover { border-color: var(--mark); }
+.ext svg { width: 15px; height: 15px; }
+
+/* hero */
+.hero { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.25fr); gap: 56px; padding: 48px 0 40px; align-items: center; }
+h1 { font-size: clamp(44px, 5.4vw, 72px); font-weight: 800; line-height: 1.04; letter-spacing: -.025em; text-wrap: balance; }
+h1 em { font-style: normal; color: var(--mark-ink); }
+.lede { margin-top: 22px; font-size: 20px; line-height: 1.5; color: var(--mute); max-width: 30em; }
+.lede strong { color: var(--ink); font-weight: 600; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-top: 30px; }
+.btn { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 20px; border-radius: 10px; border: 1px solid var(--mark); background: var(--mark); color: var(--on-mark); font: 700 16px/1.2 var(--sans); text-decoration: none; cursor: pointer; }
+.btn svg { width: 18px; height: 18px; flex: none; }
+.btn:hover { filter: brightness(1.08); }
+.btn.ghost { background: none; color: var(--ink); border-color: var(--line); font: 500 14px/1.2 var(--mono); }
+.btn.ghost:hover { border-color: var(--mark); filter: none; }
+.meta { margin-top: 18px; font-size: 15px; color: var(--mute); }
+.copied { min-height: 24px; margin-top: 6px; font-size: 15px; color: var(--mark-ink); }
+
+.shot { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--panel); box-shadow: 0 30px 60px -30px rgb(0 0 0 / .55); }
+.shot figcaption span { white-space: nowrap; }
+.shot figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 12px; padding: 10px 14px; border-top: 1px solid var(--line); font: 400 13px/1.5 var(--mono); color: var(--mute); }
+
+/* fact strip, read like the app's Monitor cards */
+.facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; padding: 8px 0 24px; }
+.fact { padding: 18px 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+.fact dt { font-size: 14px; font-weight: 600; }
+.fact dd { margin-top: 6px; font: 600 30px/1.1 var(--mono); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.fact dd small { font: 400 14px/1.4 var(--sans); color: var(--mute); letter-spacing: 0; display: block; margin-top: 6px; }
+
+section { padding: 80px 0 24px; }
+h2 { font-size: clamp(30px, 3.6vw, 46px); font-weight: 800; line-height: 1.1; letter-spacing: -.02em; max-width: 20em; text-wrap: balance; }
+.sub { margin-top: 14px; max-width: 40em; color: var(--mute); font-size: 18px; }
+
+/* safety chain */
+.chain { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; margin-top: 40px; padding: 0; list-style: none; counter-reset: step; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); overflow: hidden; }
+.chain li { position: relative; padding: 20px 20px 22px; border-left: 1px solid var(--line); counter-increment: step; }
+.chain li:first-child { border-left: 0; }
+.chain li::before { content: counter(step, decimal-leading-zero); display: block; font: 500 13px/1 var(--mono); color: var(--mark-ink); margin-bottom: 12px; }
+.chain h3 { font-size: 16px; font-weight: 700; line-height: 1.3; }
+.chain p { margin-top: 6px; font-size: 14.5px; line-height: 1.5; color: var(--mute); }
+.chain li.end { background: var(--raise); }
+.guard { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; margin-top: 14px; }
+.panel { padding: 22px 24px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+.panel h3 { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+.panel p, .panel li { font-size: 15px; color: var(--mute); }
+.panel ul { padding-left: 18px; }
+.panel li + li { margin-top: 4px; }
+.panel li::marker { color: var(--mark-ink); }
+.panel code { color: var(--ink); }
+
+/* pages */
+.pages { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 40px; }
+.page-card { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); overflow: hidden; }
+.page-card img { border-bottom: 1px solid var(--line); aspect-ratio: 14 / 9; object-fit: cover; object-position: left top; }
+.page-card div { padding: 18px 20px 22px; }
+.page-card h3 { font-size: 18px; font-weight: 700; }
+.page-card p { margin-top: 6px; font-size: 15px; color: var(--mute); }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 10px; font-size: 14px; }
+.dot { display: inline-flex; align-items: center; gap: 7px; }
+.dot::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--calm); }
+.dot.review::before { background: var(--review); border-radius: 2px; }
+
+table { width: 100%; border-collapse: collapse; font-size: 15px; }
+th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--mute); font-weight: 600; font-size: 13px; }
+tr:last-child td { border-bottom: 0; }
+td:first-child { white-space: nowrap; }
+.table-wrap { margin-top: 18px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); overflow-x: auto; }
+.table-plain { margin-top: 4px; overflow-x: auto; }
+.table-plain th:first-child, .table-plain td:first-child { padding-left: 0; }
+
+/* get it */
+.get { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 18px; margin-top: 40px; align-items: start; }
+.get .panel .btn { margin-top: 16px; }
+.req { margin-top: 14px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 16px; font-size: 15px; }
+.req dt { color: var(--mute); }
+
+footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 24px; margin-top: 88px; padding: 26px 0 40px; border-top: 1px solid var(--line); color: var(--mute); font-size: 15px; }
+
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+@media (prefers-reduced-motion: no-preference) {
+  .shot { animation: rise .6s var(--swipe) .1s backwards; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+@media (max-width: 960px) {
+  .hero { grid-template-columns: minmax(0, 1fr); gap: 40px; padding-top: 28px; }
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .chain { grid-template-columns: minmax(0, 1fr); }
+  .chain li { border-left: 0; border-top: 1px solid var(--line); }
+  .chain li:first-child { border-top: 0; }
+  .guard, .get { grid-template-columns: minmax(0, 1fr); }
+  .pages { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 600px) {
+  .wrap { width: calc(100% - 32px); }
+  body { font-size: 16px; }
+  .lede { font-size: 18px; }
+  .facts { grid-template-columns: minmax(0, 1fr); }
+  .fact dd { font-size: 26px; }
+  td:first-child { white-space: normal; }
+}
+</style>
+</head>
+<body>
+<a href="#main" class="skip">Skip to content</a>
+<div class="wrap">
+
+  <header>
+    <a class="brand" href="#main">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="var(--quiet)" stroke-width="3"/><path d="M12 4a8 8 0 0 1 7.6 10.5" fill="none" stroke="var(--mark)" stroke-width="3" stroke-linecap="round"/></svg>
+      Disk Steward
+    </a>
+    <div class="navs">
+      <nav aria-label="Sections">
+        <a href="#safety">Safety</a>
+        <a href="#pages">Pages</a>
+        <a href="#get">Get it</a>
+      </nav>
+      <a class="ext" href="https://github.com/ai94iq/disk-steward">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+        GitHub
+      </a>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="hero">
+      <div>
+        <h1>Free disk space. <em>Nothing you can't undo.</em></h1>
+        <p class="lede">A native Windows app for cache cleanup, app uninstall with leftover cleanup, a disk usage tree and a live system monitor. <strong>Every removal goes to the Recycle Bin</strong>, and it runs as you, never elevated.</p>
+        <div class="actions">
+          <a class="btn" href="https://github.com/ai94iq/disk-steward/releases/tag/v0.1.0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 21h16"/></svg>
+            Download v0.1.0 (MSI)
+          </a>
+        </div>
+        <p class="meta">Windows 10 22H2 or 11, x64 &middot; English and Arabic&nbsp;&middot;&nbsp;MIT</p>
+      </div>
+
+      <figure class="shot">
+        <img src="images/monitor.png" width="1400" height="900" alt="The Monitor page: a Running smoothly health line with a score of 100, CPU at 35 percent, memory at 52 percent, network at 30 KB/s, three drives with free space, and the top processes by CPU and memory.">
+        <figcaption><span>Monitor, the start page</span><span>sampled every 2 s</span></figcaption>
+      </figure>
+    </div>
+
+    <dl class="facts" aria-label="Disk Steward at a glance">
+      <div class="fact">
+        <dt>Cache locations</dt>
+        <dd>76<small>in six groups, each scanned read-only</small></dd>
+      </div>
+      <div class="fact">
+        <dt>Pre-ticked items</dt>
+        <dd>0<small>you tick, then confirm</small></dd>
+      </div>
+      <div class="fact">
+        <dt>Permanent deletes</dt>
+        <dd>0<small>removals land in the Recycle Bin</small></dd>
+      </div>
+      <div class="fact">
+        <dt>Runs as</dt>
+        <dd>you<small>standard user, no admin prompt</small></dd>
+      </div>
+    </dl>
+
+    <section id="safety" aria-labelledby="safety-h">
+      <h2 id="safety-h">Safety is the mechanism, not a disclaimer.</h2>
+      <p class="sub">One guard, <code>SafeRemover</code>, handles every removal. It checks each path again at the moment of removal, so a cache path cannot be redirected into something that matters.</p>
+      <ol class="chain">
+        <li><h3>You tick and confirm</h3><p>Nothing is removed without a tick and a confirmation. Nothing starts ticked.</p></li>
+        <li><h3>Links resolve</h3><p>Junctions and links are resolved to the real path before anything moves.</p></li>
+        <li><h3>Protected paths re-checked</h3><p>The path is checked against <code>ProtectedPaths</code> again, right then.</p></li>
+        <li><h3>No Recycle Bin, no removal</h3><p>A drive without a Recycle Bin is refused rather than deleted from.</p></li>
+        <li class="end"><h3>Recycle Bin</h3><p>The item is moved there. You can restore it.</p></li>
+      </ol>
+      <div class="guard">
+        <div class="panel">
+          <h3>Protected, always</h3>
+          <ul>
+            <li>Windows, Program Files and ProgramData</li>
+            <li>Drive roots</li>
+            <li>Your profile and its known folders</li>
+            <li>System files such as the page file</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>Says why, in plain words</h3>
+          <p>A folder that cannot be removed shows as a locked row that explains itself, not an error. In Clean, each item is marked safe to remove or worth a review first, and Claude Code memory is never offered.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="pages" aria-labelledby="pages-h">
+      <h2 id="pages-h">Four pages. One job each.</h2>
+      <p class="sub">Monitor opens first and samples while the page is open. Clean, Apps and Analyze find space and hand you the choice.</p>
+      <div class="pages">
+        <article class="page-card">
+          <img src="images/clean.png" width="1400" height="900" loading="lazy" alt="The Clean page: 8.18 GB found in 29 places, split into 6.99 GB safe to remove and 1.19 GB to review first, grouped as browsers, apps, graphics drivers, developer tools and AI tools, none ticked.">
+          <div>
+            <h3>Clean</h3>
+            <p>Scans on open. Browser caches leave sign-ins, history and bookmarks alone.</p>
+            <p class="legend"><span class="dot">Safe to remove</span><span class="dot review">Review first</span></p>
+          </div>
+        </article>
+        <article class="page-card">
+          <img src="images/apps.png" width="1400" height="900" loading="lazy" alt="The Apps page: a list of installed apps with icons, publisher, install date and size, a search box and a sort by name menu.">
+          <div>
+            <h3>Apps</h3>
+            <p>Sort by name, size or install date. Uninstall runs the app's own uninstaller, waits until Windows no longer lists it, then offers leftover folders, unticked. Store apps are not listed.</p>
+          </div>
+        </article>
+        <article class="page-card">
+          <img src="images/analyze.png" width="1400" height="900" loading="lazy" alt="The Analyze page: drives C, D and E with free space against capacity and a used-space bar for each.">
+          <div>
+            <h3>Analyze</h3>
+            <p>A tree of drives and folders with used space against capacity. Folders list at once and measure in the background.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <caption class="sr">The six Clean groups</caption>
+          <thead><tr><th scope="col">Clean group</th><th scope="col">What it covers</th></tr></thead>
+          <tbody>
+            <tr><td>System</td><td>Temp files, error reports and logs over a week old</td></tr>
+            <tr><td>Browsers</td><td>Caches only; sign-ins, history and bookmarks stay</td></tr>
+            <tr><td>Apps</td><td>App caches; most rebuild on next launch</td></tr>
+            <tr><td>Graphics drivers</td><td>Shader caches; games may load slower once</td></tr>
+            <tr><td>Developer tools</td><td>Package caches; tools download them again</td></tr>
+            <tr><td>AI tools</td><td>Chats over 30 days old (Claude Code, Codex) and editor caches such as Cursor</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="get" aria-labelledby="get-h">
+      <h2 id="get-h">Get it.</h2>
+      <p class="sub">Install the MSI from the release, or build it yourself with the .NET 10 SDK.</p>
+      <div class="get">
+        <div class="panel">
+          <h3>Install</h3>
+          <dl class="req">
+            <dt>Windows</dt><dd>10 22H2 or 11, x64</dd>
+            <dt>Account</dt><dd>Standard user is enough</dd>
+            <dt>Languages</dt><dd>English and Arabic, right to left included</dd>
+            <dt>Themes</dt><dd>Light and dark, with an accent choice</dd>
+          </dl>
+          <a class="btn" href="https://github.com/ai94iq/disk-steward/releases/tag/v0.1.0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 21h16"/></svg>
+            DiskSteward-Setup-0.1.0.msi
+          </a>
+        </div>
+        <div class="panel">
+          <h3>Build from source</h3>
+          <p>Needs the .NET 10 SDK version pinned in <code>global.json</code>. Each script takes <code>--no-pause</code> to skip the final key press.</p>
+          <div class="actions">
+            <button class="btn ghost" type="button" data-copy="git clone https://github.com/ai94iq/disk-steward.git">Copy: git clone ...disk-steward.git</button>
+          </div>
+          <p class="copied" role="status" aria-live="polite"></p>
+          <div class="table-plain">
+            <table>
+              <caption class="sr">Build scripts</caption>
+              <thead><tr><th scope="col">Script</th><th scope="col">Purpose</th></tr></thead>
+              <tbody>
+                <tr><td><code>run.bat</code></td><td>Run the app in Debug</td></tr>
+                <tr><td><code>build.bat</code></td><td>Publish <code>DiskSteward.exe</code> to <code>artifacts\publish\win-x64</code></td></tr>
+                <tr><td><code>test.bat</code></td><td>Run all tests</td></tr>
+                <tr><td><code>package.bat</code></td><td>Test, build and create the MSI in <code>artifacts\installer</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>MIT licensed. Built with WPF and WPF-UI on .NET 10.</span>
+    <span>Updated <span class="num">2026-11-06</span>. <a href="https://github.com/ai94iq/disk-steward">Source</a>, <a href="https://github.com/ai94iq/disk-steward/blob/main/CHANGELOG.md">Changelog</a>, <a href="https://github.com/ai94iq/disk-steward/issues">Issues</a></span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var status = document.querySelector('.copied');
+  function say(text) {
+    status.textContent = text;
+    setTimeout(function () { status.textContent = ''; }, 3500);
+  }
+  function execCopy(text) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.top = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  }
+  function copyToClipboard(text) {
+    var fallback = function () { say(execCopy(text) ? 'Copied.' : 'Copy failed. Select the command and copy it: ' + text); };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(function () { say('Copied.'); }, fallback);
+    } else {
+      fallback();
+    }
+  }
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () { copyToClipboard(b.getAttribute('data-copy')); });
+  });
+})();
+</script>
+</body>
+</html>
